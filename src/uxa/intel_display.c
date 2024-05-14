@@ -342,19 +342,12 @@ intel_crtc_apply(xf86CrtcPtr crtc)
 	}
 
 	if (!intel_crtc->scanout_fb_id) {
-#if XORG_VERSION_CURRENT < XORG_VERSION_NUMERIC(1,5,99,0,0)
-		if (!xf86CrtcRotate(crtc, mode, rotation))
-			goto done;
-#else
 		if (!xf86CrtcRotate(crtc))
 			goto done;
-#endif
 	}
 
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,7,0,0,0)
 	crtc->funcs->gamma_set(crtc, crtc->gamma_red, crtc->gamma_green,
 			       crtc->gamma_blue, crtc->gamma_size);
-#endif
 
 	x = crtc->x;
 	y = crtc->y;
@@ -479,19 +472,11 @@ __intel_crtc_load_cursor_argb(xf86CrtcPtr crtc, CARD32 *image)
 	return ret;
 }
 
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,15,99,902,2)
 static Bool
 intel_crtc_load_cursor_argb(xf86CrtcPtr crtc, CARD32 *image)
 {
 	return __intel_crtc_load_cursor_argb(crtc, image) == 0;
 }
-#else
-static void
-intel_crtc_load_cursor_argb(xf86CrtcPtr crtc, CARD32 *image)
-{
-	__intel_crtc_load_cursor_argb(crtc, image);
-}
-#endif
 
 static void
 intel_crtc_hide_cursor(xf86CrtcPtr crtc)
@@ -709,11 +694,7 @@ static const xf86CrtcFuncsRec intel_crtc_funcs = {
 	.set_cursor_position = intel_crtc_set_cursor_position,
 	.show_cursor = intel_crtc_show_cursor,
 	.hide_cursor = intel_crtc_hide_cursor,
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,15,99,902,3)
 	.load_cursor_argb_check = intel_crtc_load_cursor_argb,
-#else
-	.load_cursor_argb = intel_crtc_load_cursor_argb,
-#endif
 	.shadow_create = intel_crtc_shadow_create,
 	.shadow_allocate = intel_crtc_shadow_allocate,
 	.shadow_destroy = intel_crtc_shadow_destroy,
@@ -930,11 +911,7 @@ intel_output_panel_edid(xf86OutputPtr output, DisplayModePtr modes)
 		max_vrefresh = max(max_vrefresh, 60.0);
 		max_vrefresh *= (1 + SYNC_TOLERANCE);
 
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,6,99,0,0)
 		m = xf86GetDefaultModes();
-#else
-		m = xf86GetDefaultModes(0,0);
-#endif
 
 		xf86ValidateModesSize(output->scrn, m, max_x, max_y, 0);
 

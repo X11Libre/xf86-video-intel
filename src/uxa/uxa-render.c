@@ -238,13 +238,11 @@ uxa_get_pixel_from_rgba(CARD32 * pixel,
 		gshift = rbits;
 		bshift = gshift + gbits;
 		ashift = bshift + bbits;
-#if XORG_VERSION_CURRENT >= 10699900
 	} else if (PICT_FORMAT_TYPE(format) == PICT_TYPE_BGRA) {
 		ashift = 0;
 		rshift = abits;
 		gshift = rshift + rbits;
 		bshift = gshift + gbits;
-#endif
 	} else {
 		return FALSE;
 	}
@@ -286,7 +284,6 @@ uxa_get_rgba_from_pixel(CARD32 pixel,
 		gshift = rbits;
 		bshift = gshift + gbits;
 		ashift = bshift + bbits;
-#if XORG_VERSION_CURRENT >= 10699900
         } else if (PICT_FORMAT_TYPE(format) == PICT_TYPE_BGRA) {
 		ashift = 0;
 		rshift = abits;
@@ -294,7 +291,6 @@ uxa_get_rgba_from_pixel(CARD32 pixel,
 			rshift = PICT_FORMAT_BPP(format) - (rbits+gbits+bbits);
 		gshift = rshift + rbits;
 		bshift = gshift + gbits;
-#endif
 	} else {
 		return FALSE;
 	}

@@ -1524,11 +1524,7 @@ static Bool is_level(const char **str)
 
 static const char *options_get_dri(intel_screen_private *intel)
 {
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,7,99,901,0)
 	return xf86GetOptValString(intel->Options, OPTION_DRI);
-#else
-	return NULL;
-#endif
 }
 
 static const char *dri_driver_name(intel_screen_private *intel)

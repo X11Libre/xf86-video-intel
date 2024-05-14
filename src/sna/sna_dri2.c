@@ -48,7 +48,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <xf86drm.h>
 #include <i915_drm.h>
 #include <dri2.h>
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,12,99,901,0) && defined(COMPOSITE)
+#if defined(COMPOSITE)
 #include <compositeext.h>
 #define CHECK_FOR_COMPOSITOR
 #endif
@@ -396,19 +396,8 @@ inline static void *dri2_window_get_front(WindowPtr win) { return NULL; }
 
 #else
 
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,15,99,904,0)
 /* Prime fixed for triple buffer support */
 #define xorg_can_triple_buffer() 1
-#elif XORG_VERSION_CURRENT < XORG_VERSION_NUMERIC(1,12,99,901,0)
-/* Before numGPUScreens was introduced */
-#define xorg_can_triple_buffer() 1
-#else
-/* Subject to crashers when combining triple buffering and Prime */
-inline static bool xorg_can_triple_buffer(void)
-{
-	return screenInfo.numGPUScreens == 0;
-}
-#endif
 
 static void
 mark_stale(DRI2BufferPtr back)
@@ -3693,11 +3682,7 @@ static bool is_level(const char **str)
 
 static const char *options_get_dri(struct sna *sna)
 {
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,7,99,901,0)
 	return xf86GetOptValString(sna->Options, OPTION_DRI);
-#else
-	return NULL;
-#endif
 }
 
 static const char *dri_driver_name(struct sna *sna)
