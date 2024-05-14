@@ -124,11 +124,7 @@ clip_to_dst(pixman_region16_t *region,
 static inline bool
 picture_has_clip(PicturePtr p)
 {
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,16,99,1,0)
 	return p->clientClip;
-#else
-	return p->clientClipType != CT_NONE;
-#endif
 }
 
 static inline bool
@@ -476,14 +472,7 @@ static inline bool use_cpu(PixmapPtr pixmap, struct sna_pixmap *priv,
 
 static void validate_source(PicturePtr picture)
 {
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,10,99,901,0)
 	miCompositeSourceValidate(picture);
-#else
-	miCompositeSourceValidate(picture,
-				  0, 0,
-				  picture->pDrawable ? picture->pDrawable->width : 0,
-				  picture->pDrawable ? picture->pDrawable->height : 0);
-#endif
 }
 
 void

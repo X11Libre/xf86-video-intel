@@ -370,18 +370,6 @@ static Bool uxa_close_screen(CLOSE_SCREEN_ARGS_DECL)
 
 	uxa_glyphs_fini(screen);
 
-#if XORG_VERSION_CURRENT < XORG_VERSION_NUMERIC(1,15,99,903,0)
-	if (screen->devPrivate) {
-		/* Destroy the pixmap created by miScreenInit() *before*
-		 * chaining up as we finalize ourselves here and so this
-		 * is the last chance we have of releasing our resources
-		 * associated with the Pixmap. So do it first.
-		 */
-		(void) (*screen->DestroyPixmap) (screen->devPrivate);
-		screen->devPrivate = NULL;
-	}
-#endif
-
 	screen->CreateGC = uxa_screen->SavedCreateGC;
 	screen->CloseScreen = uxa_screen->SavedCloseScreen;
 	screen->GetImage = uxa_screen->SavedGetImage;
