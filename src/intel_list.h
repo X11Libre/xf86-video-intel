@@ -27,9 +27,6 @@
 #define _INTEL_LIST_H_
 
 #include <xorgVersion.h>
-
-#if XORG_VERSION_CURRENT < XORG_VERSION_NUMERIC(1,9,0,0,0) || XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,11,99,903,0)
-
 #include <stdbool.h>
 
 /**
@@ -350,57 +347,6 @@ list_is_empty(const struct list *head)
 	 &pos->member != (head);					\
 	 pos = tmp, tmp = __container_of(pos->member.next, tmp, member))
 
-#else
-
-#include <list.h>
-
-static inline void
-list_add_tail(struct list *entry, struct list *head)
-{
-    __list_add(entry, head->prev, head);
-}
-
-static inline void
-_list_del(struct list *entry)
-{
-    assert(entry->prev->next == entry);
-    assert(entry->next->prev == entry);
-    __list_del(entry->prev, entry->next);
-}
-
-static inline void list_replace(struct list *old,
-				struct list *new)
-{
-	new->next = old->next;
-	new->next->prev = new;
-	new->prev = old->prev;
-	new->prev->next = new;
-}
-
-static inline void list_move(struct list *list, struct list *head)
-{
-	if (list->prev != head) {
-		_list_del(list);
-		list_add(list, head);
-	}
-}
-
-static inline void list_move_tail(struct list *list, struct list *head)
-{
-	_list_del(list);
-	list_add_tail(list, head);
-}
-
-#define list_last_entry(ptr, type, member) \
-    list_entry((ptr)->prev, type, member)
-
-#define list_for_each_entry_reverse(pos, head, member)			\
-    for (pos = __container_of((head)->prev, pos, member);		\
-	 &pos->member != (head);					\
-	 pos = __container_of(pos->member.prev, pos, member))
-
-#endif
-
 #define list_for_each_entry_safe_from(pos, tmp, head, member)		\
     for (tmp = __container_of(pos->member.next, pos, member);		\
 	 &pos->member != (head);					\
@@ -444,4 +390,3 @@ static inline int list_is_singular(const struct list *list)
 }
 
 #endif /* _INTEL_LIST_H_ */
-

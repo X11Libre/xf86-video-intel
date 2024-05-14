@@ -108,10 +108,8 @@ static const struct formatinfo {
 	{PICT_x8r8g8b8, 0, MAPSURF_32BIT | MT_32BIT_XRGB8888, false},
 	{PICT_a8b8g8r8, 0, MAPSURF_32BIT | MT_32BIT_ABGR8888, false},
 	{PICT_x8b8g8r8, 0, MAPSURF_32BIT | MT_32BIT_XBGR8888, false},
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,6,99,900,0)
 	{PICT_a2r10g10b10, PICT_x2r10g10b10, MAPSURF_32BIT | MT_32BIT_ARGB2101010, false},
 	{PICT_a2b10g10r10, PICT_x2b10g10r10, MAPSURF_32BIT | MT_32BIT_ABGR2101010, false},
-#endif
 	{PICT_r5g6b5, 0, MAPSURF_16BIT | MT_16BIT_RGB565, false},
 	{PICT_b5g6r5, 0, MAPSURF_16BIT | MT_16BIT_RGB565, true},
 	{PICT_a1r5g5b5, PICT_x1r5g5b5, MAPSURF_16BIT | MT_16BIT_ARGB1555, false},
@@ -213,12 +211,10 @@ static bool gen3_check_dst_format(uint32_t format)
 	case PICT_x1r5g5b5:
 	case PICT_a1b5g5r5:
 	case PICT_x1b5g5r5:
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,6,99,900,0)
 	case PICT_a2r10g10b10:
 	case PICT_x2r10g10b10:
 	case PICT_a2b10g10r10:
 	case PICT_x2b10g10r10:
-#endif
 	case PICT_a8:
 	case PICT_a4r4g4b4:
 	case PICT_x4r4g4b4:
@@ -238,10 +234,8 @@ static bool gen3_dst_rb_reversed(uint32_t format)
 	case PICT_r5g6b5:
 	case PICT_a1r5g5b5:
 	case PICT_x1r5g5b5:
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,6,99,900,0)
 	case PICT_a2r10g10b10:
 	case PICT_x2r10g10b10:
-#endif
 	case PICT_a8:
 	case PICT_a4r4g4b4:
 	case PICT_x4r4g4b4:
@@ -272,13 +266,11 @@ static uint32_t gen3_get_dst_format(uint32_t format)
 	case PICT_a1b5g5r5:
 	case PICT_x1b5g5r5:
 		return BIAS | COLR_BUF_ARGB1555;
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,6,99,900,0)
 	case PICT_a2r10g10b10:
 	case PICT_x2r10g10b10:
 	case PICT_a2b10g10r10:
 	case PICT_x2b10g10r10:
 		return BIAS | COLR_BUF_ARGB2AAA;
-#endif
 	case PICT_a8:
 		return BIAS | COLR_BUF_8BIT;
 	case PICT_a4r4g4b4:
@@ -327,12 +319,10 @@ static bool gen3_check_xformat(PicturePtr p)
 	case PICT_x1r5g5b5:
 	case PICT_a1b5g5r5:
 	case PICT_x1b5g5r5:
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,6,99,900,0)
 	case PICT_a2r10g10b10:
 	case PICT_x2r10g10b10:
 	case PICT_a2b10g10r10:
 	case PICT_x2b10g10r10:
-#endif
 	case PICT_a8:
 	case PICT_a4r4g4b4:
 	case PICT_x4r4g4b4:

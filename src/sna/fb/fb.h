@@ -353,13 +353,8 @@ static inline PixmapPtr fbGetWindowPixmap(WindowPtr window)
  * here's a macro which uses that to disable GetImage and GetSpans
  */
 
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,10,0,0,0)
 #define fbWindowEnabled(pWin) \
 	RegionNotEmpty(&(pWin)->drawable.pScreen->root->borderClip)
-#else
-#define fbWindowEnabled(pWin) \
-	RegionNotEmpty(&WindowTable[(pWin)->drawable.pScreen->myNum]->borderClip)
-#endif
 #define fbDrawableEnabled(drawable) \
     ((drawable)->type == DRAWABLE_PIXMAP ? \
      TRUE : fbWindowEnabled((WindowPtr) drawable))

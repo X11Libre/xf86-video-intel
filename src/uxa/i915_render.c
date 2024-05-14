@@ -84,10 +84,8 @@ static struct formatinfo i915_tex_formats[] = {
 	{PICT_x8r8g8b8, MAPSURF_32BIT | MT_32BIT_XRGB8888},
 	{PICT_a8b8g8r8, MAPSURF_32BIT | MT_32BIT_ABGR8888},
 	{PICT_x8b8g8r8, MAPSURF_32BIT | MT_32BIT_XBGR8888},
-#if XORG_VERSION_CURRENT >= 10699900
 	{PICT_a2r10g10b10, MAPSURF_32BIT | MT_32BIT_ARGB2101010},
 	{PICT_a2b10g10r10, MAPSURF_32BIT | MT_32BIT_ABGR2101010},
-#endif
 	{PICT_r5g6b5, MAPSURF_16BIT | MT_16BIT_RGB565},
 	{PICT_a1r5g5b5, MAPSURF_16BIT | MT_16BIT_ARGB1555},
 	{PICT_a4r4g4b4, MAPSURF_16BIT | MT_16BIT_ARGB4444},
@@ -160,12 +158,10 @@ static Bool i915_get_dest_format(PicturePtr dest_picture, uint32_t * dst_format)
 	case PICT_x1r5g5b5:
 		*dst_format = COLR_BUF_ARGB1555;
 		break;
-#if XORG_VERSION_CURRENT >= 10699900
 	case PICT_a2r10g10b10:
 	case PICT_x2r10g10b10:
 		*dst_format = COLR_BUF_ARGB2AAA;
 		break;
-#endif
 	case PICT_a8:
 		*dst_format = COLR_BUF_8BIT;
 		break;
