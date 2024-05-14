@@ -33,59 +33,13 @@
 #include <xf86Module.h>
 
 #include <picturestr.h>
-#ifndef GLYPH_HAS_GLYPH_PICTURE_ACCESSOR
-#define GetGlyphPicture(g, s) GlyphPicture((g))[(s)->myNum]
-#define SetGlyphPicture(g, s, p) GlyphPicture((g))[(s)->myNum] = p
-#endif
 
-#ifndef XF86_HAS_SCRN_CONV
-#define xf86ScreenToScrn(s) xf86Screens[(s)->myNum]
-#if XORG_VERSION_CURRENT < XORG_VERSION_NUMERIC(1,1,0,0,0)
-#define xf86ScrnToScreen(s) screenInfo.screens[(s)->scrnIndex]
-#else
 #define xf86ScrnToScreen(s) ((s)->pScreen)
-#endif
-#else
-#define xf86ScrnToScreen(s) ((s)->pScreen)
-#endif
 
 #if GET_ABI_MAJOR(ABI_VIDEODRV_VERSION) >= 22
 #define HAVE_NOTIFY_FD 1
 #endif
 
-#ifndef XF86_SCRN_INTERFACE
-
-#define SCRN_ARG_TYPE int
-#define SCRN_INFO_PTR(arg1) ScrnInfoPtr scrn = xf86Screens[(arg1)]
-
-#define SCREEN_ARG_TYPE int
-#define SCREEN_PTR(arg1) ScreenPtr screen = screenInfo.screens[(arg1)]
-
-#define SCREEN_INIT_ARGS_DECL int scrnIndex, ScreenPtr screen, int argc, char **argv
-
-#define BLOCKHANDLER_ARGS_DECL int arg, pointer blockData, pointer timeout, pointer read_mask
-#define BLOCKHANDLER_ARGS arg, blockData, timeout, read_mask
-
-#define WAKEUPHANDLER_ARGS_DECL int arg, pointer wakeupData, unsigned long result, pointer read_mask
-#define WAKEUPHANDLER_ARGS arg, wakeupData, result, read_mask
-
-#define CLOSE_SCREEN_ARGS_DECL int scrnIndex, ScreenPtr screen
-#define CLOSE_SCREEN_ARGS scrnIndex, screen
-
-#define ADJUST_FRAME_ARGS_DECL int arg, int x, int y, int flags
-#define ADJUST_FRAME_ARGS(arg, x, y) (arg)->scrnIndex, x, y, 0
-
-#define SWITCH_MODE_ARGS_DECL int arg, DisplayModePtr mode, int flags
-#define SWITCH_MODE_ARGS(arg, m) (arg)->scrnIndex, m, 0
-
-#define FREE_SCREEN_ARGS_DECL int arg, int flags
-
-#define VT_FUNC_ARGS_DECL int arg, int flags
-#define VT_FUNC_ARGS(flags) scrn->scrnIndex, (flags)
-
-#define XF86_ENABLEDISABLEFB_ARG(x) ((x)->scrnIndex)
-
-#else
 #define SCRN_ARG_TYPE ScrnInfoPtr
 #define SCRN_INFO_PTR(arg1) ScrnInfoPtr scrn = (arg1)
 
@@ -115,8 +69,6 @@
 #define VT_FUNC_ARGS(flags) scrn
 
 #define XF86_ENABLEDISABLEFB_ARG(x) (x)
-
-#endif
 
 static inline int
 region_num_rects(const RegionRec *r)
@@ -181,25 +133,7 @@ region_get_boxes(const RegionRec *r, const BoxRec **s, const BoxRec **e)
 #define region_from_bitmap BitmapToRegion
 #endif
 
-#ifndef _X_UNUSED
-#define _X_UNUSED
-#endif
-
-#if HAS_DEVPRIVATEKEYREC
 #define __get_private(p, key) dixGetPrivateAddr(&(p)->devPrivates, &(key))
-#else
-#define __get_private(p, key) dixLookupPrivate(&(p)->devPrivates, &(key))
-typedef int DevPrivateKeyRec;
-static inline void FreePixmap(PixmapPtr pixmap)
-{
-	dixFreePrivates(pixmap->devPrivates);
-	free(pixmap);
-}
-#endif
-
-#if !HAS_DIXREGISTERPRIVATEKEY
-#define dixPrivateKeyRegistered(key__) (*(key__) != 0)
-#endif
 
 #if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,9,99,902,0)
 #define SourceValidate(d, x, y, w, h, mode) \
@@ -209,11 +143,7 @@ static inline void FreePixmap(PixmapPtr pixmap)
 	if ((d)->pScreen->SourceValidate) (d)->pScreen->SourceValidate(d, x, y, w, h)
 #endif
 
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,14,99,2,0)
 #define DamageUnregister(d, dd) DamageUnregister(dd)
-#endif
-
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,16,99,1,0)
 
 #define XORG_XV_VERSION 2
 #define ddStopVideo_ARGS XvPortPtr port, DrawablePtr draw
@@ -223,19 +153,6 @@ static inline void FreePixmap(PixmapPtr pixmap)
 #define ddPutImage_ARGS DrawablePtr draw, XvPortPtr port, GCPtr gc, INT16 src_x, INT16 src_y, CARD16 src_w, CARD16 src_h, INT16 drw_x, INT16 drw_y, CARD16 drw_w, CARD16 drw_h, XvImagePtr format, unsigned char *buf, Bool sync, CARD16 width, CARD16 height
 #define ddQueryImageAttributes_ARGS XvPortPtr port, XvImagePtr format, unsigned short *w, unsigned short *h, int *pitches, int *offsets
 
-#else
-
-#define XORG_XV_VERSION 1
-#define ddStopVideo_ARGS ClientPtr client, XvPortPtr port, DrawablePtr draw
-#define ddSetPortAttribute_ARGS ClientPtr client, XvPortPtr port, Atom attribute, INT32 value
-#define ddGetPortAttribute_ARGS ClientPtr client, XvPortPtr port, Atom attribute, INT32 *value
-#define ddQueryBestSize_ARGS ClientPtr client, XvPortPtr port, CARD8 motion, CARD16 vid_w, CARD16 vid_h, CARD16 drw_w, CARD16 drw_h, unsigned int *p_w, unsigned int *p_h
-#define ddPutImage_ARGS ClientPtr client, DrawablePtr draw, XvPortPtr port, GCPtr gc, INT16 src_x, INT16 src_y, CARD16 src_w, CARD16 src_h, INT16 drw_x, INT16 drw_y, CARD16 drw_w, CARD16 drw_h, XvImagePtr format, unsigned char *buf, Bool sync, CARD16 width, CARD16 height
-#define ddQueryImageAttributes_ARGS ClientPtr client, XvPortPtr port, XvImagePtr format, unsigned short *w, unsigned short *h, int *pitches, int *offsets
-
-#endif
-
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,16,99,1,0)
 #include <mi.h>
 #define miHandleExposures(pSrcDrawable, pDstDrawable, \
 			  pGC, srcx, srcy, width, height, \
@@ -243,17 +160,10 @@ static inline void FreePixmap(PixmapPtr pixmap)
 	miHandleExposures(pSrcDrawable, pDstDrawable, \
 			  pGC, srcx, srcy, width, height, \
 			  dstx, dsty)
-#endif
 
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,12,99,901,0)
 #define isGPU(S) (S)->is_gpu
-#else
-#define isGPU(S) 0
-#endif
 
-#if HAS_DIRTYTRACKING_ROTATION
 #define PixmapSyncDirtyHelper(d, dd) PixmapSyncDirtyHelper(d)
-#endif
 
 #if !HAVE_NOTIFY_FD
 #define SetNotifyFd(fd, cb, mode, data) AddGeneralSocket(fd);

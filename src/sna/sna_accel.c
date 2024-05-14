@@ -452,9 +452,7 @@ static int sigtrap_handler(int sig)
 
 static void sigtrap_init(void)
 {
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,6,99,900,0)
 	OsRegisterSigWrapper(sigtrap_handler);
-#endif
 }
 
 inline static bool
@@ -4515,18 +4513,7 @@ static bool must_check sna_gc_move_to_cpu(GCPtr gc,
 	sgc->priv = gc->pCompositeClip;
 	gc->pCompositeClip = region;
 
-#if XORG_VERSION_CURRENT < XORG_VERSION_NUMERIC(1,16,99,901,0)
-	if (gc->clientClipType == CT_PIXMAP) {
-		PixmapPtr clip = gc->clientClip;
-		gc->clientClip = region_from_bitmap(gc->pScreen, clip);
-		gc->pScreen->DestroyPixmap(clip);
-		gc->clientClipType = gc->clientClip ? CT_REGION : CT_NONE;
-		changes |= GCClipMask;
-	} else
-		changes &= ~GCClipMask;
-#else
 	changes &= ~GCClipMask;
-#endif
 
 	if (changes || drawable->serialNumber != (sgc->serial & DRAWABLE_SERIAL_BITS)) {
 		long tmp = gc->serialNumber;
@@ -7068,11 +7055,7 @@ static inline bool box_equal(const BoxRec *a, const BoxRec *b)
 
 static inline bool has_clip(GCPtr gc)
 {
-#if XORG_VERSION_CURRENT < XORG_VERSION_NUMERIC(1,16,99,901,0)
-	return gc->clientClipType != CT_NONE;
-#else
 	return gc->clientClip != NULL;
-#endif
 }
 
 static RegionPtr
@@ -18123,15 +18106,11 @@ static bool sna_option_accel_none(struct sna *sna)
 				       !IS_DEFAULT_ACCEL_METHOD(NOACCEL)))
 		return false;
 
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,7,99,901,0)
 	s = xf86GetOptValString(sna->Options, OPTION_ACCEL_METHOD);
 	if (s == NULL)
 		return IS_DEFAULT_ACCEL_METHOD(NOACCEL);
 
 	return strcasecmp(s, "none") == 0;
-#else
-	return IS_DEFAULT_ACCEL_METHOD(NOACCEL);
-#endif
 }
 
 static bool sna_option_accel_blt(struct sna *sna)

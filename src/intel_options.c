@@ -62,9 +62,7 @@ OptionInfoPtr intel_options_get(ScrnInfoPtr scrn)
 
 Bool intel_option_cast_to_bool(OptionInfoPtr options, int id, Bool val)
 {
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,7,99,901,0)
 	xf86getBoolValue(&val, xf86GetOptValString(options, id));
-#endif
 	return val;
 }
 
@@ -109,11 +107,7 @@ namecmp(const char *s1, const char *s2)
 
 unsigned intel_option_cast_to_unsigned(OptionInfoPtr options, int id, unsigned val)
 {
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,7,99,901,0)
 	const char *str = xf86GetOptValString(options, id);
-#else
-	const char *str = NULL;
-#endif
 	unsigned v;
 
 	if (str == NULL || *str == '\0')

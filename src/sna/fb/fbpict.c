@@ -159,11 +159,7 @@ create_conical_gradient_image(PictGradient * gradient)
 static inline bool
 picture_has_clip(PicturePtr p)
 {
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,16,99,1,0)
 	return p->clientClip;
-#else
-	return p->clientClipType != CT_NONE;
-#endif
 }
 
 static pixman_image_t *
