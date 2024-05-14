@@ -713,11 +713,7 @@ static bool has_shadow(struct sna *sna)
 static void
 sna_block_handler(BLOCKHANDLER_ARGS_DECL)
 {
-#ifndef XF86_SCRN_INTERFACE
-	struct sna *sna = to_sna(xf86Screens[arg]);
-#else
 	struct sna *sna = to_sna_from_screen(arg);
-#endif
 	struct timeval **tv = timeout;
 
 	DBG(("%s (tv=%ld.%06ld), has_shadow?=%d\n", __FUNCTION__,
@@ -733,11 +729,7 @@ sna_block_handler(BLOCKHANDLER_ARGS_DECL)
 static void
 sna_wakeup_handler(WAKEUPHANDLER_ARGS_DECL)
 {
-#ifndef XF86_SCRN_INTERFACE
-	struct sna *sna = to_sna(xf86Screens[arg]);
-#else
 	struct sna *sna = to_sna_from_screen(arg);
-#endif
 
 	DBG(("%s\n", __FUNCTION__));
 
@@ -1505,11 +1497,7 @@ _X_ATTRIBUTE_PRINTF(1, 0) void LogF(const char *f, ...)
 	 */
 
 	va_start(ap, f);
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,12,99,901,0)
 	LogVMessageVerbSigSafe(X_NONE, 1, f, ap);
-#else
-	LogVMessageVerb(X_NONE, 1, f, ap);
-#endif
 	va_end(ap);
 }
 #endif

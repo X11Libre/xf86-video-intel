@@ -34,10 +34,6 @@
 #include <xf86.h>
 #include <xf86Parser.h>
 
-#if XORG_VERSION_CURRENT < XORG_VERSION_NUMERIC(1,6,99,0,0)
-#include <xf86Resources.h>
-#endif
-
 #include "intel_driver.h"
 #include "intel_options.h"
 #include "legacy/legacy.h"
@@ -636,10 +632,8 @@ static Bool intel_driver_func(ScrnInfoPtr pScrn,
 
 		return TRUE;
 
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,15,99,902,0)
 	case SUPPORTS_SERVER_FDS:
 		return TRUE;
-#endif
 
 	default:
 		/* Unknown or deprecated function */
