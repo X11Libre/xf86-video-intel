@@ -369,7 +369,7 @@ AC_ARG_ENABLE(ums-only,
               [ONLY_UMS="$enableval"],
               [ONLY_UMS="no"])
 
-required_xorg_server_version=1.6
+required_xorg_server_version=1.18
 required_pixman_version=0.16
 
 PKG_CHECK_EXISTS([pixman-1 >= 0.24.0],
