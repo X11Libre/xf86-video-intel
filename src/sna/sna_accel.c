@@ -17696,10 +17696,6 @@ static void sna_accel_post_damage(struct sna *sna)
 
 		dx = -dirty->x;
 		dy = -dirty->y;
-#if HAS_DIRTYTRACKING2
-		dx += dirty->dst_x;
-		dy += dirty->dst_y;
-#endif
 		RegionTranslate(&region, dx, dy);
 		DamageRegionAppend(&PixmapDirtyDst(dirty)->drawable, &region);
 
