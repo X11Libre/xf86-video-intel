@@ -47,9 +47,6 @@
 #define alloca __builtin_alloca
 #elif defined _AIX
 #define alloca __alloca
-#elif defined _MSC_VER
-#include <malloc.h>
-#define alloca _alloca
 #else
 void *alloca(size_t);
 #endif
