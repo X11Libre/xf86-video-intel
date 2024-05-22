@@ -465,7 +465,7 @@ void sna_video_textured_setup(struct sna *sna, ScreenPtr screen)
 		v->colorspace = 1; /* BT.709 */
 		v->SyncToVblank = (sna->flags & SNA_NO_WAIT) == 0;
 
-		RegionNull(&v->clip);
+		REGION_NULL(&v->clip);
 
 		port->id = FakeClientID(0);
 		AddResource(port->id, XvGetRTPort(), port);

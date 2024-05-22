@@ -926,7 +926,7 @@ void sna_video_sprite_setup(struct sna *sna, ScreenPtr screen)
 		video->gamma2 = 0x202020;
 		video->gamma1 = 0x101010;
 		video->gamma0 = 0x080808;
-		RegionNull(&video->clip);
+		REGION_NULL(&video->clip);
 		video->SyncToVblank = 1;
 
 		port++;

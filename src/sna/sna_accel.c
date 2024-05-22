@@ -347,9 +347,9 @@ static void assert_pixmap_damage(PixmapPtr p)
 	assert(!DAMAGE_IS_ALL(priv->cpu_damage) || priv->gpu_damage == NULL);
 
 	/* Avoid reducing damage to minimise interferrence */
-	RegionNull(&reg);
-	RegionNull(&gpu);
-	RegionNull(&cpu);
+	REGION_NULL(&reg);
+	REGION_NULL(&gpu);
+	REGION_NULL(&cpu);
 
 	if (priv->gpu_damage)
 		_sna_damage_debug_get_region(DAMAGE_PTR(priv->gpu_damage), &gpu);
@@ -17237,7 +17237,7 @@ sna_copy_window(WindowPtr win, DDXPointRec origin, RegionPtr src)
 	dy = origin.y - win->drawable.y;
 	RegionTranslate(src, -dx, -dy);
 
-	RegionNull(&dst);
+	REGION_NULL(&dst);
 	RegionIntersect(&dst, &win->borderClip, src);
 	if (box_empty(&dst.extents))
 		return;

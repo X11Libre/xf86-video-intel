@@ -2256,7 +2256,7 @@ sna_render_copy_boxes__overlap(struct sna *sna, uint8_t alu,
 	     overlap.extents.x2, overlap.extents.y2,
 	     region_num_rects(&overlap)));
 
-	RegionNull(&non_overlap);
+	REGION_NULL(&non_overlap);
 	RegionSubtract(&non_overlap, &region, &overlap);
 	DBG(("%s: non-overlapping extents: (%d, %d), (%d, %d) x %d\n",
 	     __FUNCTION__,

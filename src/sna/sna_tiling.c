@@ -645,7 +645,7 @@ sna_tiling_fill_boxes(struct sna *sna,
 
 			tile.data = NULL;
 
-			RegionNull(&this);
+			REGION_NULL(&this);
 			RegionIntersect(&this, &region, &tile);
 			if (RegionNil(&this))
 				continue;
@@ -849,7 +849,7 @@ sna_tiling_blt_copy_boxes__with_alpha(struct sna *sna, uint8_t alu,
 
 			tile.data = NULL;
 
-			RegionNull(&this);
+			REGION_NULL(&this);
 			RegionIntersect(&this, &region, &tile);
 			if (RegionNil(&this))
 				continue;
@@ -1076,7 +1076,7 @@ bool sna_tiling_blt_copy_boxes(struct sna *sna, uint8_t alu,
 
 			tile.data = NULL;
 
-			RegionNull(&this);
+			REGION_NULL(&this);
 			RegionIntersect(&this, &region, &tile);
 			if (RegionNil(&this))
 				continue;

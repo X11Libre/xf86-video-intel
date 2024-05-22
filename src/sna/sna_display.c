@@ -9337,7 +9337,7 @@ void sna_mode_redisplay(struct sna *sna)
 				struct drm_mode_crtc_page_flip arg;
 				struct kgem_bo *bo;
 
-				RegionNull(&new_damage);
+				REGION_NULL(&new_damage);
 				RegionCopy(&new_damage, &damage);
 
 				bo = sna_crtc->cache_bo;

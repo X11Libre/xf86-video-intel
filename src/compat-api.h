@@ -94,7 +94,6 @@ region_get_boxes(const RegionRec *r, const BoxRec **s, const BoxRec **e)
 #define RegionUninit(r) REGION_UNINIT(NULL, r)
 #define region_from_bitmap BITMAP_TO_REGION
 #define RegionNil REGION_NIL
-#define RegionNull(r) REGION_NULL(NULL, r)
 #define RegionNotEmpty(r) REGION_NOTEMPTY(NULL, r)
 #define RegionEmpty(r) REGION_EMPTY(NULL, r)
 #define RegionEqual(a, b) REGION_EQUAL(NULL, a, b)

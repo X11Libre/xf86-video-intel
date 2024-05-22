@@ -1501,7 +1501,7 @@ static bool __sna_damage_intersect(struct sna_damage *damage,
 	if (!pixman_region_not_empty(&damage->region))
 		return false;
 
-	RegionNull(result);
+	REGION_NULL(result);
 	RegionIntersect(result, &damage->region, region);
 
 	return RegionNotEmpty(result);
