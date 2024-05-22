@@ -2362,9 +2362,7 @@ void sna_copy_fbcon(struct sna *sna)
 
 	kgem_bo_destroy(&sna->kgem, bo);
 
-#if ABI_VIDEODRV_VERSION >= SET_ABI_VERSION(10, 0)
 	to_screen_from_sna(sna)->canDoBGNoneRoot = ok;
-#endif
 }
 
 static bool use_shadow(struct sna *sna, xf86CrtcPtr crtc)
