@@ -84,11 +84,7 @@ static const int I830PatternROP[16] = {
 	ROP_1
 };
 
-#if HAS_DEVPRIVATEKEYREC
 DevPrivateKeyRec uxa_pixmap_index;
-#else
-int uxa_pixmap_index;
-#endif
 
 static void
 gen6_context_switch(intel_screen_private *intel,

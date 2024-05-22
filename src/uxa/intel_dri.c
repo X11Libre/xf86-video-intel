@@ -75,11 +75,7 @@ typedef struct {
 	PixmapPtr pixmap;
 } I830DRI2BufferPrivateRec, *I830DRI2BufferPrivatePtr;
 
-#if HAS_DEVPRIVATEKEYREC
 static DevPrivateKeyRec i830_client_key;
-#else
-static int i830_client_key;
-#endif
 
 static void I830DRI2FlipEventHandler(unsigned int frame,
 				     unsigned int tv_sec,
