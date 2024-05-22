@@ -42,19 +42,11 @@ struct intel_uxa_pixmap {
 #define PIN_PRIME 0x8
 };
 
-#if HAS_DEVPRIVATEKEYREC
 extern DevPrivateKeyRec uxa_pixmap_index;
-#else
-extern int uxa_pixmap_index;
-#endif
 
 static inline struct intel_uxa_pixmap *intel_uxa_get_pixmap_private(PixmapPtr pixmap)
 {
-#if HAS_DEVPRIVATEKEYREC
 	return dixGetPrivate(&pixmap->devPrivates, &uxa_pixmap_index);
-#else
-	return dixLookupPrivate(&pixmap->devPrivates, &uxa_pixmap_index);
-#endif
 }
 
 static inline Bool intel_uxa_pixmap_is_busy(struct intel_uxa_pixmap *priv)
