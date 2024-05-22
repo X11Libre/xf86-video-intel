@@ -783,11 +783,7 @@ I830HandleUEvents(int fd, void *closure)
 
 static int has_randr(void)
 {
-#if HAS_DIXREGISTERPRIVATEKEY
 	return dixPrivateKeyRegistered(rrPrivKey);
-#else
-	return *rrPrivKey;
-#endif
 }
 
 static void
