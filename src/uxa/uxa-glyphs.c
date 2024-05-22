@@ -209,13 +209,8 @@ bail:
 Bool uxa_glyphs_init(ScreenPtr pScreen)
 {
 
-#if HAS_DIXREGISTERPRIVATEKEY
 	if (!dixRegisterPrivateKey(&uxa_glyph_key, PRIVATE_GLYPH, 0))
 		return FALSE;
-#else
-	if (!dixRequestPrivate(&uxa_glyph_key, 0))
-		return FALSE;
-#endif
 
 	/* Skip pixmap creation if we don't intend to use it. */
 	if (uxa_get_screen(pScreen)->force_fallback)

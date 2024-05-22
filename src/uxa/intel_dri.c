@@ -660,11 +660,7 @@ i830_dri2_register_frame_event_resource_types(void)
 static XID
 get_client_id(ClientPtr client)
 {
-#if HAS_DIXREGISTERPRIVATEKEY
 	XID *ptr = dixGetPrivateAddr(&client->devPrivates, &i830_client_key);
-#else
-	XID *ptr = dixLookupPrivate(&client->devPrivates, &i830_client_key);
-#endif
 	if (*ptr == 0)
 		*ptr = FakeClientID(client->index);
 	return *ptr;
@@ -1569,14 +1565,8 @@ Bool I830DRI2ScreenInit(ScreenPtr screen)
 		return FALSE;
 	}
 
-#if HAS_DIXREGISTERPRIVATEKEY
 	if (!dixRegisterPrivateKey(&i830_client_key, PRIVATE_CLIENT, sizeof(XID)))
 		return FALSE;
-#else
-	if (!dixRequestPrivate(&i830_client_key, sizeof(XID)))
-		return FALSE;
-#endif
-
 
 #if DRI2INFOREC_VERSION >= 4
 	if (serverGeneration != dri2_server_generation) {
