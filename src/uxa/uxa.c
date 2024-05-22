@@ -453,10 +453,9 @@ Bool uxa_driver_init(ScreenPtr screen, uxa_driver_t * uxa_driver)
 			   "non-NULL\n", screen->myNum);
 		return FALSE;
 	}
-#if HAS_DIXREGISTERPRIVATEKEY
+
 	if (!dixRegisterPrivateKey(&uxa_screen_index, PRIVATE_SCREEN, 0))
 	    return FALSE;
-#endif
 	uxa_screen = calloc(1, sizeof(uxa_screen_t));
 
 	if (!uxa_screen) {
