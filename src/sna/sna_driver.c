@@ -843,11 +843,7 @@ sna_handle_uevents(int fd, void *closure)
 
 static bool has_randr(void)
 {
-#if HAS_DIXREGISTERPRIVATEKEY
 	return dixPrivateKeyRegistered(rrPrivKey);
-#else
-	return *rrPrivKey;
-#endif
 }
 
 static void
@@ -1039,7 +1035,6 @@ static Bool sna_late_close_screen(CLOSE_SCREEN_ARGS_DECL)
 static Bool
 sna_register_all_privates(void)
 {
-#if HAS_DIXREGISTERPRIVATEKEY
 	if (!dixRegisterPrivateKey(&sna_pixmap_key, PRIVATE_PIXMAP,
 				   3*sizeof(void *)))
 		return FALSE;
@@ -1059,22 +1054,6 @@ sna_register_all_privates(void)
 	if (!dixRegisterPrivateKey(&sna_client_key, PRIVATE_CLIENT,
 				   sizeof(struct sna_client)))
 		return FALSE;
-#else
-	if (!dixRequestPrivate(&sna_pixmap_key, 3*sizeof(void *)))
-		return FALSE;
-
-	if (!dixRequestPrivate(&sna_gc_key, sizeof(FbGCPrivate)))
-		return FALSE;
-
-	if (!dixRequestPrivate(&sna_glyph_key, sizeof(struct sna_glyph)))
-		return FALSE;
-
-	if (!dixRequestPrivate(&sna_window_key, 3*sizeof(void *)))
-		return FALSE;
-
-	if (!dixRequestPrivate(&sna_client_key, sizeof(struct sna_client)))
-		return FALSE;
-#endif
 
 	return TRUE;
 }
