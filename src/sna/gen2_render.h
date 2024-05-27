@@ -258,11 +258,6 @@
 
 /* _3DSTATE_MAP_BLEND_OP, p155 */
 #define _3DSTATE_MAP_BLEND_OP_CMD(stage)	(CMD_3D|(0x0d<<24)|((stage)<<20))
-#if 0
-#   define TEXPIPE_COLOR		0
-#   define TEXPIPE_ALPHA		(1<<18)
-#   define TEXPIPE_KILL			(2<<18)
-#endif
 #define ENABLE_TEXOUTPUT_WRT_SEL	(1<<17)
 #define TEXOP_OUTPUT_CURRENT		0
 #define TEXOP_OUTPUT_ACCUM		(1<<15)

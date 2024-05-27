@@ -854,13 +854,8 @@ can_exchange(DrawablePtr drawable, DRI2BufferPtr front, DRI2BufferPtr back)
 		return FALSE;
 
 	/* XXX should we be checking depth instead of bpp? */
-#if 0
-	if (front_pixmap->drawable.depth != back_pixmap->drawable.depth)
-		return FALSE;
-#else
 	if (front_pixmap->drawable.bitsPerPixel != back_pixmap->drawable.bitsPerPixel)
 		return FALSE;
-#endif
 
 	/* prevent an implicit tiling mode change */
 	if (front_intel->tiling != back_intel->tiling)

@@ -1749,50 +1749,8 @@ Bool
 I810SwitchMode(SWITCH_MODE_ARGS_DECL)
 {
    SCRN_INFO_PTR(arg);
-#if 0
-   I810Ptr pI810 = I810PTR(scrn);
-#endif
    if (I810_DEBUG & DEBUG_VERBOSE_CURSOR)
       ErrorF("I810SwitchMode %p\n", (void *)mode);
-
-#if 0
-/* 
- * This has been added to prevent lockups on mode switch by modeling
- * it after I810Leave()/I810Enter() but the call to I810DRILeave() 
- * was missing so it caused the opposite. 
- * The version below works but it is doubtful it does any good.
- * If lockups on mode switch are still seen revisit this code. (EE)
- */
-
-# ifdef HAVE_DRI1
-   if (pI810->directRenderingEnabled) {
-      if (I810_DEBUG & DEBUG_VERBOSE_DRI)
-	 ErrorF("calling dri lock\n");
-      DRILock(screenInfo.screens[scrnIndex], 0);
-      pI810->LockHeld = 1;
-   }
-# endif
-   if (pI810->AccelInfoRec != NULL) {
-      I810RefreshRing(scrn);
-      I810Sync(scrn);
-      pI810->AccelInfoRec->NeedToSync = FALSE;
-   }
-   I810Restore(scrn);
-
-# ifdef HAVE_DRI1
-   if (pI810->directRenderingEnabled) {
-       if (!I810DRILeave(scrn))
-	   return FALSE;
-       if (!I810DRIEnter(scrn))
-	   return FALSE;
-
-       if (I810_DEBUG & DEBUG_VERBOSE_DRI)
-	   ErrorF("calling dri unlock\n");
-       DRIUnlock(screenInfo.screens[scrnIndex]);
-       pI810->LockHeld = 0;
-   }
-# endif
-#endif
    return I810ModeInit(scrn, mode);
 }
 

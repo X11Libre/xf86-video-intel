@@ -183,66 +183,12 @@ static uint32_t float_to_uint(float f)
 	return x.i;
 }
 
-#if 0
-static struct {
-	uint32_t svg_ctl;
-	char *name;
-} svg_ctl_bits[] = {
-	{
-	BRW_SVG_CTL_GS_BA, "General State Base Address"}, {
-	BRW_SVG_CTL_SS_BA, "Surface State Base Address"}, {
-	BRW_SVG_CTL_IO_BA, "Indirect Object Base Address"}, {
-	BRW_SVG_CTL_GS_AUB, "Generate State Access Upper Bound"}, {
-	BRW_SVG_CTL_IO_AUB, "Indirect Object Access Upper Bound"}, {
-	BRW_SVG_CTL_SIP, "System Instruction Pointer"}, {
-0, 0},};
-
-static void brw_debug(ScrnInfoPtr scrn, char *when)
-{
-	intel_screen_private *intel = intel_get_screen_private(scrn);
-	int i;
-	uint32_t v;
-
-	ErrorF("brw_debug: %s\n", when);
-	for (i = 0; svg_ctl_bits[i].name; i++) {
-		OUTREG(BRW_SVG_CTL, svg_ctl_bits[i].svg_ctl);
-		v = INREG(BRW_SVG_RDATA);
-		ErrorF("\t%34.34s: 0x%08x\n", svg_ctl_bits[i].name, v);
-	}
-}
-#endif
-
 #define WATCH_SF 0
 #define WATCH_WIZ 0
 #define WATCH_STATS 0
 
 static void i965_pre_draw_debug(ScrnInfoPtr scrn)
 {
-#if 0
-	intel_screen_private *intel = intel_get_screen_private(scrn);
-#endif
-
-#if 0
-	ErrorF("before EU_ATT 0x%08x%08x EU_ATT_DATA 0x%08x%08x\n",
-	       INREG(BRW_EU_ATT_1), INREG(BRW_EU_ATT_0),
-	       INREG(BRW_EU_ATT_DATA_1), INREG(BRW_EU_ATT_DATA_0));
-
-	OUTREG(BRW_VF_CTL,
-	       BRW_VF_CTL_SNAPSHOT_MUX_SELECT_THREADID |
-	       BRW_VF_CTL_SNAPSHOT_TYPE_VERTEX_INDEX |
-	       BRW_VF_CTL_SNAPSHOT_ENABLE);
-	OUTREG(BRW_VF_STRG_VAL, 0);
-#endif
-
-#if 0
-	OUTREG(BRW_VS_CTL,
-	       BRW_VS_CTL_SNAPSHOT_ALL_THREADS |
-	       BRW_VS_CTL_SNAPSHOT_MUX_VALID_COUNT |
-	       BRW_VS_CTL_THREAD_SNAPSHOT_ENABLE);
-
-	OUTREG(BRW_VS_STRG_VAL, 0);
-#endif
-
 #if WATCH_SF
 	OUTREG(BRW_SF_CTL,
 	       BRW_SF_CTL_SNAPSHOT_MUX_VERTEX_COUNT |
@@ -257,51 +203,10 @@ static void i965_pre_draw_debug(ScrnInfoPtr scrn)
 	       BRW_WIZ_CTL_SNAPSHOT_ALL_THREADS | BRW_WIZ_CTL_SNAPSHOT_ENABLE);
 	OUTREG(BRW_WIZ_STRG_VAL, (box_x1) | (box_y1 << 16));
 #endif
-
-#if 0
-	OUTREG(BRW_TS_CTL,
-	       BRW_TS_CTL_SNAPSHOT_MESSAGE_ERROR |
-	       BRW_TS_CTL_SNAPSHOT_ALL_CHILD_THREADS |
-	       BRW_TS_CTL_SNAPSHOT_ALL_ROOT_THREADS |
-	       BRW_TS_CTL_SNAPSHOT_ENABLE);
-#endif
 }
 
 static void i965_post_draw_debug(ScrnInfoPtr scrn)
 {
-#if 0
-	intel_screen_private *intel = intel_get_screen_private(scrn);
-#endif
-
-#if 0
-	for (j = 0; j < 100000; j++) {
-		ctl = INREG(BRW_VF_CTL);
-		if (ctl & BRW_VF_CTL_SNAPSHOT_COMPLETE)
-			break;
-	}
-
-	rdata = INREG(BRW_VF_RDATA);
-	OUTREG(BRW_VF_CTL, 0);
-	ErrorF("VF_CTL: 0x%08x VF_RDATA: 0x%08x\n", ctl, rdata);
-#endif
-
-#if 0
-	for (j = 0; j < 1000000; j++) {
-		ctl = INREG(BRW_VS_CTL);
-		if (ctl & BRW_VS_CTL_SNAPSHOT_COMPLETE)
-			break;
-	}
-
-	rdata = INREG(BRW_VS_RDATA);
-	for (k = 0; k <= 3; k++) {
-		OUTREG(BRW_VS_CTL, BRW_VS_CTL_SNAPSHOT_COMPLETE | (k << 8));
-		rdata = INREG(BRW_VS_RDATA);
-		ErrorF("VS_CTL: 0x%08x VS_RDATA(%d): 0x%08x\n", ctl, k, rdata);
-	}
-
-	OUTREG(BRW_VS_CTL, 0);
-#endif
-
 #if WATCH_SF
 	for (j = 0; j < 1000000; j++) {
 		ctl = INREG(BRW_SF_CTL);
@@ -328,30 +233,6 @@ static void i965_post_draw_debug(ScrnInfoPtr scrn)
 	rdata = INREG(BRW_WIZ_RDATA);
 	OUTREG(BRW_WIZ_CTL, 0);
 	ErrorF("WIZ_CTL: 0x%08x WIZ_RDATA: 0x%08x\n", ctl, rdata);
-#endif
-
-#if 0
-	for (j = 0; j < 100000; j++) {
-		ctl = INREG(BRW_TS_CTL);
-		if (ctl & BRW_TS_CTL_SNAPSHOT_COMPLETE)
-			break;
-	}
-
-	rdata = INREG(BRW_TS_RDATA);
-	OUTREG(BRW_TS_CTL, 0);
-	ErrorF("TS_CTL: 0x%08x TS_RDATA: 0x%08x\n", ctl, rdata);
-
-	ErrorF("after EU_ATT 0x%08x%08x EU_ATT_DATA 0x%08x%08x\n",
-	       INREG(BRW_EU_ATT_1), INREG(BRW_EU_ATT_0),
-	       INREG(BRW_EU_ATT_DATA_1), INREG(BRW_EU_ATT_DATA_0));
-#endif
-
-#if 0
-	for (j = 0; j < 256; j++) {
-		OUTREG(BRW_TD_CTL, j << BRW_TD_CTL_MUX_SHIFT);
-		rdata = INREG(BRW_TD_RDATA);
-		ErrorF("TD_RDATA(%d): 0x%08x\n", j, rdata);
-	}
 #endif
 }
 
@@ -1093,27 +974,12 @@ I965DisplayVideoTextured(ScrnInfoPtr scrn,
 	int src_pitch[6];
 	drm_intel_bo *surface_state_binding_table_bo;
 
-#if 0
-	ErrorF("BroadwaterDisplayVideoTextured: %dx%d (pitch %d)\n", width,
-	       height, video_pitch);
-#endif
-
-#if 0
-	/* enable debug */
-	OUTREG(INST_PM, (1 << (16 + 4)) | (1 << 4));
-	ErrorF("INST_PM 0x%08x\n", INREG(INST_PM));
-#endif
-
 	src_surf_base[0] = adaptor_priv->YBufOffset;
 	src_surf_base[1] = adaptor_priv->YBufOffset;
 	src_surf_base[2] = adaptor_priv->VBufOffset;
 	src_surf_base[3] = adaptor_priv->VBufOffset;
 	src_surf_base[4] = adaptor_priv->UBufOffset;
 	src_surf_base[5] = adaptor_priv->UBufOffset;
-#if 0
-	ErrorF("base 0 0x%x base 1 0x%x base 2 0x%x\n",
-	       src_surf_base[0], src_surf_base[1], src_surf_base[2]);
-#endif
 
 	if (is_planar_fourcc(id)) {
 		src_surf_format = BRW_SURFACEFORMAT_R8_UNORM;
@@ -1138,11 +1004,6 @@ I965DisplayVideoTextured(ScrnInfoPtr scrn,
 		src_pitch[0] = video_pitch;
 		n_src_surf = 1;
 	}
-
-#if 0
-	ErrorF("dst surf:      0x%08x\n", state_base_offset + dest_surf_offset);
-	ErrorF("src surf:      0x%08x\n", state_base_offset + src_surf_offset);
-#endif
 
 	/* We'll be poking the state buffers that could be in use by the 3d
 	 * hardware here, but we should have synced the 3D engine already in

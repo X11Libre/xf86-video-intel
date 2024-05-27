@@ -1328,12 +1328,6 @@ inplace_row(struct active_list *active, uint8_t *row, int width)
 			if (rix > ++lix) {
 				uint8_t *r = row + lix;
 				rix -= lix;
-#if 0
-				if (rix == 1)
-					*row = 0xff;
-				else
-					memset(row, 0xff, rix);
-#else
 				if ((uintptr_t)r & 1 && rix) {
 					*r++ = 0xff;
 					rix--;
@@ -1363,7 +1357,6 @@ inplace_row(struct active_list *active, uint8_t *row, int width)
 				}
 				if (rix & 1)
 					*r = 0xff;
-#endif
 			}
 		}
 
@@ -1878,15 +1871,6 @@ imprecise_trapezoid_span_converter(struct sna *sna,
 
 	if (!trapezoids_bounds(ntrap, traps, &clip.extents))
 		return true;
-
-#if 0
-	if (clip.extents.y2 - clip.extents.y1 < 64 &&
-	    clip.extents.x2 - clip.extents.x1 < 64) {
-		DBG(("%s: fallback -- traps extents too small %dx%d\n",
-		     __FUNCTION__, extents.y2 - extents.y1, extents.x2 - extents.x1));
-		return false;
-	}
-#endif
 
 	DBG(("%s: extents (%d, %d), (%d, %d)\n",
 	     __FUNCTION__,
@@ -3449,14 +3433,6 @@ triangles_span_converter(struct sna *sna,
 	if (extents.y1 >= extents.y2 || extents.x1 >= extents.x2)
 		return true;
 
-#if 0
-	if (extents.y2 - extents.y1 < 64 && extents.x2 - extents.x1 < 64) {
-		DBG(("%s: fallback -- traps extents too small %dx%d\n",
-		     __FUNCTION__, extents.y2 - extents.y1, extents.x2 - extents.x1));
-		return false;
-	}
-#endif
-
 	if (!sna_compute_composite_region(&clip,
 					  src, NULL, dst,
 					  src_x + extents.x1 - dst_x,
@@ -3735,14 +3711,6 @@ imprecise_tristrip_span_converter(struct sna *sna,
 
 	if (extents.y1 >= extents.y2 || extents.x1 >= extents.x2)
 		return true;
-
-#if 0
-	if (extents.y2 - extents.y1 < 64 && extents.x2 - extents.x1 < 64) {
-		DBG(("%s: fallback -- traps extents too small %dx%d\n",
-		     __FUNCTION__, extents.y2 - extents.y1, extents.x2 - extents.x1));
-		return false;
-	}
-#endif
 
 	if (!sna_compute_composite_region(&clip,
 					  src, NULL, dst,

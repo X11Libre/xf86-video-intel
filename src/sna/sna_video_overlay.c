@@ -649,16 +649,6 @@ sna_video_overlay_query(ddQueryImageAttributes_ARGS)
 		if (offsets)
 			offsets[2] = size;
 		size += tmp;
-#if 0
-		if (pitches)
-			ErrorF("pitch 0 is %d, pitch 1 is %d, pitch 2 is %d\n",
-			       pitches[0], pitches[1], pitches[2]);
-		if (offsets)
-			ErrorF("offset 1 is %d, offset 2 is %d\n", offsets[1],
-			       offsets[2]);
-		if (offsets)
-			ErrorF("size is %d\n", size);
-#endif
 		break;
 	case FOURCC_UYVY:
 	case FOURCC_YUY2:

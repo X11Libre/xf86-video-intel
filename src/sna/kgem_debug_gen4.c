@@ -371,50 +371,6 @@ get_965_prim_type(uint32_t data)
 	}
 }
 
-#if 0
-struct reloc {
-	struct kgem_bo *bo;
-	void *base;
-};
-
-static void *
-get_reloc(struct kgem *kgem,
-	  void *base, const uint32_t *reloc,
-	  struct reloc *r)
-{
-	uint32_t delta = *reloc;
-
-	memset(r, 0, sizeof(*r));
-
-	if (base == 0) {
-		uint32_t handle = sizeof(uint32_t) * (reloc - kgem->batch);
-		struct kgem_bo *bo = NULL;
-		int i;
-
-		for (i = 0; i < kgem->nreloc; i++)
-			if (kgem->reloc[i].offset == handle)
-				break;
-		assert(i < kgem->nreloc);
-		handle = kgem->reloc[i].target_handle;
-		delta = kgem->reloc[i].delta;
-
-		if (handle == 0) {
-			base = kgem->batch;
-		} else {
-			list_for_each_entry(bo, &kgem->next_request->buffers, request)
-				if (bo->handle == handle)
-					break;
-			assert(&bo->request != &kgem->next_request->buffers);
-			base = kgem_bo_map__debug(kgem, bo);
-			r->bo = bo;
-			r->base = base;
-		}
-	}
-
-	return (char *)base + delta;
-}
-#endif
-
 int kgem_gen4_decode_3d(struct kgem *kgem, uint32_t offset)
 {
 	static const struct {
