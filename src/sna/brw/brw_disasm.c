@@ -144,21 +144,6 @@ static const char *chan_sel[4] = {
 	[3] = "w",
 };
 
-#if 0
-static const char *dest_condmod[16] = {
-};
-
-static const char *imm_encoding[8] = {
-	[0] = "UD",
-	[1] = "D",
-	[2] = "UW",
-	[3] = "W",
-	[5] = "VF",
-	[6] = "V",
-	[7] = "F"
-};
-#endif
-
 static const char *debug_ctrl[2] = {
 	[0] = "",
 	[1] = ".breakpoint"

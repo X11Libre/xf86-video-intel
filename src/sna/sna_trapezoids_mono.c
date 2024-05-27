@@ -400,37 +400,8 @@ mono_merge_unsorted_edges(struct mono_edge *head, struct mono_edge *unsorted)
 	return mono_merge_sorted_edges(head, mono_filter(unsorted));
 }
 
-#if 0
-static inline void
-__dbg_mono_edges(const char *function, struct mono_edge *edges)
-{
-	DBG(("%s: ", function));
-	while (edges) {
-		if (edges->x.quo < INT16_MAX << 16) {
-			DBG(("(%d.%06d)+(%d.%06d)x%d, ",
-			     edges->x.quo, edges->x.rem,
-			     edges->dxdy.quo, edges->dxdy.rem,
-			     edges->dy*edges->dir));
-		}
-		edges = edges->next;
-	}
-	DBG(("\n"));
-}
-#define DBG_MONO_EDGES(x) __dbg_mono_edges(__FUNCTION__, x)
-static inline void
-VALIDATE_MONO_EDGES(struct mono_edge *edges)
-{
-	int prev_x = edges->x.quo;
-	while ((edges = edges->next)) {
-		assert(edges->x.quo >= prev_x);
-		prev_x = edges->x.quo;
-	}
-}
-
-#else
 #define DBG_MONO_EDGES(x)
 #define VALIDATE_MONO_EDGES(x)
-#endif
 
 inline static void
 mono_merge_edges(struct mono *c, struct mono_edge *edges)
