@@ -7625,11 +7625,6 @@ static bool sna_probe_initial_configuration(struct sna *sna)
 					output->mm_height = output->conf_monitor->mon_height;
 				}
 
-#if 0
-				sna_output_attach_edid(output);
-				sna_output_attach_tile(output);
-#endif
-
 				if (output->mm_width == 0 || output->mm_height == 0) {
 					output->mm_height = (crtc->desiredMode.VDisplay * 254) / (10*DEFAULT_DPI);
 					output->mm_width = (crtc->desiredMode.HDisplay * 254) / (10*DEFAULT_DPI);

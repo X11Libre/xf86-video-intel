@@ -135,15 +135,6 @@ static struct wm_info i810_wm_24_100[] = {
    {202.5, 0x44419000}
 };
 
-#if 0
-/* not used */
-static struct wm_info i810_wm_32_100[] = {
-   {0, 0x2210b000},
-   {60, 0x22415000},			/* 0x314000 works too */
-   {80, 0x22419000}			/* 0x518000 works too */
-};
-#endif
-
 static struct wm_info i810_wm_8_133[] = {
    {0, 0x22003000},
    {25.2, 0x22003000},

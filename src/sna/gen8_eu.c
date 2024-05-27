@@ -602,27 +602,6 @@ __gen8_set_message_descriptor(struct gen8_instruction *inst,
 	__gen8_set_eot(inst, end_of_thread);
 }
 
-#if 0
-static void
-__gen8_set_urb_message(struct gen8_instruction *inst,
-		       unsigned opcode,
-		       unsigned msg_length,
-		       unsigned response_length,
-		       bool end_of_thread,
-		       unsigned offset,
-		       bool interleave)
-{
-	__gen8_set_message_descriptor(inst, BRW_SFID_URB, msg_length, response_length,
-				      true, end_of_thread);
-	__gen8_set_src0(inst, brw_vec8_grf(MRF_HACK_START + 1, 0));
-	__gen8_set_urb_opcode(inst, 0); /* URB_WRITE_HWORD */
-	__gen8_set_urb_global_offset(inst, offset);
-	__gen8_set_urb_interleave(inst, interleave);
-	/* per_slot_offset = 0 makes it ignore offsets in message header */
-	__gen8_set_urb_per_slot_offset(inst, 0);
-}
-#endif
-
 static void
 __gen8_set_sampler_message(struct gen8_instruction *inst,
 			   unsigned binding_table_index,
