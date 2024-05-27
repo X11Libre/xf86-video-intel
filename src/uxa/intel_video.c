@@ -324,12 +324,6 @@ intel_video_copy_packed_data(intel_adaptor_private *adaptor_priv,
 	int i, j;
 	unsigned char *s;
 
-#if 0
-	ErrorF("intel_video_copy_packed_data: (%d,%d) (%d,%d)\n"
-	       "srcPitch: %d, dstPitch: %d\n", top, left, h, w,
-	       srcPitch, dstPitch);
-#endif
-
 	src = buf + (top * srcPitch) + (left << 1);
 
 	if (drm_intel_gem_bo_map_gtt(adaptor_priv->buf))
@@ -488,18 +482,8 @@ intel_video_copy_planar_data(intel_adaptor_private *adaptor_priv,
 {
 	unsigned char *src1, *src2, *src3, *dst_base, *dst1, *dst2, *dst3;
 
-#if 0
-	ErrorF("intel_video_copy_planar_data: srcPitch %d, srcPitch %d, dstPitch %d\n"
-	       "nlines %d, npixels %d, top %d, left %d\n",
-	       srcPitch, srcPitch2, dstPitch, h, w, top, left);
-#endif
-
 	/* Copy Y data */
 	src1 = buf + (top * srcPitch) + left;
-#if 0
-	ErrorF("src1 is %p, offset is %ld\n", src1,
-	       (unsigned long)src1 - (unsigned long)buf);
-#endif
 
 	if (drm_intel_gem_bo_map_gtt(adaptor_priv->buf))
 		return FALSE;
@@ -517,10 +501,6 @@ intel_video_copy_planar_data(intel_adaptor_private *adaptor_priv,
 	    ((top >> 1) * srcPitch2) +	/* move down from by top lines */
 	    (left >> 1);	/* move left by left pixels */
 
-#if 0
-	ErrorF("src2 is %p, offset is %ld\n", src2,
-	       (unsigned long)src2 - (unsigned long)buf);
-#endif
 	if (id == FOURCC_I420)
 		dst2 = dst_base + adaptor_priv->UBufOffset;
 	else
@@ -535,10 +515,7 @@ intel_video_copy_planar_data(intel_adaptor_private *adaptor_priv,
 	    ((srcH >> 1) * srcPitch2) +	/* move over Chroma plane */
 	    ((top >> 1) * srcPitch2) +	/* move down from by top lines */
 	    (left >> 1);	/* move left by left pixels */
-#if 0
-	ErrorF("src3 is %p, offset is %ld\n", src3,
-	       (unsigned long)src3 - (unsigned long)buf);
-#endif
+
 	if (id == FOURCC_I420)
 		dst3 = dst_base + adaptor_priv->VBufOffset;
 	else
@@ -608,10 +585,6 @@ intel_setup_dst_params(ScrnInfoPtr scrn, intel_adaptor_private *adaptor_priv, sh
 		}
 		*dstPitch2 = 0;
 	}
-#if 0
-	ErrorF("srcPitch: %d, dstPitch: %d, size: %d\n", srcPitch, *dstPitch,
-	       size);
-#endif
 
 	adaptor_priv->YBufOffset = 0;
 
@@ -774,10 +747,6 @@ intel_video_query_image_attributes(ScrnInfoPtr scrn,
 	intel_screen_private *intel = intel_get_screen_private(scrn);
 	int size, tmp;
 
-#if 0
-	ErrorF("intel_video_query_image_attributes: w is %d, h is %d\n", *w, *h);
-#endif
-
 	if (IS_845G(intel) || IS_I830(intel)) {
 		if (*w > IMAGE_MAX_WIDTH_LEGACY)
 			*w = IMAGE_MAX_WIDTH_LEGACY;
@@ -819,16 +788,6 @@ intel_video_query_image_attributes(ScrnInfoPtr scrn,
 		if (offsets)
 			offsets[2] = size;
 		size += tmp;
-#if 0
-		if (pitches)
-			ErrorF("pitch 0 is %d, pitch 1 is %d, pitch 2 is %d\n",
-			       pitches[0], pitches[1], pitches[2]);
-		if (offsets)
-			ErrorF("offset 1 is %d, offset 2 is %d\n", offsets[1],
-			       offsets[2]);
-		if (offsets)
-			ErrorF("size is %d\n", size);
-#endif
 		break;
 #ifdef INTEL_XVMC
 	case FOURCC_XVMC:

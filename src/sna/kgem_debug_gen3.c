@@ -811,33 +811,6 @@ gen3_decode_stencil_op(uint32_t op)
 	return "";
 }
 
-#if 0
-/* part of MODES_4 */
-static const char *
-gen3_decode_logic_op(uint32_t op)
-{
-	switch (op&0xf) {
-	case 0: return "clear";
-	case 1: return "nor";
-	case 2: return "and_inv";
-	case 3: return "copy_inv";
-	case 4: return "and_rvrse";
-	case 5: return "inv";
-	case 6: return "xor";
-	case 7: return "nand";
-	case 8: return "and";
-	case 9: return "equiv";
-	case 10: return "noop";
-	case 11: return "or_inv";
-	case 12: return "copy";
-	case 13: return "or_rvrse";
-	case 14: return "or";
-	case 15: return "set";
-	}
-	return "";
-}
-#endif
-
 static const char *
 gen3_decode_blend_fact(uint32_t op)
 {

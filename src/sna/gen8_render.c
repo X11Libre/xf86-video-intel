@@ -279,35 +279,7 @@ static inline bool too_large(int width, int height)
 static inline bool unaligned(struct kgem_bo *bo, int bpp)
 {
 	/* XXX What exactly do we need to meet H_ALIGN and V_ALIGN? */
-#if 0
-	int x, y;
-
-	if (bo->proxy == NULL)
-		return false;
-
-	/* Assume that all tiled proxies are constructed correctly. */
-	if (bo->tiling)
-		return false;
-
-	DBG(("%s: checking alignment of a linear proxy, offset=%d, pitch=%d, bpp=%d: => (%d, %d)\n",
-	     __FUNCTION__, bo->delta, bo->pitch, bpp,
-	     8 * (bo->delta % bo->pitch) / bpp, bo->delta / bo->pitch));
-
-	/* This may be a random userptr map, check that it meets the
-	 * render alignment of SURFACE_VALIGN_4 | SURFACE_HALIGN_4.
-	 */
-	y = bo->delta / bo->pitch;
-	if (y & 3)
-		return true;
-
-	x = 8 * (bo->delta - y * bo->pitch);
-	if (x & (4*bpp - 1))
-	    return true;
-
 	return false;
-#else
-	return false;
-#endif
 }
 
 static uint32_t gen8_get_blend(int op,
@@ -741,13 +713,8 @@ static void
 gen8_emit_null_depth_buffer(struct sna *sna)
 {
 	OUT_BATCH(GEN8_3DSTATE_DEPTH_BUFFER | (8 - 2));
-#if 0
-	OUT_BATCH(SURFACE_NULL << DEPTH_BUFFER_TYPE_SHIFT |
-		  DEPTHFORMAT_D32_FLOAT << DEPTH_BUFFER_FORMAT_SHIFT);
-#else
 	OUT_BATCH(SURFACE_2D << DEPTH_BUFFER_TYPE_SHIFT |
 		  DEPTHFORMAT_D16_UNORM << DEPTH_BUFFER_FORMAT_SHIFT);
-#endif
 	OUT_BATCH64(0);
 	OUT_BATCH(0);
 	OUT_BATCH(0);
@@ -792,19 +759,10 @@ gen8_emit_wm_invariant(struct sna *sna)
 #endif
 
 	OUT_BATCH(GEN8_3DSTATE_WM | (2 - 2));
-	//OUT_BATCH(WM_NONPERSPECTIVE_PIXEL_BARYCENTRIC); /* XXX */
 	OUT_BATCH(WM_PERSPECTIVE_PIXEL_BARYCENTRIC);
 
 #if SIM
 	OUT_BATCH(GEN8_3DSTATE_WM_CHROMAKEY | (2 - 2));
-	OUT_BATCH(0);
-#endif
-
-#if 0
-	OUT_BATCH(GEN8_3DSTATE_WM_HZ_OP | (5 - 2));
-	OUT_BATCH(0);
-	OUT_BATCH(0);
-	OUT_BATCH(0);
 	OUT_BATCH(0);
 #endif
 
@@ -894,7 +852,6 @@ gen8_emit_invariant(struct sna *sna)
 	OUT_BATCH(0);
 	OUT_BATCH(0);
 	OUT_BATCH(0);
-	//OUT_BATCH(8<<20 | 8<<16);
 	OUT_BATCH(0);
 #endif
 

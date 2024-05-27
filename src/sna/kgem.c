@@ -101,13 +101,8 @@ search_snoop_cache(struct kgem *kgem, unsigned int num_pages, unsigned flags);
 #define SHOW_BATCH_BEFORE 0
 #define SHOW_BATCH_AFTER 0
 
-#if 0
-#define ASSERT_IDLE(kgem__, handle__) assert(!__kgem_busy(kgem__, handle__))
-#define ASSERT_MAYBE_IDLE(kgem__, handle__, expect__) assert(!(expect__) || !__kgem_busy(kgem__, handle__))
-#else
 #define ASSERT_IDLE(kgem__, handle__)
 #define ASSERT_MAYBE_IDLE(kgem__, handle__, expect__)
-#endif
 
 /* Worst case seems to be 965gm where we cannot write within a cacheline that
  * is being simultaneously being read by the GPU, or within the sampler
@@ -3399,28 +3394,7 @@ bool __kgem_retire_requests_upto(struct kgem *kgem, struct kgem_bo *bo)
 	return bo->rq;
 }
 
-#if 0
-static void kgem_commit__check_reloc(struct kgem *kgem)
-{
-	struct kgem_request *rq = kgem->next_request;
-	struct kgem_bo *bo;
-	bool has_64bit = kgem->gen >= 0100;
-	int i;
-
-	for (i = 0; i < kgem->nreloc; i++) {
-		list_for_each_entry(bo, &rq->buffers, request) {
-			if (bo->target_handle == kgem->reloc[i].target_handle) {
-				uint64_t value = 0;
-				gem_read(kgem->fd, rq->bo->handle, &value, kgem->reloc[i].offset, has_64bit ? 8 : 4);
-				assert(bo->exec->offset == -1 || value == bo->exec->offset + (int)kgem->reloc[i].delta);
-				break;
-			}
-		}
-	}
-}
-#else
 #define kgem_commit__check_reloc(kgem)
-#endif
 
 #ifndef NDEBUG
 static void kgem_commit__check_buffers(struct kgem *kgem)

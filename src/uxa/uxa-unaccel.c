@@ -263,18 +263,6 @@ uxa_check_poly_arc(DrawablePtr pDrawable, GCPtr pGC, int narcs, xArc * pArcs)
 	 * can call accelerated functions, that as yet, haven't been notified
 	 * with uxa_finish_access().
 	 */
-#if 0
-	if (pGC->lineWidth == 0) {
-		if (uxa_prepare_access(pDrawable, UXA_ACCESS_RW)) {
-			if (uxa_prepare_access_gc(pGC)) {
-				fbPolyArc(pDrawable, pGC, narcs, pArcs);
-				uxa_finish_access_gc(pGC);
-			}
-			uxa_finish_access(pDrawable, UXA_ACCESS_RW);
-		}
-		return;
-	}
-#endif
 	miPolyArc(pDrawable, pGC, narcs, pArcs);
 }
 

@@ -53,11 +53,7 @@
 #define ALIGN(i,m) (((i) + (m) - 1) & ~((m) - 1))
 
 /* Using usleep() makes things noticeably slow. */
-#if 0
-#define DELAY(x) usleep(x)
-#else
 #define DELAY(x) do {;} while (0)
-#endif
 
 #define PrintErrorState I810PrintErrorState
 #define WaitRingFunc I810WaitLpRing
