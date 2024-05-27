@@ -41,11 +41,6 @@ static Bool I810_SetMode(ScrnInfoPtr, DGAModePtr);
 static int I810_GetViewport(ScrnInfoPtr);
 static void I810_SetViewport(ScrnInfoPtr, int, int, int);
 
-#if 0
-static void I810_BlitTransRect(ScrnInfoPtr, int, int, int, int, int, int,
-			       unsigned long);
-#endif
-
 static
 DGAFunctionRec I810DGAFuncs = {
    I810_OpenFramebuffer,
@@ -56,11 +51,7 @@ DGAFunctionRec I810DGAFuncs = {
    NULL,
    NULL,
    NULL,
-#if 0
-   I810_BlitTransRect
-#else
    NULL
-#endif
 };
 
 Bool
@@ -181,18 +172,6 @@ I810_SetViewport(ScrnInfoPtr pScrn, int x, int y, int flags)
 
    pI810->DGAViewportStatus = 0;
 }
-
-#if 0
-static void
-I810_BlitTransRect(ScrnInfoPtr pScrn,
-		   int srcx, int srcy,
-		   int w, int h, int dstx, int dsty, unsigned long color)
-{
-
-   /* this one should be separate since the XAA function would
-    * prohibit usage of ~0 as the key */
-}
-#endif
 
 static Bool
 I810_OpenFramebuffer(ScrnInfoPtr pScrn,

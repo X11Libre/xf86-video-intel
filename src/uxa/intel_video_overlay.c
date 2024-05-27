@@ -76,11 +76,7 @@
 #include "intel_video_overlay.h"
 
 /* overlay debugging printf function */
-#if 0
-#define OVERLAY_DEBUG ErrorF
-#else
 #define OVERLAY_DEBUG if (0) ErrorF
-#endif
 
 /* kernel modesetting overlay functions */
 static Bool intel_has_overlay(intel_screen_private *intel)
@@ -381,12 +377,6 @@ intel_video_overlay_put_image(ScrnInfoPtr scrn,
 	BoxRec dstBox;
 	xf86CrtcPtr crtc;
 	int top, left, npixels, nlines;
-
-#if 0
-	ErrorF("I830PutImage: src: (%d,%d)(%d,%d), dst: (%d,%d)(%d,%d)\n"
-	       "width %d, height %d\n", src_x, src_y, src_w, src_h, drw_x,
-	       drw_y, drw_w, drw_h, width, height);
-#endif
 
 	/* If dst width and height are less than 1/8th the src size, the
 	 * src/dst scale factor becomes larger than 8 and doesn't fit in

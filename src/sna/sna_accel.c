@@ -120,58 +120,7 @@
 #define RECTILINEAR	0x4
 #define OVERWRITES	0x8
 
-#if 0
-static void __sna_fallback_flush(DrawablePtr d)
-{
-	PixmapPtr pixmap = get_drawable_pixmap(d);
-	struct sna *sna = to_sna_from_pixmap(pixmap);
-	struct sna_pixmap *priv;
-	BoxRec box;
-	PixmapPtr tmp;
-	int i, j;
-	char *src, *dst;
-
-	DBG(("%s: uploading CPU damage...\n", __FUNCTION__));
-	priv = sna_pixmap_move_to_gpu(pixmap, MOVE_READ);
-	if (priv == NULL)
-		return;
-
-	DBG(("%s: downloading GPU damage...\n", __FUNCTION__));
-	if (!sna_pixmap_move_to_cpu(pixmap, MOVE_READ))
-		return;
-
-	box.x1 = box.y1 = 0;
-	box.x2 = pixmap->drawable.width;
-	box.y2 = pixmap->drawable.height;
-
-	tmp = sna_pixmap_create_unattached(pixmap->drawable.pScreen,
-					   pixmap->drawable.width,
-					   pixmap->drawable.height,
-					   pixmap->drawable.depth,
-					   0);
-
-	DBG(("%s: comparing with direct read...\n", __FUNCTION__));
-	sna_read_boxes(sna, tmp, priv->gpu_bo, &box, 1);
-
-	src = pixmap->devPrivate.ptr;
-	dst = tmp->devPrivate.ptr;
-	for (i = 0; i < tmp->drawable.height; i++) {
-		if (memcmp(src, dst, tmp->drawable.width * tmp->drawable.bitsPerPixel >> 3)) {
-			for (j = 0; src[j] == dst[j]; j++)
-				;
-			ERR(("mismatch at (%d, %d)\n",
-			     8*j / tmp->drawable.bitsPerPixel, i));
-			abort();
-		}
-		src += pixmap->devKind;
-		dst += tmp->devKind;
-	}
-	tmp->drawable.pScreen->DestroyPixmap(tmp);
-}
-#define FALLBACK_FLUSH(d) __sna_fallback_flush(d)
-#else
 #define FALLBACK_FLUSH(d)
-#endif
 
 static int sna_font_key;
 
@@ -9438,34 +9387,6 @@ Y2_continue:
 				}
 			}
 		}
-
-#if 0
-		/* Only do the CapNotLast check on the last segment
-		 * and only if the endpoint wasn't clipped.  And then, if the last
-		 * point is the same as the first point, do not draw it, unless the
-		 * line is degenerate
-		 */
-		if (!pt2_clipped &&
-		    gc->capStyle != CapNotLast &&
-		    !(xstart == x2 && ystart == y2 && !degenerate))
-		{
-			b->x2 = x2;
-			b->y2 = y2;
-			if (b->x2 < b->x1) {
-				int16_t t = b->x1;
-				b->x1 = b->x2;
-				b->x2 = t;
-			}
-			if (b->y2 < b->y1) {
-				int16_t t = b->y1;
-				b->y1 = b->y2;
-				b->y2 = t;
-			}
-			b->x2++;
-			b->y2++;
-			b++;
-		}
-#endif
 	} while (++extents != last_extents);
 
 	if (b != box) {
@@ -17442,16 +17363,7 @@ static void
 sna_flush_callback(CallbackListPtr *list, pointer user_data, pointer call_data)
 {
 	struct sna *sna = user_data;
-
-#if 0 /* XXX requires mesa to implement glXWaitX()! */
-	if (!sna->needs_dri_flush)
-		return;
-
 	sna_accel_flush(sna);
-	sna->needs_dri_flush = false;
-#else
-	sna_accel_flush(sna);
-#endif
 }
 
 static void

@@ -58,11 +58,6 @@ I915DisplayVideoTextured(ScrnInfoPtr scrn,
 	int dxo, dyo, pix_xoff, pix_yoff;
 	PixmapPtr target;
 
-#if 0
-	ErrorF("I915DisplayVideo: %dx%d (pitch %d)\n", width, height,
-	       video_pitch);
-#endif
-
 	dxo = dstRegion->extents.x1;
 	dyo = dstRegion->extents.y1;
 
