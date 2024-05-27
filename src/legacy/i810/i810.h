@@ -42,9 +42,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "compiler.h"
 #include "xf86Pci.h"
 #include "i810_reg.h"
-#ifdef HAVE_XAA_H
-#include "xaa.h"
-#endif
 #include "xf86Cursor.h"
 #include "xf86xv.h"
 #include "vbe.h"
@@ -204,9 +201,6 @@ typedef struct _I810Rec {
    I810RegRec SavedReg;
    I810RegRec ModeReg;
 
-#ifdef HAVE_XAA_H
-   XAAInfoRecPtr AccelInfoRec;
-#endif
    xf86CursorInfoPtr CursorInfoRec;
    CloseScreenProcPtr CloseScreen;
    ScreenBlockHandlerProcPtr BlockHandler;
@@ -266,11 +260,7 @@ extern Bool I810CleanupDma(ScrnInfoPtr pScrn);
 #define I810REGPTR(p) (&(I810PTR(p)->ModeReg))
 
 extern Bool I810CursorInit(ScreenPtr pScreen);
-#ifdef HAVE_XAA_H
-extern Bool I810AccelInit(ScreenPtr pScreen);
-#else
 static inline  Bool I810AccelInit(ScreenPtr pScreen) { return TRUE; }
-#endif
 extern void I810SetPIOAccess(I810Ptr pI810);
 extern void I810SetMMIOAccess(I810Ptr pI810);
 extern unsigned int I810CalcWatermark(ScrnInfoPtr pScrn, double freq,

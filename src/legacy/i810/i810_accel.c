@@ -127,9 +127,6 @@ I810WaitLpRing(ScrnInfoPtr pScrn, int n, int timeout_millis)
 	    DRICloseScreen(xf86ScrnToScreen(pScrn));
 	 }
 #endif
-#if HAVE_XAA_H
-	 pI810->AccelInfoRec = NULL;	/* Stops recursive behavior */
-#endif
 	 FatalError("lockup\n");
       }
 
@@ -353,9 +350,4 @@ I810RefreshRing(ScrnInfoPtr pScrn)
    pI810->LpRing->space = pI810->LpRing->head - (pI810->LpRing->tail + 8);
    if (pI810->LpRing->space < 0)
       pI810->LpRing->space += pI810->LpRing->mem.Size;
-
-#if HAVE_XAA_H
-   if (pI810->AccelInfoRec)
-      pI810->AccelInfoRec->NeedToSync = TRUE;
-#endif
 }

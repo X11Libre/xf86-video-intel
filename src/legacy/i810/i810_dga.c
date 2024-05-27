@@ -41,12 +41,6 @@ static Bool I810_SetMode(ScrnInfoPtr, DGAModePtr);
 static int I810_GetViewport(ScrnInfoPtr);
 static void I810_SetViewport(ScrnInfoPtr, int, int, int);
 
-#ifdef HAVE_XAA_H
-static void I810_Sync(ScrnInfoPtr);
-static void I810_FillRect(ScrnInfoPtr, int, int, int, int, unsigned long);
-static void I810_BlitRect(ScrnInfoPtr, int, int, int, int, int, int);
-#endif
-
 #if 0
 static void I810_BlitTransRect(ScrnInfoPtr, int, int, int, int, int, int,
 			       unsigned long);
@@ -59,15 +53,9 @@ DGAFunctionRec I810DGAFuncs = {
    I810_SetMode,
    I810_SetViewport,
    I810_GetViewport,
-#ifdef HAVE_XAA_H
-   I810_Sync,
-   I810_FillRect,
-   I810_BlitRect,
-#else
    NULL,
    NULL,
    NULL,
-#endif
 #if 0
    I810_BlitTransRect
 #else
@@ -193,49 +181,6 @@ I810_SetViewport(ScrnInfoPtr pScrn, int x, int y, int flags)
 
    pI810->DGAViewportStatus = 0;
 }
-
-#ifdef HAVE_XAA_H
-static void
-I810_FillRect(ScrnInfoPtr pScrn,
-	      int x, int y, int w, int h, unsigned long color)
-{
-   I810Ptr pI810 = I810PTR(pScrn);
-
-   if (pI810->AccelInfoRec) {
-      (*pI810->AccelInfoRec->SetupForSolidFill) (pScrn, color, GXcopy, ~0);
-      (*pI810->AccelInfoRec->SubsequentSolidFillRect) (pScrn, x, y, w, h);
-      SET_SYNC_FLAG(pI810->AccelInfoRec);
-   }
-}
-
-static void
-I810_Sync(ScrnInfoPtr pScrn)
-{
-   I810Ptr pI810 = I810PTR(pScrn);
-
-   if (pI810->AccelInfoRec) {
-      (*pI810->AccelInfoRec->Sync) (pScrn);
-   }
-}
-
-static void
-I810_BlitRect(ScrnInfoPtr pScrn,
-	      int srcx, int srcy, int w, int h, int dstx, int dsty)
-{
-   I810Ptr pI810 = I810PTR(pScrn);
-
-   if (pI810->AccelInfoRec) {
-      int xdir = ((srcx < dstx) && (srcy == dsty)) ? -1 : 1;
-      int ydir = (srcy < dsty) ? -1 : 1;
-
-      (*pI810->AccelInfoRec->SetupForScreenToScreenCopy) (pScrn, xdir, ydir,
-							  GXcopy, ~0, -1);
-      (*pI810->AccelInfoRec->SubsequentScreenToScreenCopy) (pScrn, srcx, srcy,
-							    dstx, dsty, w, h);
-      SET_SYNC_FLAG(pI810->AccelInfoRec);
-   }
-}
-#endif
 
 #if 0
 static void
