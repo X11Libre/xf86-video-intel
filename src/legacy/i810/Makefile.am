@@ -19,11 +19,6 @@ liblegacy_i810_la_SOURCES = \
          i810_video.c \
          i810_wmark.c
 
-if XAA
-liblegacy_i810_la_SOURCES += \
-         i810_xaa.c
-endif
-
 if DGA
 liblegacy_i810_la_SOURCES += \
          i810_dga.c

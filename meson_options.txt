@@ -2,8 +2,6 @@ option('sna', type : 'boolean', value : true,
        description : 'Build with SNA support')
 option('uxa', type : 'boolean', value : true,
        description : 'Build with UXA support')
-option('xaa', type : 'boolean', value : true,
-       description : 'Build with XAA support')
 option('ums', type : 'boolean', value : true,
        description : 'Build with UMS support')
 option('kms', type : 'boolean', value : true,

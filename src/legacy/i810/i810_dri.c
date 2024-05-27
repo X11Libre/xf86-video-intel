@@ -1012,11 +1012,6 @@ I810DRISwapContext(ScreenPtr pScreen, DRISyncType syncType,
 static void
 I810DRISetNeedSync(ScrnInfoPtr pScrn)
 {
-#ifdef HAVE_XAA_H
-   I810Ptr pI810 = I810PTR(pScrn);
-   if (pI810->AccelInfoRec)
-	pI810->AccelInfoRec->NeedToSync = TRUE;
-#endif
 }
 
 static void
