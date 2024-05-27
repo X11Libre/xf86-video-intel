@@ -1900,13 +1900,6 @@ I810LeaveVT(VT_FUNC_ARGS_DECL)
    }
 #endif
 
-#ifdef HAVE_XAA_H
-   if (pI810->AccelInfoRec != NULL) {
-      I810RefreshRing(scrn);
-      I810Sync(scrn);
-      pI810->AccelInfoRec->NeedToSync = FALSE;
-   }
-#endif
    I810Restore(scrn);
 
    if (!I810UnbindGARTMemory(scrn))
@@ -1925,18 +1918,8 @@ I810CloseScreen(CLOSE_SCREEN_ARGS_DECL)
    ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
    vgaHWPtr hwp = VGAHWPTR(scrn);
    I810Ptr pI810 = I810PTR(scrn);
-#ifdef HAVE_XAA_H
-   XAAInfoRecPtr infoPtr = pI810->AccelInfoRec;
-#endif
 
    if (scrn->vtSema == TRUE) {
-#ifdef HAVE_XAA_H
-      if (pI810->AccelInfoRec != NULL) {
-	 I810RefreshRing(scrn);
-	 I810Sync(scrn);
-	 pI810->AccelInfoRec->NeedToSync = FALSE;
-      }
-#endif
       I810Restore(scrn);
       vgaHWLock(hwp);
    }
@@ -1960,15 +1943,6 @@ I810CloseScreen(CLOSE_SCREEN_ARGS_DECL)
       free(pI810->ScanlineColorExpandBuffers);
       pI810->ScanlineColorExpandBuffers = NULL;
    }
-
-#ifdef HAVE_XAA_H
-   if (infoPtr) {
-      if (infoPtr->ScanlineColorExpandBuffers)
-	 free(infoPtr->ScanlineColorExpandBuffers);
-      XAADestroyInfoRec(infoPtr);
-      pI810->AccelInfoRec = NULL;
-   }
-#endif
 
    if (pI810->CursorInfoRec) {
       xf86DestroyCursorInfoRec(pI810->CursorInfoRec);

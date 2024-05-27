@@ -447,20 +447,6 @@ if test "x$UMS" = "xyes" -a "x$legacy" = "xno"; then
 fi
 
 if test "x$UMS" = "xyes"; then
-	AC_ARG_ENABLE(xaa,
-		      AS_HELP_STRING([--enable-xaa],
-				     [Enable legacy X Acceleration Architecture (XAA) for i810 chipsets [default=auto]]),
-		      [XAA="$enableval"],
-		      [XAA="auto"])
-	if test "x$XAA" != "xno"; then
-		save_CPPFLAGS=$CPPFLAGS
-		CPPFLAGS=$XORG_CFLAGS
-		AC_CHECK_HEADERS([xaa.h], XAA="yes", XAA="no")
-		CPPFLAGS=$save_CPPFLAGS
-	fi
-	AC_MSG_CHECKING([whether to include XAA support])
-	AC_MSG_RESULT([$XAA])
-
 	AC_ARG_ENABLE(dga,
 		      AS_HELP_STRING([--enable-dga],
 				     [Enable legacy Direct Graphics Access (DGA) for i810 chipsets [default=auto]]),
@@ -476,7 +462,6 @@ if test "x$UMS" = "xyes"; then
 	AC_MSG_RESULT([$DGA])
 fi
 AM_CONDITIONAL(DGA, test "x$DGA" = "xyes")
-AM_CONDITIONAL(XAA, test "x$XAA" = "xyes")
 
 AM_CONDITIONAL(KMS, test "x$KMS" = "xyes")
 if test "x$KMS" = "xyes"; then

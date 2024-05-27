@@ -15,11 +15,6 @@ i810_deps = [
   xorg,
 ]
 
-if cc.has_header('xaa.h', dependencies : xorg)
-  config.set('HAVE_XAA_H', 1)
-  i810_sources += 'i810_xaa.c'
-endif
-
 if cc.has_header('dgaproc.h', dependencies : xorg)
   config.set('HAVE_DGAPROC_H', 1)
   i810_sources += 'i810_dga.c'
