@@ -40,36 +40,6 @@
 #define HAVE_NOTIFY_FD 1
 #endif
 
-#define SCRN_ARG_TYPE ScrnInfoPtr
-#define SCRN_INFO_PTR(arg1) ScrnInfoPtr scrn = (arg1)
-
-#define SCREEN_ARG_TYPE ScreenPtr
-#define SCREEN_PTR(arg1) ScreenPtr screen = (arg1)
-
-#define SCREEN_INIT_ARGS_DECL ScreenPtr screen, int argc, char **argv
-
-#define BLOCKHANDLER_ARGS_DECL ScreenPtr arg, pointer timeout, pointer read_mask
-#define BLOCKHANDLER_ARGS arg, timeout, read_mask
-
-#define WAKEUPHANDLER_ARGS_DECL ScreenPtr arg, unsigned long result, pointer read_mask
-#define WAKEUPHANDLER_ARGS arg, result, read_mask
-
-#define CLOSE_SCREEN_ARGS_DECL ScreenPtr screen
-#define CLOSE_SCREEN_ARGS screen
-
-#define ADJUST_FRAME_ARGS_DECL ScrnInfoPtr arg, int x, int y
-#define ADJUST_FRAME_ARGS(arg, x, y) arg, x, y
-
-#define SWITCH_MODE_ARGS_DECL ScrnInfoPtr arg, DisplayModePtr mode
-#define SWITCH_MODE_ARGS(arg, m) arg, m
-
-#define FREE_SCREEN_ARGS_DECL ScrnInfoPtr arg
-
-#define VT_FUNC_ARGS_DECL ScrnInfoPtr arg
-#define VT_FUNC_ARGS(flags) scrn
-
-#define XF86_ENABLEDISABLEFB_ARG(x) (x)
-
 static inline int
 region_num_rects(const RegionRec *r)
 {
