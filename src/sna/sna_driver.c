@@ -702,7 +702,7 @@ static bool has_shadow(struct sna *sna)
 
 #if !HAVE_NOTIFY_FD
 static void
-sna_block_handler(BLOCKHANDLER_ARGS_DECL)
+sna_block_handler(ScreenPtr arg, pointer timeout, pointer read_mask)
 {
 	struct sna *sna = to_sna_from_screen(arg);
 	struct timeval **tv = timeout;
@@ -711,14 +711,14 @@ sna_block_handler(BLOCKHANDLER_ARGS_DECL)
 	     *tv ? (*tv)->tv_sec : -1, *tv ? (*tv)->tv_usec : 0,
 	     has_shadow(sna)));
 
-	sna->BlockHandler(BLOCKHANDLER_ARGS);
+	sna->BlockHandler(arg, timeout, read_mask);
 
 	if (*tv == NULL || ((*tv)->tv_usec | (*tv)->tv_sec) || has_shadow(sna))
 		sna_accel_block(sna, tv);
 }
 
 static void
-sna_wakeup_handler(WAKEUPHANDLER_ARGS_DECL)
+sna_wakeup_handler(ScreenPtr arg, unsigned long result, pointer read_mask)
 {
 	struct sna *sna = to_sna_from_screen(arg);
 
@@ -730,7 +730,7 @@ sna_wakeup_handler(WAKEUPHANDLER_ARGS_DECL)
 
 	sna_acpi_wakeup(sna, read_mask);
 
-	sna->WakeupHandler(WAKEUPHANDLER_ARGS);
+	sna->WakeupHandler(arg, result, read_mask);
 
 	if (FD_ISSET(sna->kgem.fd, (fd_set*)read_mask)) {
 		sna_mode_wakeup(sna);
@@ -939,9 +939,8 @@ sna_randr_getinfo(ScreenPtr screen, Rotation *rotations)
 	return sna->mode.rrGetInfo(screen, rotations);
 }
 
-static void sna_leave_vt(VT_FUNC_ARGS_DECL)
+static void sna_leave_vt(ScrnInfoPtr scrn)
 {
-	SCRN_INFO_PTR(arg);
 	struct sna *sna = to_sna(scrn);
 
 	DBG(("%s(vtSema=%d)\n", __FUNCTION__, scrn->vtSema));
@@ -956,7 +955,7 @@ static void sna_leave_vt(VT_FUNC_ARGS_DECL)
 	scrn->vtSema = FALSE;
 }
 
-static Bool sna_early_close_screen(CLOSE_SCREEN_ARGS_DECL)
+static Bool sna_early_close_screen(ScreenPtr screen)
 {
 	ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
 	struct sna *sna = to_sna(scrn);
@@ -999,10 +998,10 @@ static Bool sna_early_close_screen(CLOSE_SCREEN_ARGS_DECL)
 		scrn->vtSema = FALSE;
 	}
 
-	return sna->CloseScreen(CLOSE_SCREEN_ARGS);
+	return sna->CloseScreen(screen);
 }
 
-static Bool sna_late_close_screen(CLOSE_SCREEN_ARGS_DECL)
+static Bool sna_late_close_screen(ScreenPtr screen)
 {
 	struct sna *sna = to_sna_from_screen(screen);
 	DepthPtr depths;
@@ -1094,7 +1093,7 @@ sna_mode_init(struct sna *sna, ScreenPtr screen)
 }
 
 static Bool
-sna_screen_init(SCREEN_INIT_ARGS_DECL)
+sna_screen_init(ScreenPtr screen, int argc, char **argv)
 {
 	ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
 	struct sna *sna = to_sna(scrn);
@@ -1232,16 +1231,14 @@ sna_screen_init(SCREEN_INIT_ARGS_DECL)
 	return TRUE;
 }
 
-static void sna_adjust_frame(ADJUST_FRAME_ARGS_DECL)
+static void sna_adjust_frame(ScrnInfoPtr scrn, int x, int y)
 {
-	SCRN_INFO_PTR(arg);
 	DBG(("%s(%d, %d)\n", __FUNCTION__, x, y));
 	sna_mode_adjust_frame(to_sna(scrn), x, y);
 }
 
-static void sna_free_screen(FREE_SCREEN_ARGS_DECL)
+static void sna_free_screen(ScrnInfoPtr scrn)
 {
-	SCRN_INFO_PTR(arg);
 	struct sna *sna = to_sna(scrn);
 
 	DBG(("%s [scrn=%p, sna=%p]\n", __FUNCTION__, scrn, sna));
@@ -1257,9 +1254,8 @@ static void sna_free_screen(FREE_SCREEN_ARGS_DECL)
 	free(sna);
 }
 
-static Bool sna_enter_vt(VT_FUNC_ARGS_DECL)
+static Bool sna_enter_vt(ScrnInfoPtr scrn)
 {
-	SCRN_INFO_PTR(arg);
 	struct sna *sna = to_sna(scrn);
 
 	DBG(("%s(vtSema=%d)\n", __FUNCTION__, scrn->vtSema));
@@ -1279,15 +1275,14 @@ static Bool sna_enter_vt(VT_FUNC_ARGS_DECL)
 	return TRUE;
 }
 
-static Bool sna_switch_mode(SWITCH_MODE_ARGS_DECL)
+static Bool sna_switch_mode(ScrnInfoPtr scrn, DisplayModePtr mode)
 {
-	SCRN_INFO_PTR(arg);
 	DBG(("%s\n", __FUNCTION__));
 	return xf86SetSingleMode(scrn, mode, RR_Rotate_0);
 }
 
 static ModeStatus
-sna_valid_mode(SCRN_ARG_TYPE arg, DisplayModePtr mode, Bool verbose, int flags)
+sna_valid_mode(ScrnInfoPtr scrn, DisplayModePtr mode, Bool verbose, int flags)
 {
 	return MODE_OK;
 }
@@ -1304,9 +1299,8 @@ sna_valid_mode(SCRN_ARG_TYPE arg, DisplayModePtr mode, Bool verbose, int flags)
  * DoApmEvent() in common/xf86PM.c, including if we want to see events other
  * than suspend/resume.
  */
-static Bool sna_pm_event(SCRN_ARG_TYPE arg, pmEvent event, Bool undo)
+static Bool sna_pm_event(ScrnInfoPtr scrn, pmEvent event, Bool undo)
 {
-	SCRN_INFO_PTR(arg);
 	struct sna *sna = to_sna(scrn);
 
 	DBG(("%s\n", __FUNCTION__));
@@ -1318,12 +1312,12 @@ static Bool sna_pm_event(SCRN_ARG_TYPE arg, pmEvent event, Bool undo)
 	case XF86_APM_SYS_STANDBY:
 	case XF86_APM_USER_STANDBY:
 		if (!undo && !sna->suspended) {
-			scrn->LeaveVT(VT_FUNC_ARGS(0));
+			scrn->LeaveVT(NULL);
 			sna->suspended = TRUE;
 			sleep(SUSPEND_SLEEP);
 		} else if (undo && sna->suspended) {
 			sleep(RESUME_SLEEP);
-			scrn->EnterVT(VT_FUNC_ARGS(0));
+			scrn->EnterVT(NULL);
 			sna->suspended = FALSE;
 		}
 		break;
@@ -1332,7 +1326,7 @@ static Bool sna_pm_event(SCRN_ARG_TYPE arg, pmEvent event, Bool undo)
 	case XF86_APM_CRITICAL_RESUME:
 		if (sna->suspended) {
 			sleep(RESUME_SLEEP);
-			scrn->EnterVT(VT_FUNC_ARGS(0));
+			scrn->EnterVT(NULL);
 			sna->suspended = FALSE;
 			/*
 			 * Turn the screen saver off when resuming.  This seems to be
@@ -1356,12 +1350,12 @@ static Bool sna_pm_event(SCRN_ARG_TYPE arg, pmEvent event, Bool undo)
 	return TRUE;
 }
 
-static Bool sna_enter_vt__hosted(VT_FUNC_ARGS_DECL)
+static Bool sna_enter_vt__hosted(ScrnInfoPtr scrn)
 {
 	return TRUE;
 }
 
-static void sna_leave_vt__hosted(VT_FUNC_ARGS_DECL)
+static void sna_leave_vt__hosted(ScrnInfoPtr scrn)
 {
 }
 

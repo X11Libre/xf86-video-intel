@@ -75,17 +75,17 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "../legacy.h"
 
-static Bool I810PreInit(ScrnInfoPtr pScrn, int flags);
-static Bool I810ScreenInit(SCREEN_INIT_ARGS_DECL);
-static Bool I810EnterVT(VT_FUNC_ARGS_DECL);
-static void I810LeaveVT(VT_FUNC_ARGS_DECL);
-static Bool I810CloseScreen(CLOSE_SCREEN_ARGS_DECL);
+static Bool I810PreInit(ScrnInfoPtr scrn, int flags);
+static Bool I810ScreenInit(ScreenPtr screen, int argc, char **argv);
+static Bool I810EnterVT(ScrnInfoPtr scrn);
+static void I810LeaveVT(ScrnInfoPtr scrn);
+static Bool I810CloseScreen(ScreenPtr screen);
 static Bool I810SaveScreen(ScreenPtr pScreen, Bool unblank);
-static void I810FreeScreen(FREE_SCREEN_ARGS_DECL);
-static void I810DisplayPowerManagementSet(ScrnInfoPtr pScrn,
+static void I810FreeScreen(ScrnInfoPtr scrn);
+static void I810DisplayPowerManagementSet(ScrnInfoPtr scrn,
 					  int PowerManagermentMode,
 					  int flags);
-static ModeStatus I810ValidMode(SCRN_ARG_TYPE arg, DisplayModePtr mode,
+static ModeStatus I810ValidMode(ScrnInfoPtr scrn, DisplayModePtr mode,
 				Bool verbose, int flags);
 
 typedef enum {
@@ -1530,7 +1530,7 @@ I810AllocateFront(ScrnInfoPtr scrn)
 }
 
 static Bool
-I810ScreenInit(SCREEN_INIT_ARGS_DECL)
+I810ScreenInit(ScreenPtr screen, int argc, char **argv)
 {
    ScrnInfoPtr scrn;
    vgaHWPtr hwp;
@@ -1609,7 +1609,7 @@ I810ScreenInit(SCREEN_INIT_ARGS_DECL)
       return FALSE;
 
    I810SaveScreen(screen, FALSE);
-   I810AdjustFrame(ADJUST_FRAME_ARGS(scrn, scrn->frameX0, scrn->frameY0));
+   I810AdjustFrame(scrn, scrn->frameX0, scrn->frameY0);
 
    if (!fbScreenInit(screen, pI810->FbBase + scrn->fbOffset,
 		     scrn->virtualX, scrn->virtualY,
@@ -1743,18 +1743,16 @@ I810ScreenInit(SCREEN_INIT_ARGS_DECL)
 }
 
 Bool
-I810SwitchMode(SWITCH_MODE_ARGS_DECL)
+I810SwitchMode(ScrnInfoPtr scrn, DisplayModePtr mode)
 {
-   SCRN_INFO_PTR(arg);
    if (I810_DEBUG & DEBUG_VERBOSE_CURSOR)
       ErrorF("I810SwitchMode %p\n", (void *)mode);
    return I810ModeInit(scrn, mode);
 }
 
 void
-I810AdjustFrame(ADJUST_FRAME_ARGS_DECL)
+I810AdjustFrame(ScrnInfoPtr scrn, int x, int y)
 {
-   SCRN_INFO_PTR(arg);
    I810Ptr pI810 = I810PTR(scrn);
    vgaHWPtr hwp = VGAHWPTR(scrn);
    int Base;
@@ -1804,10 +1802,8 @@ I810AdjustFrame(ADJUST_FRAME_ARGS_DECL)
 /* These functions are usually called with the lock **not held**.
  */
 static Bool
-I810EnterVT(VT_FUNC_ARGS_DECL)
+I810EnterVT(ScrnInfoPtr scrn)
 {
-   SCRN_INFO_PTR(arg);
-
 #ifdef HAVE_DRI1
    I810Ptr pI810 = I810PTR(scrn);
 #endif
@@ -1832,14 +1828,13 @@ I810EnterVT(VT_FUNC_ARGS_DECL)
 
    if (!I810ModeInit(scrn, scrn->currentMode))
       return FALSE;
-   I810AdjustFrame(ADJUST_FRAME_ARGS(scrn, scrn->frameX0, scrn->frameY0));
+   I810AdjustFrame(scrn, scrn->frameX0, scrn->frameY0);
    return TRUE;
 }
 
 static void
-I810LeaveVT(VT_FUNC_ARGS_DECL)
+I810LeaveVT(ScrnInfoPtr scrn)
 {
-   SCRN_INFO_PTR(arg);
    vgaHWPtr hwp = VGAHWPTR(scrn);
    I810Ptr pI810 = I810PTR(scrn);
 
@@ -1868,7 +1863,7 @@ I810LeaveVT(VT_FUNC_ARGS_DECL)
 }
 
 static Bool
-I810CloseScreen(CLOSE_SCREEN_ARGS_DECL)
+I810CloseScreen(ScreenPtr screen)
 {
    ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
    vgaHWPtr hwp = VGAHWPTR(scrn);
@@ -1920,22 +1915,20 @@ I810CloseScreen(CLOSE_SCREEN_ARGS_DECL)
 
    scrn->vtSema = FALSE;
    screen->CloseScreen = pI810->CloseScreen;
-   return (*screen->CloseScreen) (CLOSE_SCREEN_ARGS);
+   return (*screen->CloseScreen) (screen);
 }
 
 static void
-I810FreeScreen(FREE_SCREEN_ARGS_DECL)
+I810FreeScreen(ScrnInfoPtr scrn)
 {
-   SCRN_INFO_PTR(arg);
    I810FreeRec(scrn);
    if (xf86LoaderCheckSymbol("vgaHWFreeHWRec"))
      vgaHWFreeHWRec(scrn);
 }
 
 static ModeStatus
-I810ValidMode(SCRN_ARG_TYPE arg, DisplayModePtr mode, Bool verbose, int flags)
+I810ValidMode(ScrnInfoPtr scrn, DisplayModePtr mode, Bool verbose, int flags)
 {
-   SCRN_INFO_PTR(arg);
    if (mode->Flags & V_INTERLACE) {
       if (verbose) {
 	 xf86DrvMsg(scrn->scrnIndex, X_PROBED,

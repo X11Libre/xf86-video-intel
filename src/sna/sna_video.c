@@ -941,7 +941,7 @@ sna_xv_query_adaptors(ScreenPtr screen,
 }
 
 static Bool
-sna_xv_close_screen(CLOSE_SCREEN_ARGS_DECL)
+sna_xv_close_screen(ScreenPtr screen)
 {
 	struct sna *sna = to_sna_from_screen(screen);
 	sna_video_close(sna);
