@@ -347,7 +347,7 @@ void uxa_set_force_fallback(ScreenPtr screen, Bool value)
  * uxa_close_screen() unwraps its wrapped screen functions and tears down UXA's
  * screen private, before calling down to the next CloseSccreen.
  */
-static Bool uxa_close_screen(CLOSE_SCREEN_ARGS_DECL)
+static Bool uxa_close_screen(ScreenPtr screen)
 {
 	uxa_screen_t *uxa_screen = uxa_get_screen(screen);
 #ifdef RENDER
@@ -390,7 +390,7 @@ static Bool uxa_close_screen(CLOSE_SCREEN_ARGS_DECL)
 
 	free(uxa_screen);
 
-	return (*screen->CloseScreen) (CLOSE_SCREEN_ARGS);
+	return (*screen->CloseScreen) (screen);
 }
 
 /**

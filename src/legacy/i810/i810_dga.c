@@ -135,8 +135,8 @@ I810_SetMode(ScrnInfoPtr pScrn, DGAModePtr pMode)
    if (!pMode) {			/* restore the original mode */
       if (pI810->DGAactive) {
 	 pScrn->currentMode = I810SavedDGAModes[index];
-	 pScrn->SwitchMode(SWITCH_MODE_ARGS(pScrn, pScrn->currentMode));
-	 pScrn->AdjustFrame(ADJUST_FRAME_ARGS(pScrn, 0, 0));
+	 pScrn->SwitchMode(pScrn, pScrn->currentMode);
+	 pScrn->AdjustFrame(pScrn, 0, 0);
 	 pI810->DGAactive = FALSE;
       }
    } else {
@@ -144,7 +144,7 @@ I810_SetMode(ScrnInfoPtr pScrn, DGAModePtr pMode)
 	 I810SavedDGAModes[index] = pScrn->currentMode;
 	 pI810->DGAactive = TRUE;
       }
-      pScrn->SwitchMode(SWITCH_MODE_ARGS(pScrn, pMode->mode));
+      pScrn->SwitchMode(pScrn, pMode->mode);
    }
 
    return TRUE;
@@ -164,7 +164,7 @@ I810_SetViewport(ScrnInfoPtr pScrn, int x, int y, int flags)
    I810Ptr pI810 = I810PTR(pScrn);
    vgaHWPtr hwp = VGAHWPTR(pScrn);
 
-   pScrn->AdjustFrame(ADJUST_FRAME_ARGS(pScrn, x, y));
+   pScrn->AdjustFrame(pScrn, x, y);
 
    /* wait for retrace */
    while ((hwp->readST01(hwp) & 0x08)) ;

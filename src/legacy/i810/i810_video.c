@@ -78,7 +78,7 @@ static int I810QueryImageAttributes(ScrnInfoPtr,
 	int, unsigned short *, unsigned short *,  int *, int *);
 
 #if !HAVE_NOTIFY_FD
-static void I810BlockHandler(BLOCKHANDLER_ARGS_DECL);
+static void I810BlockHandler(ScreenPtr screen, pointer timeout, pointer read_mask);
 #else
 static void I810BlockHandler(void *data, void *_timeout);
 #endif
@@ -1147,9 +1147,8 @@ I810QueryImageAttributes(
 
 #if !HAVE_NOTIFY_FD
 static void
-I810BlockHandler (BLOCKHANDLER_ARGS_DECL)
+I810BlockHandler (ScreenPtr screen, pointer timeout, pointer read_mask)
 {
-    SCREEN_PTR(arg);
     ScrnInfoPtr pScrn = xf86ScreenToScrn(screen);
     I810Ptr      pI810 = I810PTR(pScrn);
     I810PortPrivPtr pPriv = GET_PORT_PRIVATE(pScrn);
@@ -1157,7 +1156,7 @@ I810BlockHandler (BLOCKHANDLER_ARGS_DECL)
 
     screen->BlockHandler = pI810->BlockHandler;
     
-    (*screen->BlockHandler) (BLOCKHANDLER_ARGS);
+    (*screen->BlockHandler) (pScrn, timeout, read_mask);
 
     screen->BlockHandler = I810BlockHandler;
 
