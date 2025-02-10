@@ -13,7 +13,7 @@ fi
 
 XSERVER_CLONE=/tmp/xserver
 XSERVER_BUILD=$XSERVER_CLONE/_builddir
-XSERVER_REPO=https://gitlab.freedesktop.org/metux/xserver.git
+XSERVER_REPO=https://gitlab.freedesktop.org/xorg/xserver.git
 
 MACH=`gcc -dumpmachine`
 

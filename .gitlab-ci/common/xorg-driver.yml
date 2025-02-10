@@ -112,7 +112,7 @@ image@debian@i386:
 #                "xorg-server-1.19.7",
                 "xorg-server-1.20.14",
                 "xorg-server-21.1.13",
-                "incubate"
+                "master"
               ]
 
 # default build with meson on Debian
@@ -174,7 +174,7 @@ image@freebsd:
 #                "xorg-server-1.20.14", # breaks meson ... see: 331850ce6f0c48a1cfc489da2a27ca0220997a2f -- server-1.20-branch
                 "xorg-server-21.0.99.1",
                 "xorg-server-21.1.13",
-                "incubate"
+                "master"
               ]
 
 # common build for driver on FreeBSD. meson and autoconf are both handled by this
