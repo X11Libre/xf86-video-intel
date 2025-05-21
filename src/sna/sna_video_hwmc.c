@@ -36,8 +36,6 @@
 #include <X11/extensions/XvMC.h>
 #include <fourcc.h>
 
-extern DevPrivateKey XF86XvScreenKey;
-
 static int create_subpicture(XvMCSubpicturePtr sub, int *size, CARD32 **priv)
 {
 	return Success;
