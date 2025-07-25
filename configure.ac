@@ -303,11 +303,12 @@ AM_CONDITIONAL(BUILD_TOOLS, test "x$tools" != "xno")
 AM_CONDITIONAL(BUILD_TOOL_CURSOR, test "x$cursor" = "xyes")
 
 # Define a configure option for an alternate module directory
+PKG_PROG_PKG_CONFIG([0.25])
 AC_ARG_WITH(xorg-module-dir,
             AS_HELP_STRING([--with-xorg-module-dir=DIR],
-                           [Default xorg module directory [[default=$libdir/xorg/modules]]]),
+                           [Default xorg module directory]),
             [moduledir="$withval"],
-            [moduledir="$libdir/xorg/modules"])
+            [moduledir=`$PKG_CONFIG --variable=moduledir xorg-server`])
 
 AC_ARG_ENABLE(dri,
 	      AS_HELP_STRING([--disable-dri],
