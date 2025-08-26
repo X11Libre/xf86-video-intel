@@ -128,13 +128,6 @@ AM_CFLAGS += $(PRESENT_CFLAGS)
 libsna_la_SOURCES += sna_present.c
 libsna_la_LIBADD += $(PRESENT_LIBS)
 
-if XVMC
-libsna_la_SOURCES += \
-	sna_video_hwmc.h \
-	sna_video_hwmc.c \
-	$(NULL)
-endif
-
 if FULL_DEBUG
 libsna_la_SOURCES += \
 	kgem_debug.c \

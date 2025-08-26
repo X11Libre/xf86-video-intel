@@ -1,7 +1,3 @@
-if XVMC
-lib_LTLIBRARIES=libI810XvMC.la
-endif
-
 libI810XvMC_la_SOURCES = I810XvMC.c \
 			 I810XvMC.h
 

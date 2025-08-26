@@ -31,10 +31,6 @@ THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <xf86xv.h>
 #include <fourcc.h>
 
-#if defined(XvMCExtension) && defined(ENABLE_XVMC)
-#define SNA_XVMC 1
-#endif
-
 #define FOURCC_XVMC (('C' << 24) + ('M' << 16) + ('V' << 8) + 'X')
 #define FOURCC_RGB565 ((16 << 24) + ('B' << 16) + ('G' << 8) + 'R')
 #define FOURCC_RGB888 ((24 << 24) + ('B' << 16) + ('G' << 8) + 'R')

@@ -46,10 +46,6 @@ endif
 
 uxa_sources += 'intel_present.c'
 
-if with_xvmc
-  uxa_sources += 'intel_hwmc.c'
-endif
-
 uxa = static_library('uxa',
 		     sources : uxa_sources,
 		     dependencies : uxa_deps,
