@@ -26,7 +26,7 @@ DISTCHECK_CONFIGURE_FLAGS = --with-xorg-module-dir='$${libdir}/xorg/modules'
 #ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = man libobj xvmc src tools
+SUBDIRS = man libobj src tools
 
 MAINTAINERCLEANFILES = ChangeLog INSTALL
 
