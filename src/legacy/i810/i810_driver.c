@@ -100,7 +100,6 @@ typedef enum {
    OPTION_DRI,
    OPTION_NO_DDC,
    OPTION_SHOW_CACHE,
-   OPTION_XVMC_SURFACES,
    OPTION_PAGEFLIP
 } I810Opts;
  
@@ -113,7 +112,6 @@ static const OptionInfoRec I810Options[] = {
    {OPTION_DRI,			"DRI",		OPTV_BOOLEAN,	{0}, FALSE},
    {OPTION_NO_DDC,		"NoDDC",	OPTV_BOOLEAN,	{0}, FALSE},
    {OPTION_SHOW_CACHE,		"ShowCache",	OPTV_BOOLEAN,	{0}, FALSE},
-   {OPTION_XVMC_SURFACES,	"XvMCSurfaces",	OPTV_INTEGER,	{0}, FALSE},
    {OPTION_PAGEFLIP,            "PageFlip",     OPTV_BOOLEAN, {0},   FALSE},
    {-1,				NULL,		OPTV_NONE,	{0}, FALSE}
 };
@@ -588,25 +586,7 @@ I810PreInit(ScrnInfoPtr scrn, int flags)
    }
 #endif
 
-   if (xf86GetOptValInteger(pI810->Options, OPTION_XVMC_SURFACES,
-			    &(pI810->numSurfaces))) {
-      xf86DrvMsg(scrn->scrnIndex, X_CONFIG, "%d XvMC Surfaces Requested.\n",
-		 pI810->numSurfaces);
-      if (pI810->numSurfaces > 7) {
-	 xf86DrvMsg(scrn->scrnIndex, X_PROBED,
-		    "Using 7 XvMC Surfaces (Maximum Allowed).\n");
-	 pI810->numSurfaces = 7;
-      }
-      if (pI810->numSurfaces < 6) {
-	 xf86DrvMsg(scrn->scrnIndex, X_PROBED,
-		    "Using 6 XvMC Surfaces (Minimum Allowed).\n");
-	 pI810->numSurfaces = 6;
-      }
-   } else {
-      xf86DrvMsg(scrn->scrnIndex, X_INFO,
-		 "XvMC is Disabled: use XvMCSurfaces config option to enable.\n");
-      pI810->numSurfaces = 0;
-   }
+   pI810->numSurfaces = 0;
 
 #ifdef HAVE_DRI1
    /* Load the dri module if requested. */

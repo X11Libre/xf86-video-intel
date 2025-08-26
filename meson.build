@@ -162,7 +162,7 @@ if with_valgrind
   config.set('HAVE_VALGRIND', 1)
 endif
 
-inc = include_directories([ '.', 'src', 'xvmc', 'src/render_program', ])
+inc = include_directories([ '.', 'src', 'src/render_program', ])
 
 add_project_arguments('-include', 'config.h', language : 'c')
 

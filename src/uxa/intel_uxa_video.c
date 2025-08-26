@@ -70,11 +70,6 @@
 #include "dixstruct.h"
 #include "fourcc.h"
 
-#ifdef INTEL_XVMC
-#define _INTEL_XVMC_SERVER_
-#include "intel_xvmc.h"
-#endif
-
 /* overlay debugging printf function */
 #if 0
 #define UXA_VIDEO_DEBUG ErrorF
@@ -115,11 +110,7 @@ intel_uxa_video_set_port_attribute(ScrnInfoPtr scrn,
 
 static int xvmc_passthrough(int id)
 {
-#ifdef INTEL_XVMC
-	return id == FOURCC_XVMC;
-#else
 	return 0;
-#endif
 }
 
 

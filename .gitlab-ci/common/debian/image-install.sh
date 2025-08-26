@@ -23,7 +23,7 @@ apt-get install -y --no-remove \
 	python3 python3-setuptools libxshmfence-dev \
 	clang \
 	libxcb-icccm4-dev libxcb-xkb-dev \
-	libxvmc-dev libxcb1-dev libx11-xcb-dev libxcb-dri2-0-dev libxcb-util-dev \
+	libxcb1-dev libx11-xcb-dev libxcb-dri2-0-dev libxcb-util-dev \
 	libxfixes-dev libxcb-xfixes0-dev libxrender-dev libxdamage-dev libxrandr-dev \
 	libxcursor-dev libxss-dev libxinerama-dev libxtst-dev libpng-dev libssl-dev \
 	libxcb-dri3-dev libxxf86vm-dev libxfont-dev libxkbfile-dev libdrm-dev \

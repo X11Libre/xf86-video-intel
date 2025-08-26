@@ -74,10 +74,6 @@
 #include "dixstruct.h"
 #include "fourcc.h"
 
-#ifdef INTEL_XVMC
-#define _INTEL_XVMC_SERVER_
-#include "intel_xvmc.h"
-#endif
 #include "intel_uxa.h"
 #include "intel_video_overlay.h"
 
@@ -117,44 +113,14 @@ XF86AttributeRec intel_xv_gamma_attributes[GAMMA_ATTRIBUTES] = {
 	{XvSettable | XvGettable, 0, 0xffffff, "XV_GAMMA5"}
 };
 
-#ifdef INTEL_XVMC
-#define NUM_IMAGES 5
-#define XVMC_IMAGE 1
-#else
 #define NUM_IMAGES 4
 #define XVMC_IMAGE 0
-#endif
 
 XF86ImageRec intel_xv_images[NUM_IMAGES] = {
 	XVIMAGE_YUY2,
 	XVIMAGE_YV12,
 	XVIMAGE_I420,
 	XVIMAGE_UYVY,
-#ifdef INTEL_XVMC
-	{
-	 /*
-	  * Below, a dummy picture type that is used in XvPutImage only to do
-	  * an overlay update. Introduced for the XvMC client lib.
-	  * Defined to have a zero data size.
-	  */
-	 FOURCC_XVMC,
-	 XvYUV,
-	 LSBFirst,
-	 {'X', 'V', 'M', 'C',
-	  0x00, 0x00, 0x00, 0x10, 0x80, 0x00, 0x00, 0xAA, 0x00,
-	  0x38, 0x9B, 0x71},
-	 12,
-	 XvPlanar,
-	 3,
-	 0, 0, 0, 0,
-	 8, 8, 8,
-	 1, 2, 2,
-	 1, 2, 2,
-	 {'Y', 'V', 'U',
-	  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	  0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	 XvTopToBottom},
-#endif
 };
 
 void intel_video_init(ScreenPtr screen)
@@ -228,11 +194,6 @@ void intel_video_init(ScreenPtr screen)
 			   "Disabling Xv because no adaptors could be initialized.\n");
 		intel->XvEnabled = FALSE;
 	}
-
-#ifdef INTEL_XVMC
-        if (texturedAdaptor)
-                intel_xvmc_adaptor_init(screen);
-#endif
 
 	free(adaptors);
 }
@@ -579,12 +540,6 @@ intel_setup_dst_params(ScrnInfoPtr scrn, intel_adaptor_private *adaptor_priv, sh
 			pitchAlign = 64;
 	}
 
-#if INTEL_XVMC
-	/* for i915 xvmc, hw requires 1kb aligned surfaces */
-	if ((id == FOURCC_XVMC) && IS_GEN3(intel))
-		pitchAlign = 1024;
-#endif
-
 	/* Determine the desired destination pitch (representing the chroma's pitch,
 	 * in the planar case.
 	 */
@@ -689,9 +644,6 @@ int is_planar_fourcc(int id)
 	switch (id) {
 	case FOURCC_YV12:
 	case FOURCC_I420:
-#ifdef INTEL_XVMC
-	case FOURCC_XVMC:
-#endif
 		return 1;
 	case FOURCC_UYVY:
 	case FOURCC_YUY2:
@@ -830,14 +782,6 @@ intel_video_query_image_attributes(ScrnInfoPtr scrn,
 			ErrorF("size is %d\n", size);
 #endif
 		break;
-#ifdef INTEL_XVMC
-	case FOURCC_XVMC:
-		*h = (*h + 1) & ~1;
-		size = sizeof(struct intel_xvmc_command);
-		if (pitches)
-			pitches[0] = size;
-		break;
-#endif
 	case FOURCC_UYVY:
 	case FOURCC_YUY2:
 	default:

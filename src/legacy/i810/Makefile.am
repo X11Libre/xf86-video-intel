@@ -1,5 +1,3 @@
-SUBDIRS = xvmc
-
 noinst_LTLIBRARIES = liblegacy-i810.la
 
 AM_CFLAGS = $(CWARNFLAGS) $(XORG_CFLAGS) $(DRM_CFLAGS) $(PCIACCESS_CFLAGS) \

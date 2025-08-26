@@ -63,11 +63,6 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "intel_video.h"
 #include "uxa_module.h"
 
-#ifdef INTEL_XVMC
-#define _INTEL_XVMC_SERVER_
-#include "intel_xvmc.h"
-#endif
-
 #if USE_UXA
 #include "intel_uxa.h"
 #endif
@@ -869,9 +864,6 @@ I830ScreenInit(SCREEN_INIT_ARGS_DECL)
 	ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
 	intel_screen_private *intel = intel_get_screen_private(scrn);
 	VisualPtr visual;
-#ifdef INTEL_XVMC
-	MessageType from;
-#endif
 	struct pci_device *const device = xf86GetPciInfoForEntity(intel->pEnt->index);
 	int fb_bar = IS_GEN2(intel) ? 0 : 2;
 
@@ -1003,15 +995,6 @@ I830ScreenInit(SCREEN_INIT_ARGS_DECL)
 
 	xf86DPMSInit(screen, xf86DPMSSet, 0);
 
-#ifdef INTEL_XVMC
-	if (INTEL_INFO(intel)->gen >= 040)
-		intel->XvMCEnabled = TRUE;
-	from = (intel->dri2 == DRI_ACTIVE &&
-		xf86GetOptValBool(intel->Options, OPTION_XVMC,
-				  &intel->XvMCEnabled) ? X_CONFIG : X_DEFAULT);
-	xf86DrvMsg(scrn->scrnIndex, from, "Intel XvMC decoder %sabled\n",
-		   intel->XvMCEnabled ? "en" : "dis");
-#endif
 	/* Init video */
 	if (intel->XvEnabled)
 		intel_video_init(screen);

@@ -813,16 +813,11 @@ AC_CONFIG_FILES([
                 src/Makefile
                 src/legacy/Makefile
                 src/legacy/i810/Makefile
-                src/legacy/i810/xvmc/Makefile
                 src/render_program/Makefile
                 src/sna/Makefile
                 src/sna/brw/Makefile
                 src/sna/fb/Makefile
                 src/uxa/Makefile
-                xvmc/Makefile
-                xvmc/shader/Makefile
-                xvmc/shader/mc/Makefile
-                xvmc/shader/vld/Makefile
 		test/Makefile
 		benchmarks/Makefile
 		tools/Makefile
