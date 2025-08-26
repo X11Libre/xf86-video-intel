@@ -94,10 +94,6 @@ if has_present
   sna_deps += present
 endif
 
-if with_xvmc
-  sna_sources += 'sna_video_hwmc.c'
-endif
-
 if debug == 'full'
   sna_sources += [
     'kgem_debug.c',

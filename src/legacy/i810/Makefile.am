@@ -36,9 +36,4 @@ liblegacy_i810_la_SOURCES +=\
 	 $(NULL)
 AM_CFLAGS += $(DRI1_CFLAGS)
 
-if XVMC
-liblegacy_i810_la_SOURCES += \
-	i810_hwmc.c \
-	$(NULL)
-endif
 endif

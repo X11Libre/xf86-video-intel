@@ -86,10 +86,3 @@ libuxa_la_SOURCES += \
 	intel_present.c \
 	$(NULL)
 endif
-
-if XVMC
-AM_CFLAGS += -I$(top_srcdir)/xvmc
-libuxa_la_SOURCES += \
-	intel_hwmc.c \
-	$(NULL)
-endif

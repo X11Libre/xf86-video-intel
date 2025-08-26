@@ -1,7 +1,3 @@
-if XVMC
-lib_LTLIBRARIES=libIntelXvMC.la
-endif
-
 SUBDIRS = shader
 
 libIntelXvMC_la_SOURCES = \

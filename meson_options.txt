@@ -16,8 +16,6 @@ option('dri3', type : 'boolean', value : true,
        description : 'Build with DRI3 support')
 option('present', type : 'boolean', value : true,
        description : 'Enable Present support')
-option('xvmc', type : 'boolean', value : true,
-       description : 'Enable XvMC support')
 option('valgrind', type : 'boolean', value : true,
        description : 'Enable valgrindified ioctls for debugging')
 option('default-dri', type : 'combo', value : '2', choices : [ '1', '2', '3' ],

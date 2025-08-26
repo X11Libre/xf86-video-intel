@@ -30,10 +30,6 @@ enum intel_options {
 	OPTION_PREFER_OVERLAY,
 	OPTION_HOTPLUG,
 	OPTION_REPROBE,
-#if defined(XvMCExtension) && defined(ENABLE_XVMC)
-	OPTION_XVMC,
-#define INTEL_XVMC 1
-#endif
 #ifdef USE_SNA
 	OPTION_ZAPHOD,
 	OPTION_VIRTUAL,

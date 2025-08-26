@@ -341,11 +341,6 @@ else
 	AC_DEFINE(DEFAULT_DRI_LEVEL, ~0, [Default DRI level])
 fi
 
-AC_ARG_ENABLE(xvmc, AS_HELP_STRING([--disable-xvmc],
-                                  [Disable XvMC support [[default=yes]]]),
-              [XVMC="$enableval"],
-              [XVMC="yes"])
-
 AC_ARG_ENABLE(kms,
 	      AS_HELP_STRING([--enable-kms],
 			     [Assume KMS support [[default=yes]]]),
@@ -646,20 +641,6 @@ AC_MSG_CHECKING([whether to include SNA support])
 AM_CONDITIONAL(SNA, test "x$SNA" != "xno")
 AC_MSG_RESULT([$SNA])
 
-if test "$XVMC" = "yes"; then
-	PKG_CHECK_MODULES(XVMCLIB, [xvmc dri2proto x11 x11-xcb xcb-dri2 xcb-aux libdrm_intel], [], [XVMC="no"])
-fi
-AC_MSG_CHECKING([whether to include XvMC support])
-AC_MSG_RESULT([$XVMC])
-AM_CONDITIONAL(XVMC, test "x$XVMC" = "xyes")
-if test "x$XVMC" = "xyes"; then
-	AC_DEFINE(ENABLE_XVMC,1,[Enable XvMC support])
-	xvmc_msg=" yes"
-else
-	xvmc_msg=" no"
-fi
-
-
 AC_ARG_WITH(default-accel,
 	    AS_HELP_STRING([--with-default-accel],
 			   [Select the default acceleration method out of none, sna, or uxa  [default is sna if enabled, otherwise uxa]]),
@@ -898,7 +879,6 @@ echo "  Additional debugging support?$debug_msg"
 echo "  Support for Kernel Mode Setting? $KMS"
 echo "  Support for legacy User Mode Setting (for i810)? $UMS"
 echo "  Support for Direct Rendering Infrastructure:$dri_msg"
-echo "  Support for Xv motion compensation (XvMC and libXvMC):$xvmc_msg"
 echo "  Support for display hotplug notifications (udev):$udev_msg"
 echo "  Build additional tools and utilities?$tools_msg"
 if test -n "$xp_msg"; then

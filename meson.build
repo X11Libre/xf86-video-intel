@@ -155,20 +155,6 @@ if with_ums
   config.set('UMS', 1)
 endif
 
-with_xvmc = get_option('xvmc')
-if with_xvmc
-  dependency('xv', required : true)
-  dependency('xvmc', required : true)
-  dependency('dri2proto', required : true)
-  dependency('x11', required : true)
-  dependency('x11-xcb', required : true)
-  dependency('xcb-dri2', required : true)
-  dependency('xcb-aux', required : true)
-  dependency('libdrm_intel', required : true)
-
-  config.set('ENABLE_XVMC', 1)
-endif
-
 with_valgrind = get_option('valgrind')
 if with_valgrind
   message('Checking Valgrind support')
@@ -199,11 +185,6 @@ man_config.set('vendorversion', '"@0@ @1@" "@2@"'.format(meson.project_name(),
 
 subdir('src')
 subdir('tools')
-
-if with_xvmc
-  subdir('xvmc')
-endif
-
 subdir('man')
 
 configure_file(output: 'config.h', install: false, configuration: config)

@@ -28,10 +28,6 @@ endif
 if with_dri1
   i810_sources += 'i810_dri.c'
   i810_deps += dependency('xf86driproto', required : true)
-
-  if with_xvmc
-    i810_sources += 'i810_hwmc.c'
-  endif
 endif
 
 i810 = static_library('legacy_i810',
@@ -43,7 +39,3 @@ i810 = static_library('legacy_i810',
 			'-Wno-sign-compare',
 		      ],
 		      install : false)
-
-if with_xvmc
-  subdir('xvmc')
-endif
