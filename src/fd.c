@@ -37,28 +37,6 @@
 
 #include "fd.h"
 
-int fd_move_cloexec(int fd)
-{
-	int newfd;
-
-	newfd = fcntl(fd,
-#ifdef F_DUPFD_CLOEXEC
-		      F_DUPFD_CLOEXEC,
-#else
-		      F_DUPFD,
-#endif
-		      MAXCLIENTS);
-	if (newfd < 0)
-		return fd;
-
-#ifndef F_DUPFD_CLOEXEC
-	newfd = fd_set_cloexec(newfd);
-#endif
-
-	close(fd);
-	return newfd;
-}
-
 int fd_set_cloexec(int fd)
 {
 	int flags;
