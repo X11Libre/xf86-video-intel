@@ -52,6 +52,9 @@
 
 #include <sys/mman.h>
 
+#include <xorg-server.h>
+#include <extinit.h>
+
 #include "sna.h"
 #include "sna_reg.h"
 #include "sna_video.h"
