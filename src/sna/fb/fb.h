@@ -57,10 +57,6 @@
 #error "IMAGE_BYTE_ORDER must be LSBFirst"
 #endif
 
-#if GLYPHPADBYTES != 4
-#error "GLYPHPADBYTES must be 4"
-#endif
-
 #if FB_SHIFT != 5
 #error "FB_SHIFT ala LOG2_BITMAP_PAD must be 5"
 #endif
