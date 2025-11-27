@@ -23,7 +23,6 @@
 
 #include "fb.h"
 #include <mi.h>
-#include <micoord.h>
 #include <miline.h>
 #include <scrnintstr.h>
 

@@ -22,7 +22,6 @@
  */
 
 #include "fb.h"
-#include <micoord.h>
 
 #define DOTS	    fbDots8
 #define DOTS__SIMPLE fbDots8__simple
