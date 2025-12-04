@@ -134,13 +134,9 @@ if with_valgrind
 endif
 
 xorg_moduledir = get_option('xorg-module-dir')
-moduledir = ''
-foreach dir : xorg_moduledir.split('/')
-  if dir == '@libdir@'
-    dir = get_option('libdir')
-  endif
-  moduledir = join_paths(moduledir, dir)
-endforeach
+if xorg_moduledir == ''
+      xorg_moduledir = xorg.get_variable(pkgconfig: 'moduledir')
+endif
 
 shared_module('intel_drv',
 	      sources : intel_drv_sources,
@@ -152,5 +148,5 @@ shared_module('intel_drv',
 		'-Wno-sign-compare',
 	      ],
 	      name_prefix : '',
-	      install_dir : join_paths(moduledir, 'drivers'),
+	      install_dir : join_paths(xorg_moduledir, 'drivers'),
 	      install : true)

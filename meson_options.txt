@@ -36,5 +36,5 @@ option('async-swap', type : 'boolean', value : false,
        description : 'Enable use of asynchronous swaps (experimental)')
 option('internal-debug', type : 'combo', value : 'no', choices : [ 'no', 'sync', 'memory', 'pixmap', 'full' ],
        description : 'Enable internal debugging')
-option('xorg-module-dir', type : 'string', value : '@libdir@/xorg/modules',
-       description : 'Default xorg module directory')
+option('xorg-module-dir', type: 'string', value: '',
+  description: 'Directory to install the driver in [default=from xorg-server pkgconf]')
