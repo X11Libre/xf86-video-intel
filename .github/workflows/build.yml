@@ -6,13 +6,34 @@ on:
     pull_request:
 
 jobs:
-    target-ubuntu:
+    ubuntu:
         strategy:
             matrix:
                 xserver-version: [ master, xlibre-xserver-25.1.0, xlibre-xserver-25.0.0.18 ]
         runs-on: ubuntu-latest
         steps:
-            - uses: X11Libre/action-build-driver/target/ubuntu@v0.0.2
+            - uses: X11Libre/action-build-driver/target/ubuntu@v0.3.5
+              with:
+                xserver-version: ${{ matrix.xserver-version }}
+
+    freebsd:
+        strategy:
+            matrix:
+                xserver-version: [ master, xlibre-xserver-25.1.0, xlibre-xserver-25.0.0.18 ]
+        runs-on: ubuntu-latest
+        steps:
+            - uses: X11Libre/action-build-driver/target/freebsd@v0.3.5
+              with:
+                xserver-version: ${{ matrix.xserver-version }}
+
+    dragonfly:
+        strategy:
+            matrix:
+                # xlibre-xserver-25.0.x not compiling on dragonfly yet
+                xserver-version: [ master, xlibre-xserver-25.1.0 ]
+        runs-on: ubuntu-latest
+        steps:
+            - uses: X11Libre/action-build-driver/target/dragonfly@v0.3.5
               with:
                 xserver-version: ${{ matrix.xserver-version }}
 
@@ -20,8 +41,8 @@ jobs:
         name:    Release pushed tag
         runs-on: ubuntu-latest
         if:      ${{ startsWith(github.ref, 'refs/tags/xlibre-') }}
-        needs:   target-ubuntu
+        needs:   [ ubuntu, freebsd, dragonfly ]
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         steps:
-            - uses: X11Libre/action-build-driver/release@v0.0.2
+            - uses: X11Libre/action-build-driver/release@v0.3.5
