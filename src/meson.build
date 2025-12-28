@@ -23,7 +23,7 @@ if with_dri2
 
   dri = dependency('dri', required : false)
   if dri.found()
-    dridriverdir = dri.get_pkgconfig_variable('dridriverdir')
+    dridriverdir = dri.get_variable(pkgconfig:'dridriverdir')
   else
     dridriverdir = join_paths(get_option('libdir'), 'dri')
   endif
