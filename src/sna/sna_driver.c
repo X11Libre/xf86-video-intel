@@ -185,8 +185,8 @@ sna_set_fallback_mode(ScrnInfoPtr scrn)
 
 	xf86DisableUnusedFunctions(scrn);
 #ifdef RANDR_12_INTERFACE
-	if (get_root_window(xf86ScrnToScreen(scrn)))
-		xf86RandR12TellChanged(xf86ScrnToScreen(scrn));
+	if (get_root_window(scrn->pScreen))
+		xf86RandR12TellChanged(scrn->pScreen);
 #endif
 }
 
@@ -337,7 +337,7 @@ static void sna_dpms_set(ScrnInfoPtr scrn, int mode, int flags)
 	     __FUNCTION__, sna->mode.hidden, sna->mode.front_active, changed));
 
 	if (changed)
-		sna_crtc_config_notify(xf86ScrnToScreen(scrn));
+		sna_crtc_config_notify(scrn->pScreen);
 }
 
 static Bool sna_save_screen(ScreenPtr screen, int mode)

@@ -1548,7 +1548,7 @@ intel_output_init(ScrnInfoPtr scrn, struct intel_mode *mode, drmModeResPtr mode_
 	intel_output->output = output;
 
 	if (dynamic) {
-		output->randr_output = RROutputCreate(xf86ScrnToScreen(scrn), output->name, strlen(output->name), output);
+		output->randr_output = RROutputCreate(scrn->pScreen, output->name, strlen(output->name), output);
 		intel_output_create_resources(output);
 	}
 
@@ -2358,7 +2358,7 @@ intel_create_pixmap_for_bo(ScreenPtr pScreen, dri_bo *bo,
 static PixmapPtr
 intel_create_pixmap_for_fbcon(ScrnInfoPtr scrn, int fbcon_id)
 {
-	ScreenPtr pScreen = xf86ScrnToScreen(scrn);
+	ScreenPtr pScreen = scrn->pScreen;
 	intel_screen_private *intel = intel_get_screen_private(scrn);
 	struct intel_mode *mode = intel->modes;
 	int fd = mode->fd;
@@ -2408,7 +2408,7 @@ out_free_fb:
 void intel_copy_fb(ScrnInfoPtr scrn)
 {
 	xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
-	ScreenPtr pScreen = xf86ScrnToScreen(scrn);
+	ScreenPtr pScreen = scrn->pScreen;
 	intel_screen_private *intel = intel_get_screen_private(scrn);
 	PixmapPtr src, dst;
 	unsigned int pitch = scrn->displayWidth * intel->cpp;
@@ -2516,11 +2516,11 @@ intel_mode_hotplug(struct intel_screen_private *intel)
 	}
 
 	if (changed)
-		RRTellChanged(xf86ScrnToScreen(scrn));
+		RRTellChanged(scrn->pScreen);
 
 	drmModeFreeResources(mode_res);
 out:
-	RRGetInfo(xf86ScrnToScreen(scrn), TRUE);
+	RRGetInfo(scrn->pScreen, TRUE);
 }
 
 void intel_box_intersect(BoxPtr dest, BoxPtr a, BoxPtr b)

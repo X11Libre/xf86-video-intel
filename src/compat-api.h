@@ -34,8 +34,6 @@
 
 #include <picturestr.h>
 
-#define xf86ScrnToScreen(s) ((s)->pScreen)
-
 static inline int
 region_num_rects(const RegionRec *r)
 {

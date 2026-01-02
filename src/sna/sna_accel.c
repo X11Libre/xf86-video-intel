@@ -18284,7 +18284,7 @@ void sna_accel_block(struct sna *sna, struct timeval **tv)
 	}
 
 	if (sna->mode.dirty)
-		sna_crtc_config_notify(xf86ScrnToScreen(sna->scrn));
+		sna_crtc_config_notify(sna->scrn->pScreen);
 
 restart:
 	if (sna_scanout_do_flush(sna))

@@ -709,7 +709,7 @@ present_flip_handler(struct drm_event_vblank *event, void *data)
 
 	if (info->sna->present.unflip) {
 		DBG(("%s: executing queued unflip (event=%lld)\n", __FUNCTION__, (long long)info->sna->present.unflip));
-		sna_present_unflip(xf86ScrnToScreen(info->sna->scrn),
+		sna_present_unflip(info->sna->scrn->pScreen,
 				   info->sna->present.unflip);
 		info->sna->present.unflip = 0;
 	}

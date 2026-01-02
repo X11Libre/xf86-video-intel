@@ -120,8 +120,8 @@ I810WaitLpRing(ScrnInfoPtr pScrn, int n, int timeout_millis)
 	 ErrorF("space: %d wanted %d\n", ring->space, n);
 #ifdef HAVE_DRI1
 	 if (pI810->directRenderingEnabled) {
-	    DRIUnlock(xf86ScrnToScreen(pScrn));
-	    DRICloseScreen(xf86ScrnToScreen(pScrn));
+	    DRIUnlock(pScrn->pScreen);
+	    DRICloseScreen(pScrn->pScreen);
 	 }
 #endif
 	 FatalError("lockup\n");

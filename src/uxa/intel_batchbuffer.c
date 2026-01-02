@@ -290,7 +290,7 @@ void intel_batch_submit(ScrnInfoPtr scrn)
 					   "Failed to submit batch buffer, expect rendering corruption: %s.\n ",
 					   strerror(-ret));
 			}
-			uxa_set_force_fallback(xf86ScrnToScreen(scrn), TRUE);
+			uxa_set_force_fallback(scrn->pScreen, TRUE);
 			intel->force_fallback = TRUE;
 			once = 1;
 		}

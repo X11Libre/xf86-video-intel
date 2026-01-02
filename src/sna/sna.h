@@ -503,7 +503,7 @@ to_sna_from_screen(ScreenPtr screen)
 
 pure static inline ScreenPtr to_screen_from_sna(struct sna *sna)
 {
-	ScreenPtr screen = xf86ScrnToScreen(sna->scrn);
+	ScreenPtr screen = sna->scrn->pScreen;
 	assert(!screen || sna == to_sna_from_screen(screen));
 	return screen;
 }

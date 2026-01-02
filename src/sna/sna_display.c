@@ -2926,7 +2926,7 @@ static void sna_crtc_randr(xf86CrtcPtr crtc)
 static void
 sna_crtc_damage(xf86CrtcPtr crtc)
 {
-	ScreenPtr screen = xf86ScrnToScreen(crtc->scrn);
+	ScreenPtr screen = crtc->scrn->pScreen;
 	struct sna *sna = to_sna(crtc->scrn);
 	RegionRec region, *damage;
 
@@ -5450,7 +5450,7 @@ reset:
 
 	if (serial) {
 		if (output->randr_output == NULL) {
-			output->randr_output = RROutputCreate(xf86ScrnToScreen(scrn), name, len, output);
+			output->randr_output = RROutputCreate(scrn->pScreen, name, len, output);
 			if (output->randr_output == NULL)
 				goto cleanup;
 		}
@@ -5691,7 +5691,7 @@ output_check_status(struct sna *sna, struct sna_output *output)
 
 void sna_mode_discover(struct sna *sna, bool tell)
 {
-	ScreenPtr screen = xf86ScrnToScreen(sna->scrn);
+	ScreenPtr screen = sna->scrn->pScreen;
 	xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(sna->scrn);
 	bool force = sna->flags & SNA_REPROBE;
 	struct drm_mode_card_res res;
@@ -5816,7 +5816,7 @@ void sna_mode_discover(struct sna *sna, bool tell)
 CARD32 sna_mode_coldplug(OsTimerPtr timer, CARD32 now, void *data)
 {
 	struct sna *sna = data;
-	ScreenPtr screen = xf86ScrnToScreen(sna->scrn);
+	ScreenPtr screen = sna->scrn->pScreen;
 	xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(sna->scrn);
 	bool reprobe = false;
 	int i;
@@ -5961,7 +5961,7 @@ sna_mode_resize(ScrnInfoPtr scrn, int width, int height)
 {
 	xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
 	struct sna *sna = to_sna(scrn);
-	ScreenPtr screen = xf86ScrnToScreen(scrn);
+	ScreenPtr screen = scrn->pScreen;
 	PixmapPtr new_front;
 	int i;
 
@@ -7925,7 +7925,7 @@ sna_mode_set_primary(struct sna *sna)
 {
 #ifdef RANDR_12_INTERFACE
 	xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(sna->scrn);
-	rrScrPrivPtr rr = rrGetScrPriv(xf86ScrnToScreen(sna->scrn));
+	rrScrPrivPtr rr = rrGetScrPriv(sna->scrn->pScreen);
 	int i;
 
 	if (rr == NULL || rr->primaryOutput)
@@ -8101,7 +8101,7 @@ sna_covering_crtc(struct sna *sna, const BoxRec *box, xf86CrtcPtr desired)
 	     __FUNCTION__, box->x1, box->y1, box->x2, box->y2));
 
 	if (desired == NULL) {
-		ScreenPtr screen = xf86ScrnToScreen(sna->scrn);
+		ScreenPtr screen = sna->scrn->pScreen;
 		rrScrPrivPtr rr = rrGetScrPriv(screen);
 		if (rr && rr->primaryOutput && rr->primaryOutput->pScreen == screen) {
 			xf86OutputPtr output = rr->primaryOutput->devPrivate;
@@ -8188,7 +8188,7 @@ static xf86CrtcPtr first_active_crtc(struct sna *sna)
 
 xf86CrtcPtr sna_primary_crtc(struct sna *sna)
 {
-	rrScrPrivPtr rr = rrGetScrPriv(xf86ScrnToScreen(sna->scrn));
+	rrScrPrivPtr rr = rrGetScrPriv(sna->scrn->pScreen);
 	if (rr && rr->primaryOutput) {
 		xf86OutputPtr output = rr->primaryOutput->devPrivate;
 		if (output->crtc &&
@@ -8640,7 +8640,7 @@ void sna_mode_check(struct sna *sna)
 	update_flush_interval(sna);
 
 	if (disabled)
-		xf86RandR12TellChanged(xf86ScrnToScreen(sna->scrn));
+		xf86RandR12TellChanged(sna->scrn->pScreen);
 }
 
 static bool
@@ -8757,7 +8757,7 @@ sna_crtc_redisplay__fallback(xf86CrtcPtr crtc, RegionPtr region, struct kgem_bo 
 {
 	int16_t sx, sy;
 	struct sna *sna = to_sna(crtc->scrn);
-	ScreenPtr screen = xf86ScrnToScreen(crtc->scrn);
+	ScreenPtr screen = crtc->scrn->pScreen;
 	DrawablePtr draw = crtc_source(crtc, &sx, &sy);
 	PictFormatPtr format;
 	PictTransform T;
@@ -8886,7 +8886,7 @@ sna_crtc_redisplay__composite(xf86CrtcPtr crtc, RegionPtr region, struct kgem_bo
 {
 	int16_t sx, sy;
 	struct sna *sna = to_sna(crtc->scrn);
-	ScreenPtr screen = xf86ScrnToScreen(crtc->scrn);
+	ScreenPtr screen = crtc->scrn->pScreen;
 	DrawablePtr draw = crtc_source(crtc, &sx, &sy);
 	struct sna_composite_op tmp;
 	PictFormatPtr format;

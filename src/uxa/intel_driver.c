@@ -651,7 +651,7 @@ redisplay_dirty(ScreenPtr screen, PixmapDirtyUpdatePtr dirty)
 static void
 intel_dirty_update(intel_screen_private *intel)
 {
-	ScreenPtr screen = xf86ScrnToScreen(intel->scrn);
+	ScreenPtr screen = intel->scrn->pScreen;
 	RegionPtr region;
 	PixmapDirtyUpdatePtr ent;
 

@@ -1313,7 +1313,7 @@ I810ModeInit(ScrnInfoPtr scrn, DisplayModePtr mode)
 
 #ifdef HAVE_DRI1
    if (pI810->directRenderingEnabled) {
-      DRILock(xf86ScrnToScreen(scrn), 0);
+      DRILock(scrn->pScreen, 0);
       pI810->LockHeld = 1;
    }
 #endif
@@ -1322,7 +1322,7 @@ I810ModeInit(ScrnInfoPtr scrn, DisplayModePtr mode)
 
 #ifdef HAVE_DRI1
    if (pI810->directRenderingEnabled) {
-      DRIUnlock(xf86ScrnToScreen(scrn));
+      DRIUnlock(scrn->pScreen);
       pI810->LockHeld = 0;
    }
 #endif
@@ -1821,7 +1821,7 @@ I810EnterVT(ScrnInfoPtr scrn)
    if (pI810->directRenderingEnabled) {
       if (I810_DEBUG & DEBUG_VERBOSE_DRI)
 	 ErrorF("calling dri unlock\n");
-      DRIUnlock(xf86ScrnToScreen(scrn));
+      DRIUnlock(scrn->pScreen);
       pI810->LockHeld = 0;
    }
 #endif
@@ -1845,7 +1845,7 @@ I810LeaveVT(ScrnInfoPtr scrn)
    if (pI810->directRenderingEnabled) {
       if (I810_DEBUG & DEBUG_VERBOSE_DRI)
 	 ErrorF("calling dri lock\n");
-      DRILock(xf86ScrnToScreen(scrn), 0);
+      DRILock(scrn->pScreen, 0);
       pI810->LockHeld = 1;
    }
 #endif

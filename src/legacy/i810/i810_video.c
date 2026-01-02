@@ -930,7 +930,7 @@ I810AllocateMemory(
 	xf86FreeOffscreenLinear(linear);
    }
 
-   screen = xf86ScrnToScreen(pScrn);
+   screen = pScrn->pScreen;
 
    new_linear = xf86AllocateOffscreenLinear(screen, size, 4,
                                             NULL, NULL, NULL);
