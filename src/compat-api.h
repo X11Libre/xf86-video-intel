@@ -75,8 +75,6 @@ region_get_boxes(const RegionRec *r, const BoxRec **s, const BoxRec **e)
 #define ddPutImage_ARGS DrawablePtr draw, XvPortPtr port, GCPtr gc, INT16 src_x, INT16 src_y, CARD16 src_w, CARD16 src_h, INT16 drw_x, INT16 drw_y, CARD16 drw_w, CARD16 drw_h, XvImagePtr format, unsigned char *buf, Bool sync, CARD16 width, CARD16 height
 #define ddQueryImageAttributes_ARGS XvPortPtr port, XvImagePtr format, unsigned short *w, unsigned short *h, int *pitches, int *offsets
 
-#define isGPU(S) (S)->is_gpu
-
 #define PixmapSyncDirtyHelper(d, dd) PixmapSyncDirtyHelper(d)
 
 #define PixmapDirtyDst(d) ((d)->secondary_dst)

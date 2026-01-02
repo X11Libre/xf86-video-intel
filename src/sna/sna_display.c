@@ -2273,7 +2273,7 @@ void sna_copy_fbcon(struct sna *sna)
 	int dx, dy;
 	int i;
 
-	if (wedged(sna) || isGPU(sna->scrn))
+	if (wedged(sna) || (sna->scrn->is_gpu))
 		return;
 
 	DBG(("%s\n", __FUNCTION__));
@@ -2393,7 +2393,7 @@ static bool use_shadow(struct sna *sna, xf86CrtcPtr crtc)
 		return true;
 	}
 
-	if (!isGPU(sna->scrn)) {
+	if (!(sna->scrn->is_gpu)) {
 		struct sna_pixmap *priv;
 
 		priv = sna_pixmap_force_to_gpu(sna->front, MOVE_READ | __MOVE_SCANOUT);
@@ -5853,7 +5853,7 @@ static void copy_front(struct sna *sna, PixmapPtr old, PixmapPtr new)
 
 	DBG(("%s\n", __FUNCTION__));
 
-	if (wedged(sna) || isGPU(sna->scrn))
+	if (wedged(sna) || (sna->scrn->is_gpu))
 		return;
 
 	old_priv = sna_pixmap_force_to_gpu(old, MOVE_READ);
@@ -7833,7 +7833,7 @@ bool sna_mode_pre_init(ScrnInfoPtr scrn, struct sna *sna)
 	}
 
 	probe_capabilities(sna);
-	sna->mode.hidden = !isGPU(scrn); /* No DPMS passthrough */
+	sna->mode.hidden = !(scrn->is_gpu); /* No DPMS passthrough */
 
 	if (!xf86GetOptValInteger(sna->Options, OPTION_VIRTUAL, &num_fake))
 		num_fake = 1;
