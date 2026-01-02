@@ -63,11 +63,7 @@ void *alloca(size_t);
 #include <xf86RandR12.h>
 #include <cursorstr.h>
 
-#if XF86_CRTC_VERSION >= 3
 #define HAS_GAMMA 1
-#else
-#define HAS_GAMMA 0
-#endif
 
 #include <X11/Xatom.h>
 #if defined(HAVE_X11_EXTENSIONS_DPMSCONST_H)
@@ -1274,9 +1270,7 @@ sna_crtc_force_outputs_on(xf86CrtcPtr crtc)
 			to_sna_output(output)->last_detect = now;
 	}
 
-#if XF86_CRTC_VERSION >= 3
 	crtc->active = TRUE;
-#endif
 }
 
 static void
@@ -3290,9 +3284,7 @@ sna_crtc_set_scanout_pixmap(xf86CrtcPtr crtc, PixmapPtr pixmap)
 #endif
 
 static const xf86CrtcFuncsRec sna_crtc_funcs = {
-#if XF86_CRTC_VERSION >= 1
 	.dpms = sna_crtc_dpms,
-#endif
 	.set_mode_major = sna_crtc_set_mode_major,
 	.gamma_set = sna_crtc_gamma_set,
 	.destroy = sna_crtc_destroy,
@@ -8515,9 +8507,7 @@ static bool sna_mode_shutdown_crtc(xf86CrtcPtr crtc)
 		   __sna_crtc_index(to_sna_crtc(crtc)),
 		   __sna_crtc_id(to_sna_crtc(crtc)));
 	sna_crtc_disable(crtc, true);
-#if XF86_CRTC_VERSION >= 3
 	crtc->active = FALSE;
-#endif
 	if (crtc->enabled) {
 		crtc->enabled = FALSE;
 		disabled = true;
@@ -8603,9 +8593,7 @@ void sna_mode_check(struct sna *sna)
 
 		assert(sna_crtc);
 
-#if XF86_CRTC_VERSION >= 3
 		assert(sna_crtc->bo == NULL || crtc->active);
-#endif
 		expected[0] = sna_crtc->bo ? fb_id(sna_crtc->bo) : 0;
 		expected[1] = sna_crtc->flip_bo ? fb_id(sna_crtc->flip_bo) : -1;
 

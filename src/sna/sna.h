@@ -44,9 +44,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <xf86str.h>
 
 #include <xf86Crtc.h>
-#if XF86_CRTC_VERSION >= 5
 #define HAS_PIXMAP_SHARING 1
-#endif
 
 #include <windowstr.h>
 #include <glyphstr.h>
