@@ -817,7 +817,7 @@ uxa_copy_plane(DrawablePtr pSrc, DrawablePtr pDst, GCPtr pGC,
 static void
 uxa_image_glyph_blt(DrawablePtr pDrawable, GCPtr pGC,
 		    int x, int y, unsigned int nglyph,
-		    CharInfoPtr * ppci, pointer pglyphBase)
+		    CharInfoPtr * ppci, void *pglyphBase)
 {
 	uxa_check_image_glyph_blt(pDrawable, pGC, x, y, nglyph, ppci, pglyphBase);
 }
@@ -825,7 +825,7 @@ uxa_image_glyph_blt(DrawablePtr pDrawable, GCPtr pGC,
 static void
 uxa_poly_glyph_blt(DrawablePtr pDrawable, GCPtr pGC,
 		   int x, int y, unsigned int nglyph,
-		   CharInfoPtr * ppci, pointer pglyphBase)
+		   CharInfoPtr * ppci, void *pglyphBase)
 {
 	uxa_check_poly_glyph_blt(pDrawable, pGC, x, y, nglyph, ppci, pglyphBase);
 }

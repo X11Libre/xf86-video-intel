@@ -3003,7 +3003,7 @@ get_current_msc(struct sna *sna, DrawablePtr draw, xf86CrtcPtr crtc)
 }
 
 #if defined(CHECK_FOR_COMPOSITOR)
-static Bool find(pointer value, XID id, pointer cdata)
+static Bool find(void *value, XID id, void *cdata)
 {
 	return TRUE;
 }

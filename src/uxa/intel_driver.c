@@ -709,7 +709,7 @@ intel_init_initial_framebuffer(ScrnInfoPtr scrn)
 
 static void
 intel_flush_callback(CallbackListPtr *list,
-		     pointer user_data, pointer call_data)
+		     void *user_data, void* call_data)
 {
 	ScrnInfoPtr scrn = user_data;
 	if (scrn->vtSema)

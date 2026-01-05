@@ -106,19 +106,19 @@ intel_free_video_buffers(intel_adaptor_private *adaptor_priv);
 
 int
 intel_video_get_port_attribute(ScrnInfoPtr scrn,
-                               Atom attribute, INT32 * value, pointer data);
+                               Atom attribute, INT32 * value, void *data);
 
 void
 intel_video_query_best_size(ScrnInfoPtr, Bool,
                             short, short, short, short, unsigned int *,
-                            unsigned int *, pointer);
+                            unsigned int *, void *);
 
 void
 intel_setup_dst_params(ScrnInfoPtr scrn, intel_adaptor_private *adaptor_priv, short width,
 		       short height, int *dstPitch, int *dstPitch2, int *size,
 		       int id);
 
-void intel_video_stop_video(ScrnInfoPtr scrn, pointer data, Bool shutdown);
+void intel_video_stop_video(ScrnInfoPtr scrn, void *data, Bool shutdown);
 
 extern Atom intel_xv_Brightness, intel_xv_Contrast, intel_xv_Saturation, intel_xv_ColorKey, intel_xv_Pipe;
 extern Atom intel_xv_Gamma0, intel_xv_Gamma1, intel_xv_Gamma2, intel_xv_Gamma3, intel_xv_Gamma4, intel_xv_Gamma5;

@@ -16064,7 +16064,7 @@ out:
 static bool
 sna_reversed_glyph_blt(DrawablePtr drawable, GCPtr gc,
 		       int _x, int _y, unsigned int _n,
-		       CharInfoPtr *_info, pointer _base,
+		       CharInfoPtr *_info, void *_base,
 		       struct kgem_bo *bo,
 		       struct sna_damage **damage,
 		       RegionPtr clip,
@@ -16361,7 +16361,7 @@ skip:
 static void
 sna_image_glyph(DrawablePtr drawable, GCPtr gc,
 		int x, int y, unsigned int n,
-		CharInfoPtr *info, pointer base)
+		CharInfoPtr *info, void *base)
 {
 	PixmapPtr pixmap = get_drawable_pixmap(drawable);
 	struct sna *sna = to_sna_from_pixmap(pixmap);
@@ -16450,7 +16450,7 @@ out:
 static void
 sna_poly_glyph(DrawablePtr drawable, GCPtr gc,
 	       int x, int y, unsigned int n,
-	       CharInfoPtr *info, pointer base)
+	       CharInfoPtr *info, void *base)
 {
 	PixmapPtr pixmap = get_drawable_pixmap(drawable);
 	struct sna *sna = to_sna_from_pixmap(pixmap);
@@ -17338,7 +17338,7 @@ void sna_accel_flush(struct sna *sna)
 
 static void
 sna_shm_flush_callback(CallbackListPtr *list,
-		       pointer user_data, pointer call_data)
+		       void *user_data, void *call_data)
 {
 	struct sna *sna = user_data;
 
@@ -17350,14 +17350,14 @@ sna_shm_flush_callback(CallbackListPtr *list,
 }
 
 static void
-sna_flush_callback(CallbackListPtr *list, pointer user_data, pointer call_data)
+sna_flush_callback(CallbackListPtr *list, void *user_data, void *call_data)
 {
 	struct sna *sna = user_data;
 	sna_accel_flush(sna);
 }
 
 static void
-sna_event_callback(CallbackListPtr *list, pointer user_data, pointer call_data)
+sna_event_callback(CallbackListPtr *list, void *user_data, void *call_data)
 {
 	EventInfoRec *eventinfo = call_data;
 	struct sna *sna = user_data;
@@ -17802,7 +17802,7 @@ struct sna_visit_set_pixmap_window {
 };
 
 static int
-sna_visit_set_window_pixmap(WindowPtr window, pointer data)
+sna_visit_set_window_pixmap(WindowPtr window, void *data)
 {
     struct sna_visit_set_pixmap_window *visit = data;
 

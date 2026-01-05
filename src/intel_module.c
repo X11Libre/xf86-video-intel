@@ -611,7 +611,7 @@ static void intel_identify(int flags)
 
 static Bool intel_driver_func(ScrnInfoPtr pScrn,
 			      xorgDriverFuncOp op,
-			      pointer ptr)
+			      void *ptr)
 {
 	xorgHWFlags *flag;
 
@@ -876,8 +876,8 @@ static DriverRec intel = {
 #endif
 };
 
-static pointer intel_setup(pointer module,
-			   pointer opts,
+static void *intel_setup(void *module,
+			   void *opts,
 			   int *errmaj,
 			   int *errmin)
 {
@@ -893,7 +893,7 @@ static pointer intel_setup(pointer module,
 		 * The return value must be non-NULL on success even though there
 		 * is no TearDownProc.
 		 */
-		return (pointer) 1;
+		return (void*) 1;
 	} else {
 		if (errmaj)
 			*errmaj = LDR_ONCEONLY;

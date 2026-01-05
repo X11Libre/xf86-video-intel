@@ -81,11 +81,11 @@
 
 static int intel_uxa_video_put_image_textured(ScrnInfoPtr, short, short, short, short, short, short,
 			short, short, int, unsigned char *, short, short,
-			Bool, RegionPtr, pointer, DrawablePtr);
+			Bool, RegionPtr, void*, DrawablePtr);
 
 static int
 intel_uxa_video_set_port_attribute(ScrnInfoPtr scrn,
-			     Atom attribute, INT32 value, pointer data)
+			     Atom attribute, INT32 value, void *data)
 {
 	intel_adaptor_private *adaptor_priv = (intel_adaptor_private *) data;
 
@@ -217,7 +217,7 @@ intel_uxa_video_put_image_textured(ScrnInfoPtr scrn,
                                    short drw_w, short drw_h,
                                    int id, unsigned char *buf,
                                    short width, short height,
-                                   Bool sync, RegionPtr clipBoxes, pointer data,
+                                   Bool sync, RegionPtr clipBoxes, void *data,
                                    DrawablePtr drawable)
 {
 	intel_screen_private *intel = intel_get_screen_private(scrn);
@@ -370,7 +370,7 @@ XF86VideoAdaptorPtr intel_uxa_video_setup_image_textured(ScreenPtr screen)
 		/* gotta uninit this someplace, XXX: shouldn't be necessary for textured */
 		REGION_NULL(screen, &adaptor_priv->clip);
 
-		adapt->pPortPrivates[i].ptr = (pointer) (adaptor_priv);
+		adapt->pPortPrivates[i].ptr = (void*) (adaptor_priv);
 	}
 
 	intel_xv_SyncToVblank = MAKE_ATOM("XV_SYNC_TO_VBLANK");

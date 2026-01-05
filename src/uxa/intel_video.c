@@ -254,7 +254,7 @@ void intel_free_video_buffers(intel_adaptor_private *adaptor_priv)
 
 int
 intel_video_get_port_attribute(ScrnInfoPtr scrn,
-                               Atom attribute, INT32 * value, pointer data)
+                               Atom attribute, INT32 * value, void *data)
 {
 	intel_screen_private *intel = intel_get_screen_private(scrn);
 	intel_adaptor_private *adaptor_priv = (intel_adaptor_private *) data;
@@ -301,7 +301,7 @@ intel_video_query_best_size(ScrnInfoPtr scrn,
 		  Bool motion,
 		  short vid_w, short vid_h,
 		  short drw_w, short drw_h,
-		  unsigned int *p_w, unsigned int *p_h, pointer data)
+		  unsigned int *p_w, unsigned int *p_h, void *data)
 {
 	if (vid_w > (drw_w << 1))
 		drw_w = vid_w >> 1;
@@ -807,7 +807,7 @@ intel_video_query_image_attributes(ScrnInfoPtr scrn,
 	return size;
 }
 
-void intel_video_stop_video(ScrnInfoPtr scrn, pointer data, Bool shutdown)
+void intel_video_stop_video(ScrnInfoPtr scrn, void *data, Bool shutdown)
 {
 	intel_adaptor_private *adaptor_priv = (intel_adaptor_private *) data;
 

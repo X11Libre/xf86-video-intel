@@ -62,14 +62,14 @@ THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 static void I810InitOffscreenImages(ScreenPtr);
 
 static XF86VideoAdaptorPtr I810SetupImageVideo(ScreenPtr);
-static void I810StopVideo(ScrnInfoPtr, pointer, Bool);
-static int I810SetPortAttribute(ScrnInfoPtr, Atom, INT32, pointer);
-static int I810GetPortAttribute(ScrnInfoPtr, Atom ,INT32 *, pointer);
+static void I810StopVideo(ScrnInfoPtr, void*, Bool);
+static int I810SetPortAttribute(ScrnInfoPtr, Atom, INT32, void*);
+static int I810GetPortAttribute(ScrnInfoPtr, Atom ,INT32 *, void*);
 static void I810QueryBestSize(ScrnInfoPtr, Bool,
-	short, short, short, short, unsigned int *, unsigned int *, pointer);
+	short, short, short, short, unsigned int *, unsigned int *, void*);
 static int I810PutImage( ScrnInfoPtr, 
 	short, short, short, short, short, short, short, short,
-	int, unsigned char*, short, short, Bool, RegionPtr, pointer,
+	int, unsigned char*, short, short, Bool, RegionPtr, void*,
 	DrawablePtr);
 static int I810QueryImageAttributes(ScrnInfoPtr, 
 	int, unsigned short *, unsigned short *,  int *, int *);
@@ -387,7 +387,7 @@ I810SetupImageVideo(ScreenPtr screen)
 
     pPriv = (I810PortPrivPtr)(&adapt->pPortPrivates[1]);
 
-    adapt->pPortPrivates[0].ptr = (pointer)(pPriv);
+    adapt->pPortPrivates[0].ptr = (void*)(pPriv);
     adapt->pAttributes = Attributes;
     adapt->nImages = NUM_IMAGES;
     adapt->nAttributes = NUM_ATTRIBUTES;
@@ -504,7 +504,7 @@ I810ClipVideo(
 } 
 
 static void 
-I810StopVideo(ScrnInfoPtr pScrn, pointer data, Bool shutdown)
+I810StopVideo(ScrnInfoPtr pScrn, void *data, Bool shutdown)
 {
   I810PortPrivPtr pPriv = (I810PortPrivPtr)data;
   I810Ptr pI810 = I810PTR(pScrn);
@@ -537,7 +537,7 @@ I810SetPortAttribute(
   ScrnInfoPtr pScrn, 
   Atom attribute,
   INT32 value, 
-  pointer data
+  void* data
 ){
   I810PortPrivPtr pPriv = (I810PortPrivPtr)data;
   I810Ptr pI810 = I810PTR(pScrn);
@@ -579,7 +579,7 @@ I810GetPortAttribute(
   ScrnInfoPtr pScrn, 
   Atom attribute,
   INT32 *value, 
-  pointer data
+  void *data
 ){
   I810PortPrivPtr pPriv = (I810PortPrivPtr)data;
 
@@ -603,7 +603,7 @@ I810QueryBestSize(
   short vid_w, short vid_h, 
   short drw_w, short drw_h, 
   unsigned int *p_w, unsigned int *p_h, 
-  pointer data
+  void *data
 ){
    if(vid_w > (drw_w << 1)) drw_w = vid_w >> 1;
    if(vid_h > (drw_h << 1)) drw_h = vid_h >> 1;
@@ -961,7 +961,7 @@ I810PutImage(
   int id, unsigned char* buf, 
   short width, short height, 
   Bool sync,
-  RegionPtr clipBoxes, pointer data,
+  RegionPtr clipBoxes, void *data,
   DrawablePtr pDraw
 ){
     I810Ptr pI810 = I810PTR(pScrn);
@@ -1223,7 +1223,7 @@ I810AllocateSurface(
     surface->id = id;   
     surface->pitches[0] = pitch;
     surface->offsets[0] = linear->offset * bpp;
-    surface->devPrivate.ptr = (pointer)pPriv;
+    surface->devPrivate.ptr = (void*)pPriv;
 
     memset(pI810->FbBase + surface->offsets[0],0,size);
 

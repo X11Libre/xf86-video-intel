@@ -921,7 +921,7 @@ static Bool intel_uxa_get_image(PixmapPtr pixmap,
 	return ret;
 }
 
-static CARD32 intel_cache_expire(OsTimerPtr timer, CARD32 now, pointer data)
+static CARD32 intel_cache_expire(OsTimerPtr timer, CARD32 now, void *data)
 {
 	intel_screen_private *intel = data;
 

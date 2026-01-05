@@ -496,11 +496,11 @@ fbGetSpans(DrawablePtr drawable, int wMax,
 
 extern void
 fbPolyGlyphBlt(DrawablePtr drawable, GCPtr gc, int x, int y,
-               unsigned int n, CharInfoPtr *info, pointer glyphs);
+               unsigned int n, CharInfoPtr *info, void *glyphs);
 
 extern void
 fbImageGlyphBlt(DrawablePtr drawable, GCPtr gc, int x, int y,
-                unsigned int n, CharInfoPtr *info, pointer glyphs);
+                unsigned int n, CharInfoPtr *info, void *glyphs);
 
 extern void
 fbPutImage(DrawablePtr drawable, GCPtr gc, int depth,

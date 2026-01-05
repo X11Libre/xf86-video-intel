@@ -327,7 +327,7 @@ struct sna {
 
 #if HAVE_UDEV
 		struct udev_monitor *backlight_monitor;
-		pointer backlight_handler;
+		void *backlight_handler;
 #endif
 
 		Bool (*rrGetInfo)(ScreenPtr, Rotation *);
@@ -424,7 +424,7 @@ struct sna {
 
 #if HAVE_UDEV
 	struct udev_monitor *uevent_monitor;
-	pointer uevent_handler;
+	void *uevent_handler;
 #endif
 
 	struct {
