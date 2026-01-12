@@ -107,16 +107,6 @@ if cc.links(cpuid_code, name : '__cpuid()')
   config.set('HAVE_CPUID_H', 1)
 endif
 
-has_shm = (cc.has_header('sys/ipc.h') and
-	   cc.has_header('X11/extensions/XShm.h') and
-	   cc.has_header('X11/extensions/shmproto.h') and
-	   cc.has_header('X11/extensions/shmstr.h'))
-if has_shm
-  config.set('HAVE_MIT_SHM', 1)
-  config.set('HAVE_X11_EXTENSIONS_SHMPROTO_H', 1)
-  config.set('HAVE_X11_EXTENSIONS_SHMSTR_H', 1)
-endif
-
 if cc.has_header('X11/extensions/Xinerama.h')
   config.set('HAVE_X11_EXTENSIONS_XINERAMA_H', 1)
 endif

@@ -34,13 +34,7 @@
 #include <X11/extensions/Xrandr.h>
 #include <X11/extensions/Xrender.h>
 #include <X11/extensions/XShm.h>
-#if HAVE_X11_EXTENSIONS_SHMPROTO_H
 #include <X11/extensions/shmproto.h>
-#elif HAVE_X11_EXTENSIONS_SHMSTR_H
-#include <X11/extensions/shmstr.h>
-#else
-#error Failed to find the right header for X11 MIT-SHM protocol definitions
-#endif
 #include <xcb/xcb.h>
 #include <xcb/present.h>
 #include <xcb/xfixes.h>

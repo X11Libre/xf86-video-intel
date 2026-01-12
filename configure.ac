@@ -204,27 +204,8 @@ if test "x$cpuid" = "xyes"; then
 	AC_DEFINE(HAVE_CPUID_H,1,[Found a useable cpuid.h])
 fi
 
-shm=yes
-AC_CHECK_HEADERS([sys/ipc.h sys/ipc.h], [], [shm="no"])
-AC_CHECK_HEADERS([X11/extensions/XShm.h], [], [shm="no"], [
-#include <X11/Xlibint.h>
-#include <X11/Xproto.h>
-])
-AC_CHECK_HEADERS([X11/extensions/shmproto.h X11/extensions/shmstr.h], [], [], [
-#include <X11/Xlibint.h>
-#include <X11/Xproto.h>
-])
-if test "x$ac_cv_header_X11_extensions_shmproto_h" != "xyes" -a "x$ac_cv_header_X11_extensions_shmstr_h" != "xyes"; then
-	shm="no"
-fi
-
-if test "x$shm" = "xyes"; then
-	AC_DEFINE([HAVE_MIT_SHM], 1, [Define to 1 if MIT-SHM is available])
-fi
-
 PKG_CHECK_MODULES(X11_DRI3, [xcb-dri3 xcb-sync xcb-xfixes xcb-present x11-xcb xshmfence x11 xcomposite xdamage xrender xrandr xxf86vm xext libdrm], [x11_dri3="yes"], [x11_dri3="no"])
-AM_CONDITIONAL(X11_DRI3, test "x$x11_dri3" = "xyes" -a "x$shm" = "xyes")
-AM_CONDITIONAL(X11_SHM, test "x$shm" = "xyes")
+AM_CONDITIONAL(X11_DRI3, test "x$x11_dri3" = "xyes")
 
 PKG_CHECK_MODULES(X11_VM, [xxf86vm], [x11_vm="yes"], [x11_vm="no"])
 AM_CONDITIONAL(X11_VM, test "x$x11_vm" = "xyes")
@@ -233,12 +214,6 @@ AC_ARG_ENABLE(tools,
               AS_HELP_STRING([--disable-tools],
 			     [Enable building and installing the miscellaneous tools [default=auto]]),
               [tools="$enableval"], [tools="auto"])
-if test "x$shm" != "xyes"; then
-	if test "x$tools" = "xyes"; then
-		AC_MSG_ERROR([Incomplete requirements for extra tools, X11 MIT-SHM extension required])
-	fi
-	tools="no"
-fi
 if test "x$tools" != "xno"; then
 	ivo_requires="xrandr xdamage xfixes xcursor xtst xrender xscrnsaver xext x11 pixman-1"
 	extra_cflags=""
