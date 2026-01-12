@@ -1340,10 +1340,8 @@ intel_output_get_property(xf86OutputPtr output, Atom property)
 
 static const xf86OutputFuncsRec intel_output_funcs = {
 	.create_resources = intel_output_create_resources,
-#ifdef RANDR_12_INTERFACE
 	.set_property = intel_output_set_property,
 	.get_property = intel_output_get_property,
-#endif
 	.dpms = intel_output_dpms,
 	.detect = intel_output_detect,
 	.mode_valid = intel_output_mode_valid,

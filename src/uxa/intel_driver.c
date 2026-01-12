@@ -136,11 +136,7 @@ I830LoadPalette(ScrnInfoPtr scrn, int numColors, int *indices,
 		}
 
 		/* Make the change through RandR */
-#ifdef RANDR_12_INTERFACE
 		RRCrtcGammaSet(crtc->randr_crtc, lut_r, lut_g, lut_b);
-#else
-		crtc->funcs->gamma_set(crtc, lut_r, lut_g, lut_b, 256);
-#endif
 	}
 }
 

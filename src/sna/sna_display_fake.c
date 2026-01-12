@@ -167,10 +167,8 @@ sna_output_destroy(xf86OutputPtr output)
 
 static const xf86OutputFuncsRec sna_output_funcs = {
 	.create_resources = sna_output_create_resources,
-#ifdef RANDR_12_INTERFACE
 	.set_property = sna_output_set_property,
 	.get_property = sna_output_get_property,
-#endif
 	.dpms = sna_output_dpms,
 	.detect = sna_output_detect,
 	.mode_valid = sna_output_mode_valid,

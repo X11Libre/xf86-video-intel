@@ -2851,7 +2851,6 @@ static void sna_crtc_randr(xf86CrtcPtr crtc)
 	params = NULL;
 	nparams = 0;
 	if (sna_crtc->transform) {
-#ifdef RANDR_12_INTERFACE
 		if (transform) {
 			if (transform->nparams) {
 				params = malloc(transform->nparams * sizeof(xFixed));
@@ -2864,7 +2863,6 @@ static void sna_crtc_randr(xf86CrtcPtr crtc)
 			} else
 				filter = transform->filter;
 		}
-#endif
 		crtc->transform_in_use = needs_transform;
 	} else
 		crtc->transform_in_use = sna_crtc->rotation != RR_Rotate_0;
@@ -4839,10 +4837,8 @@ sna_output_get_property(xf86OutputPtr output, Atom property)
 
 static const xf86OutputFuncsRec sna_output_funcs = {
 	.create_resources = sna_output_create_resources,
-#ifdef RANDR_12_INTERFACE
 	.set_property = sna_output_set_property,
 	.get_property = sna_output_get_property,
-#endif
 	.dpms = sna_output_dpms,
 	.detect = sna_output_detect,
 	.mode_valid = sna_output_mode_valid,
@@ -7779,9 +7775,7 @@ sna_crtc_config_notify(ScreenPtr screen)
 	if (disable_unused_crtc(sna)) {
 		/* This will have recursed, so simply bail at this point */
 		assert(sna->mode.dirty == false);
-#ifdef RANDR_12_INTERFACE
 		xf86RandR12TellChanged(screen);
-#endif
 		return;
 	}
 
@@ -7915,7 +7909,6 @@ bool sna_mode_pre_init(ScrnInfoPtr scrn, struct sna *sna)
 void
 sna_mode_set_primary(struct sna *sna)
 {
-#ifdef RANDR_12_INTERFACE
 	xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(sna->scrn);
 	rrScrPrivPtr rr = rrGetScrPriv(sna->scrn->pScreen);
 	int i;
@@ -7935,7 +7928,6 @@ sna_mode_set_primary(struct sna *sna)
 		rr->layoutChanged = TRUE;
 		break;
 	}
-#endif
 }
 
 bool

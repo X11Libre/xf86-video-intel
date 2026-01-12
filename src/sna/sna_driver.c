@@ -135,11 +135,7 @@ sna_load_palette(ScrnInfoPtr scrn, int numColors, int *indices,
 #undef C
 
 		/* Make the change through RandR */
-#ifdef RANDR_12_INTERFACE
 		RRCrtcGammaSet(crtc->randr_crtc, lut_r, lut_g, lut_b);
-#else
-		crtc->funcs->gamma_set(crtc, lut_r, lut_g, lut_b, 256);
-#endif
 	}
 }
 
@@ -184,10 +180,8 @@ sna_set_fallback_mode(ScrnInfoPtr scrn)
 	}
 
 	xf86DisableUnusedFunctions(scrn);
-#ifdef RANDR_12_INTERFACE
 	if (get_root_window(scrn->pScreen))
 		xf86RandR12TellChanged(scrn->pScreen);
-#endif
 }
 
 static void sna_set_desired_mode(struct sna *sna)
