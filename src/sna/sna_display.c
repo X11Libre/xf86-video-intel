@@ -3120,7 +3120,6 @@ static Bool
 sna_crtc_set_mode_major(xf86CrtcPtr crtc, DisplayModePtr mode,
 			Rotation rotation, int x, int y)
 {
-	struct sna *sna = to_sna(crtc->scrn);
 	struct sna_crtc *sna_crtc = to_sna_crtc(crtc);
 	struct drm_mode_modeinfo saved_kmode;
 	char outputs[256];
@@ -3135,9 +3134,6 @@ sna_crtc_set_mode_major(xf86CrtcPtr crtc, DisplayModePtr mode,
 		   mode->HDisplay, mode->VDisplay, xf86ModeVRefresh(mode),
 		   outputs_for_crtc(crtc, outputs, sizeof(outputs)), __sna_crtc_index(sna_crtc),
 		   x, y, rotation_to_str(rotation), reflection_to_str(rotation));
-
-	assert(mode->HDisplay <= sna->mode.max_crtc_width &&
-	       mode->VDisplay <= sna->mode.max_crtc_height);
 
 #if HAS_GAMMA
 	sna_crtc_gamma_set(crtc,
