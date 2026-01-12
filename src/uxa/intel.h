@@ -518,11 +518,7 @@ static inline void intel_sync_close(ScreenPtr screen) { }
 #define DebugPresent(x)
 #endif
 
-#if HAVE_PRESENT
 Bool intel_present_screen_init(ScreenPtr screen);
-#else
-static inline Bool intel_present_screen_init(ScreenPtr screen) { return 0; }
-#endif
 
 dri_bo *
 intel_get_pixmap_bo(PixmapPtr pixmap);

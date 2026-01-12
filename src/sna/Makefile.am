@@ -124,11 +124,9 @@ libsna_la_SOURCES += sna_dri3.c
 libsna_la_LIBADD += $(DRI3_LIBS)
 endif
 
-if PRESENT
 AM_CFLAGS += $(PRESENT_CFLAGS)
 libsna_la_SOURCES += sna_present.c
 libsna_la_LIBADD += $(PRESENT_LIBS)
-endif
 
 if XVMC
 libsna_la_SOURCES += \

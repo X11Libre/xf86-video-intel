@@ -53,12 +53,7 @@ endif
 default_dri = get_option('default-dri')
 config.set('DEFAULT_DRI_LEVEL', default_dri)
 
-present = dependency('presentproto', required : false)
-has_present = (present.found() and
-	       cc.has_header('present.h', dependencies : xorg))
-if has_present
-  config.set('HAVE_PRESENT', 1)
-endif
+present = dependency('presentproto', required : true)
 
 if get_option('backlight')
   config.set('USE_BACKLIGHT', 1)

@@ -381,11 +381,9 @@ struct sna {
 	struct sna_present {
 		bool available;
 		bool open;
-#if HAVE_PRESENT
 		struct list vblank_queue;
 		uint64_t unflip;
 		void *freed_info;
-#endif
 	} present;
 
 	struct sna_xv {
@@ -611,19 +609,11 @@ static inline bool sna_dri3_open(struct sna *sna, ScreenPtr pScreen) { return fa
 static inline void sna_dri3_close(struct sna *sna, ScreenPtr pScreen) { }
 #endif
 
-#if HAVE_PRESENT
 bool sna_present_open(struct sna *sna, ScreenPtr pScreen);
 void sna_present_update(struct sna *sna);
 void sna_present_close(struct sna *sna, ScreenPtr pScreen);
 void sna_present_vblank_handler(struct drm_event_vblank *event);
 void sna_present_cancel_flip(struct sna *sna);
-#else
-static inline bool sna_present_open(struct sna *sna, ScreenPtr pScreen) { return false; }
-static inline void sna_present_update(struct sna *sna) { }
-static inline void sna_present_close(struct sna *sna, ScreenPtr pScreen) { }
-static inline void sna_present_vblank_handler(struct drm_event_vblank *event) { }
-static inline void sna_present_cancel_flip(struct sna *sna) { }
-#endif
 
 extern unsigned sna_crtc_count_sprites(xf86CrtcPtr crtc);
 extern bool sna_crtc_set_sprite_rotation(xf86CrtcPtr crtc, unsigned idx, uint32_t rotation);

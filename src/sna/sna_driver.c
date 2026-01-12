@@ -671,9 +671,7 @@ static Bool sna_pre_init(ScrnInfoPtr scrn, int probe)
 
 	sna->present.available = false;
 	if (xf86ReturnOptValBool(sna->Options, OPTION_PRESENT, TRUE)) {
-#if HAVE_PRESENT
 		sna->present.available = !!xf86LoadSubModule(scrn, "present");
-#endif
 	}
 
 	sna_acpi_init(sna);

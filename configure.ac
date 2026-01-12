@@ -573,28 +573,8 @@ AC_MSG_CHECKING([default DRI support])
 AC_MSG_RESULT([$DEFAULT_DRI_DEFAULT])
 
 AC_CHECK_HEADERS([X11/extensions/dpmsconst.h])
-
-PRESENT="no"
-XORG_DRIVER_CHECK_EXT(PRESENT, presentproto)
-if test "x$_EXT_CHECK" != "xno"; then
-        PKG_CHECK_MODULES(PRESENT, [presentproto], [PRESENT="yes"], [])
-fi
-if test "x$PRESENT" != "xno"; then
-        save_CFLAGS=$CFLAGS
-        CFLAGS="$XORG_CFLAGS $PRESENT_CFLAGS"
-        AC_CHECK_HEADERS([present.h], [], [PRESENT="no"], [
-#include <xorg-server.h>
-#include <xf86str.h>
-])
-        CFLAGS=$save_CFLAGS
-fi
-AC_MSG_CHECKING([whether to include PRESENT support])
-AM_CONDITIONAL(PRESENT, test "x$PRESENT" != "xno")
-AC_MSG_RESULT([$PRESENT])
-if test "x$PRESENT" != "xno"; then
-        AC_DEFINE(HAVE_PRESENT,1,[Enable PRESENT driver support])
-        dri_msg="$dri_msg Present"
-fi
+PKG_CHECK_MODULES(PRESENT, [presentproto])
+dri_msg="$dri_msg Present"
 
 AC_MSG_CHECKING([whether to include UXA support])
 AC_MSG_RESULT([$UXA])
