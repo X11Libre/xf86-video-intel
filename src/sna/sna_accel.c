@@ -381,7 +381,7 @@ static void assert_pixmap_damage(PixmapPtr p)
 #endif
 #endif
 
-jmp_buf sigjmp[4];
+sigjmp_buf sigjmp_buffer[4];
 volatile sig_atomic_t sigtrap;
 
 static int sigtrap_handler(int sig)
@@ -391,7 +391,7 @@ static int sigtrap_handler(int sig)
 	sna_threads_trap(sig);
 
 	if (sigtrap)
-		siglongjmp(sigjmp[--sigtrap], sig);
+		siglongjmp(sigjmp_buffer[--sigtrap], sig);
 
 	return -1;
 }
