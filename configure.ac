@@ -719,7 +719,7 @@ AC_ARG_ENABLE(valgrind,
               [VG="no"])
 
 LIBS=""
-AC_SEARCH_LIBS(clock_gettime, rt, [CLOCK_GETTIME_LIBS=$LIBS])
+dnl AC_SEARCH_LIBS(clock_gettime, rt, [CLOCK_GETTIME_LIBS=$LIBS])
 AC_SUBST(CLOCK_GETTIME_LIBS)
 
 AM_CONDITIONAL(DEBUG, test "x$DEBUG" != "xno")
