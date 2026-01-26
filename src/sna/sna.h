@@ -225,11 +225,6 @@ struct sna_gc {
 	void *priv;
 };
 
-static inline struct sna_gc *sna_gc(GCPtr gc)
-{
-	return (struct sna_gc *)__get_private(gc, sna_gc_key);
-}
-
 enum {
 	FLUSH_TIMER = 0,
 	THROTTLE_TIMER,
