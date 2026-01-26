@@ -97,21 +97,21 @@ XF86VideoFormatRec intel_xv_formats[NUM_FORMATS] = {
 };
 
 XvAttributeRec intel_xv_attributes[NUM_ATTRIBUTES] = {
-	{XvSettable | XvGettable, 0, (1 << 24) - 1, "XV_COLORKEY"},
-	{XvSettable | XvGettable, -128, 127, "XV_BRIGHTNESS"},
-	{XvSettable | XvGettable, 0, 255, "XV_CONTRAST"},
-	{XvSettable | XvGettable, 0, 1023, "XV_SATURATION"},
-	{XvSettable | XvGettable, -1, 1, "XV_PIPE"}
+	{XvSettable | XvGettable,    0, (1 << 24) - 1, (char*)"XV_COLORKEY"},
+	{XvSettable | XvGettable, -128,           127, (char*)"XV_BRIGHTNESS"},
+	{XvSettable | XvGettable,    0,           255, (char*)"XV_CONTRAST"},
+	{XvSettable | XvGettable,    0,          1023, (char*)"XV_SATURATION"},
+	{XvSettable | XvGettable,   -1,             1, (char*)"XV_PIPE"}
 };
 
 #define GAMMA_ATTRIBUTES 6
 XvAttributeRec intel_xv_gamma_attributes[GAMMA_ATTRIBUTES] = {
-	{XvSettable | XvGettable, 0, 0xffffff, "XV_GAMMA0"},
-	{XvSettable | XvGettable, 0, 0xffffff, "XV_GAMMA1"},
-	{XvSettable | XvGettable, 0, 0xffffff, "XV_GAMMA2"},
-	{XvSettable | XvGettable, 0, 0xffffff, "XV_GAMMA3"},
-	{XvSettable | XvGettable, 0, 0xffffff, "XV_GAMMA4"},
-	{XvSettable | XvGettable, 0, 0xffffff, "XV_GAMMA5"}
+	{XvSettable | XvGettable, 0, 0xffffff, (char*)"XV_GAMMA0"},
+	{XvSettable | XvGettable, 0, 0xffffff, (char*)"XV_GAMMA1"},
+	{XvSettable | XvGettable, 0, 0xffffff, (char*)"XV_GAMMA2"},
+	{XvSettable | XvGettable, 0, 0xffffff, (char*)"XV_GAMMA3"},
+	{XvSettable | XvGettable, 0, 0xffffff, (char*)"XV_GAMMA4"},
+	{XvSettable | XvGettable, 0, 0xffffff, (char*)"XV_GAMMA5"}
 };
 
 #ifdef INTEL_XVMC
