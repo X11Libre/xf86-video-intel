@@ -10051,6 +10051,7 @@ spans_fallback:
 			assert_pixmap_damage(data.pixmap);
 		}
 		RegionUninit(&data.region);
+		sna_gc(gc)->priv = NULL;
 		return;
 	}
 
