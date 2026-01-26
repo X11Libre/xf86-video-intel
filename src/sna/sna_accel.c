@@ -168,6 +168,11 @@ static void sna_shm_watch_flush(struct sna *sna, int enable);
 static void
 sna_poly_fill_rect__gpu(DrawablePtr draw, GCPtr gc, int n, xRectangle *rect);
 
+static inline struct sna_gc *sna_gc(GCPtr gc)
+{
+	return (struct sna_gc *)__get_private(gc, sna_gc_key);
+}
+
 static inline void region_set(RegionRec *r, const BoxRec *b)
 {
 	r->extents = *b;
