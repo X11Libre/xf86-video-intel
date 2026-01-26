@@ -48,10 +48,10 @@
 void *alloca(size_t);
 #endif
 
-#define _PARSE_EDID_
 /* Jump through a few hoops in order to fixup EDIDs */
 #undef VERSION
 #undef REVISION
+#include "edidparse.h"
 
 #include "sna.h"
 #include "sna_reg.h"
