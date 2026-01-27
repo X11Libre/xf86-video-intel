@@ -136,6 +136,7 @@ endif
 shared_module('intel_drv',
 	      sources : intel_drv_sources,
 	      dependencies : intel_drv_deps,
+	      include_directories: inc,
 	      link_with : intel_drv_libs,
 	      c_args : [
 		'-DMAJOR_IN_SYSMACROS',

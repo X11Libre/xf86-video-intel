@@ -18,6 +18,7 @@ if with_tools
 	     c_args : [
 	       '-Wno-unused-parameter',
 	     ],
+	     include_directories: inc,
 	     install : true)
 
   configure_file(input : 'intel-virtual-output.man',
@@ -54,6 +55,7 @@ if with_tools
 	     c_args : [
 	       '-Wno-unused-parameter',
 	     ],
+	     include_directories: inc,
 	     install : false)
 endif
 
@@ -81,6 +83,7 @@ if with_backlight_helper
 	     c_args : [
 	       '-DMAJOR_IN_SYSMACROS',
 	     ],
+	     include_directories: inc,
 	     install : true)
 
   polkit_config = configuration_data()
