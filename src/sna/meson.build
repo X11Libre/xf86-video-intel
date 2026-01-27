@@ -83,11 +83,6 @@ if with_dri3
   sna_deps += dri3
 endif
 
-if has_present
-  sna_sources += 'sna_present.c'
-  sna_deps += present
-endif
-
 if with_xvmc
   sna_sources += 'sna_video_hwmc.c'
 endif
