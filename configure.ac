@@ -182,9 +182,8 @@ if test "x$UDEV" != "xno"; then
         fi
 fi
 
-PKG_CHECK_MODULES(X11, [x11 x11-xcb xcb-dri2 xcomposite xdamage xrender xrandr xext xfixes cairo cairo-xlib-xrender pixman-1 libpng], [x11="yes"], [x11="no"])
-AM_CONDITIONAL(HAVE_X11, test "x$x11" = "xyes")
-echo X11_CLFAGS="$X11_CLFAGS" X11_LIBS="$X11_LIBS"
+PKG_CHECK_MODULES(X11,
+                  [x11 x11-xcb xcb-dri2 xcomposite xdamage xrender xrandr xext xfixes cairo cairo-xlib-xrender pixman-1 libpng])
 
 cpuid="yes"
 AC_TRY_LINK([

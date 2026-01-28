@@ -26,13 +26,9 @@ DISTCHECK_CONFIGURE_FLAGS = --with-xorg-module-dir='$${libdir}/xorg/modules'
 #ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = man libobj xvmc src tools
+SUBDIRS = man libobj xvmc src tools test benchmarks
 
 MAINTAINERCLEANFILES = ChangeLog INSTALL
-
-if HAVE_X11
-SUBDIRS += test benchmarks
-endif
 
 .PHONY: ChangeLog INSTALL
 
