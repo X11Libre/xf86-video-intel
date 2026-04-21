@@ -59,7 +59,7 @@ m4_ifndef([XORG_DRIVER_CHECK_EXT],
 
 # Initialize libtool
 AC_DISABLE_STATIC
-AC_PROG_LIBTOOL
+LT_INIT
 
 # Check for common libc routines redefined by os.h
 AC_CHECK_FUNCS([strlcpy strlcat strndup], [], [])
