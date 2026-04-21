@@ -8840,7 +8840,7 @@ sna_copy_plane(DrawablePtr src, DrawablePtr dst, GCPtr gc,
 		}
 
 		if (!kgem_bo_can_blt(&sna->kgem, arg.bo))
-			return false;
+			return NULL;
 
 		RegionUninit(&region);
 		return sna_do_copy(src, dst, gc,
