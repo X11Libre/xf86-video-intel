@@ -1032,7 +1032,7 @@ I830ScreenInit(ScreenPtr screen, int argc, char **argv)
 	 * later memory should be bound when allocating, e.g rotate_mem */
 	scrn->vtSema = TRUE;
 
-	return I830EnterVT(NULL);
+	return I830EnterVT(scrn);
 }
 
 static void i830AdjustFrame(ScrnInfoPtr scrn, int x, int y)
@@ -1126,7 +1126,7 @@ static Bool I830CloseScreen(ScreenPtr screen)
 	}
 
 	if (scrn->vtSema == TRUE) {
-		I830LeaveVT(NULL);
+		I830LeaveVT(scrn);
 	}
 
 	intel_batch_teardown(scrn);
@@ -1194,12 +1194,12 @@ static Bool I830PMEvent(ScrnInfoPtr scrn, pmEvent event, Bool undo)
 	case XF86_APM_SYS_STANDBY:
 	case XF86_APM_USER_STANDBY:
 		if (!undo && !intel->suspended) {
-			scrn->LeaveVT(NULL);
+			scrn->LeaveVT(scrn);
 			intel->suspended = TRUE;
 			sleep(SUSPEND_SLEEP);
 		} else if (undo && intel->suspended) {
 			sleep(RESUME_SLEEP);
-			scrn->EnterVT(NULL);
+			scrn->EnterVT(scrn);
 			intel->suspended = FALSE;
 		}
 		break;
@@ -1208,7 +1208,7 @@ static Bool I830PMEvent(ScrnInfoPtr scrn, pmEvent event, Bool undo)
 	case XF86_APM_CRITICAL_RESUME:
 		if (intel->suspended) {
 			sleep(RESUME_SLEEP);
-			scrn->EnterVT(NULL);
+			scrn->EnterVT(scrn);
 			intel->suspended = FALSE;
 			/*
 			 * Turn the screen saver off when resuming.  This seems to be
