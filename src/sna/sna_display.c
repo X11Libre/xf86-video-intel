@@ -3133,8 +3133,11 @@ sna_crtc_set_mode_major(xf86CrtcPtr crtc, DisplayModePtr mode,
 		   outputs_for_crtc(crtc, outputs, sizeof(outputs)), __sna_crtc_index(sna_crtc),
 		   x, y, rotation_to_str(rotation), reflection_to_str(rotation));
 
+#ifndef NDEBUG
+	struct sna *sna = to_sna(crtc->scrn);
 	assert(mode->HDisplay <= sna->mode.max_crtc_width &&
 	       mode->VDisplay <= sna->mode.max_crtc_height);
+#endif
 
 #if HAS_GAMMA
 	sna_crtc_gamma_set(crtc,
