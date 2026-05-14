@@ -1254,12 +1254,12 @@ static Bool sna_pm_event(ScrnInfoPtr scrn, pmEvent event, Bool undo)
 	case XF86_APM_SYS_STANDBY:
 	case XF86_APM_USER_STANDBY:
 		if (!undo && !sna->suspended) {
-			scrn->LeaveVT(NULL);
+			scrn->LeaveVT(scrn);
 			sna->suspended = TRUE;
 			sleep(SUSPEND_SLEEP);
 		} else if (undo && sna->suspended) {
 			sleep(RESUME_SLEEP);
-			scrn->EnterVT(NULL);
+			scrn->EnterVT(scrn);
 			sna->suspended = FALSE;
 		}
 		break;
@@ -1268,7 +1268,7 @@ static Bool sna_pm_event(ScrnInfoPtr scrn, pmEvent event, Bool undo)
 	case XF86_APM_CRITICAL_RESUME:
 		if (sna->suspended) {
 			sleep(RESUME_SLEEP);
-			scrn->EnterVT(NULL);
+			scrn->EnterVT(scrn);
 			sna->suspended = FALSE;
 			/*
 			 * Turn the screen saver off when resuming.  This seems to be
