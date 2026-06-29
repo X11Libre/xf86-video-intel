@@ -136,18 +136,6 @@ typedef struct {
 	int solid_cache_size;
 } uxa_screen_t;
 
-/*
- * This is the only completely portable way to
- * compute this info.
- */
-#ifndef BitsPerPixel
-#define BitsPerPixel(d) (\
-    PixmapWidthPaddingInfo[d].notPower2 ? \
-    (PixmapWidthPaddingInfo[d].bytesPerPixel * 8) : \
-    ((1 << PixmapWidthPaddingInfo[d].padBytesLog2) * 8 / \
-    (PixmapWidthPaddingInfo[d].padRoundUp+1)))
-#endif
-
 extern DevPrivateKeyRec uxa_screen_index;
 
 static inline uxa_screen_t *uxa_get_screen(ScreenPtr screen)
