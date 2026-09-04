@@ -12,7 +12,7 @@ jobs:
                 xserver-version: [ master, xlibre-xserver-25.1.0, xlibre-xserver-25.0.0.18 ]
         runs-on: ubuntu-latest
         steps:
-            - uses: X11Libre/action-build-driver/target/ubuntu@v0.3.7
+            - uses: X11Libre/action-build-driver/target/ubuntu@v0.4.0
               with:
                 xserver-version: ${{ matrix.xserver-version }}
 
@@ -22,7 +22,7 @@ jobs:
                 xserver-version: [ master, xlibre-xserver-25.1.0, xlibre-xserver-25.0.0.18 ]
         runs-on: ubuntu-latest
         steps:
-            - uses: X11Libre/action-build-driver/target/freebsd@v0.3.7
+            - uses: X11Libre/action-build-driver/target/freebsd@v0.4.0
               with:
                 xserver-version: ${{ matrix.xserver-version }}
 
@@ -33,7 +33,7 @@ jobs:
                 xserver-version: [ master, xlibre-xserver-25.1.0 ]
         runs-on: ubuntu-latest
         steps:
-            - uses: X11Libre/action-build-driver/target/dragonfly@v0.3.7
+            - uses: X11Libre/action-build-driver/target/dragonfly@v0.4.0
               with:
                 xserver-version: ${{ matrix.xserver-version }}
 
@@ -43,7 +43,7 @@ jobs:
                 xserver-version: [ master, xlibre-xserver-25.1.0 ]
         runs-on: ubuntu-latest
         steps:
-            - uses: X11Libre/action-build-driver/target/netbsd@v0.3.7
+            - uses: X11Libre/action-build-driver/target/netbsd@v0.4.0
               with:
                 xserver-version: ${{ matrix.xserver-version }}
 
@@ -55,4 +55,4 @@ jobs:
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         steps:
-            - uses: X11Libre/action-build-driver/release@v0.3.7
+            - uses: X11Libre/action-build-driver/release@v0.4.0
