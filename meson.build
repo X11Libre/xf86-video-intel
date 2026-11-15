@@ -1,5 +1,5 @@
 project('xf86-video-intel', 'c',
-	version : '25.0.2',
+	version : '25.0.3',
 	default_options: [
 	  'warning_level=2',
 	  'c_std=gnu99',
