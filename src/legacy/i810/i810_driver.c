@@ -1718,7 +1718,7 @@ I810ScreenInit(ScreenPtr screen, int argc, char **argv)
        */
       pI810->directRenderingEnabled = I810DRIFinishScreenInit(screen);
    }
-#ifdef XvMCExtension
+#if defined(XvMCExtension) && defined(ENABLE_XVMC)
    if ((pI810->directRenderingEnabled) && (pI810->numSurfaces)) {
       /* Initialize the hardware motion compensation code */
       I810InitMC(screen);
