@@ -594,6 +594,13 @@ AC_MSG_RESULT([$SNA])
 if test "$XVMC" = "yes"; then
         PKG_CHECK_MODULES(XVMCLIB, [xvmc dri2proto x11 x11-xcb xcb-dri2 xcb-aux libdrm_intel], [], [XVMC="no"])
 fi
+# The server can be built without XvMC; the driver code then can't build or load.
+if test "$XVMC" = "yes"; then
+        save_CPPFLAGS="$CPPFLAGS"
+        CPPFLAGS="$CPPFLAGS $XORG_CFLAGS"
+        AC_CHECK_DECL([XvMCExtension], [], [XVMC="no"], [[#include <xorg-server.h>]])
+        CPPFLAGS="$save_CPPFLAGS"
+fi
 AC_MSG_CHECKING([whether to include XvMC support])
 AC_MSG_RESULT([$XVMC])
 AM_CONDITIONAL(XVMC, test "x$XVMC" = "xyes")
