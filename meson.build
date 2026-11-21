@@ -153,6 +153,12 @@ if with_ums
 endif
 
 with_xvmc = get_option('xvmc')
+# The server can be built without XvMC; the driver code then can't build or load.
+if with_xvmc and cc.get_define('XvMCExtension', prefix : '#include <xorg-server.h>',
+                               dependencies : xorg) == ''
+  message('xorg-server has no XvMC, disabling XvMC support')
+  with_xvmc = false
+endif
 if with_xvmc
   dependency('xv', required : true)
   dependency('xvmc', required : true)
