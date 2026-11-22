@@ -1077,7 +1077,7 @@ static Status render_surface(Display * display,
 	drm_intel_gem_bo_map_gtt(media_state.mb_data.bo);
 
 	block_ptr = media_state.mb_data.bo->virtual;
-	unsigned short *mb_block_ptr;
+	short *mb_block_ptr;
 	for (i = first_macroblock; i < num_macroblocks + first_macroblock; i++) {
 		mb = &macroblock_array->macro_blocks[i];
 		mb_block_ptr = &blocks->blocks[(mb->index << 6)];
