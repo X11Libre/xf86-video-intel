@@ -22,6 +22,7 @@
  *
  */
 #include "config.h"
+#undef NDEBUG /* the asserts are the test's checks */
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -41,6 +42,7 @@
 #include <xf86drm.h>
 #include <i915_drm.h>
 
+#include <stddef.h>
 #include <stdio.h>
 #include <string.h>
 #include <fcntl.h>
@@ -107,7 +109,7 @@ list_move(struct list *list, struct list *head)
 
 #ifndef __container_of
 #define __container_of(ptr, sample, member)				\
-    (void *)((char *)(ptr) - ((char *)&(sample)->member - (char *)(sample)))
+    (void *)((char *)(ptr) - offsetof(__typeof__(*(sample)), member))
 #endif
 
 #define list_for_each_entry(pos, head, member)				\

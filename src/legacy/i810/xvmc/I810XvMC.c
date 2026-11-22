@@ -4312,10 +4312,10 @@ _X_EXPORT Status XvMCGetSubpictureStatus(Display *display, XvMCSubpicture *subpi
 
 #define NUM_XVMC_ATTRIBUTES 4
 static XvAttribute I810_XVMC_ATTRIBUTES[] = {
-  {XvGettable | XvSettable, 0, 0xffffff, "XV_COLORKEY"},
-  {XvGettable | XvSettable, -127, +127, "XV_BRIGHTNESS"},
-  {XvGettable | XvSettable, 0, 0x1ff, "XV_CONTRAST"},
-  {XvGettable | XvSettable, 0, 0x3ff, "XV_SATURATION"}
+  {XvGettable | XvSettable, 0, 0xffffff, (char *) "XV_COLORKEY"},
+  {XvGettable | XvSettable, -127, +127, (char *) "XV_BRIGHTNESS"},
+  {XvGettable | XvSettable, 0, 0x1ff, (char *) "XV_CONTRAST"},
+  {XvGettable | XvSettable, 0, 0x3ff, (char *) "XV_SATURATION"}
 };
 
 

@@ -22,6 +22,7 @@
  *
  */
 #include "config.h"
+#undef NDEBUG /* the asserts are the test's checks */
 
 #include <X11/Xlib.h>
 #include <X11/Xlib-xcb.h>
@@ -1147,7 +1148,7 @@ static int test_wrap_msc(Display *dpy)
 		} else {
 			fprintf(stderr,
 				"\tnotify %d recieved at +%llu\n",
-				ce->serial, ce->msc - msc);
+				ce->serial, (unsigned long long)(ce->msc - msc));
 			ret++;
 		}
 		free(ev);

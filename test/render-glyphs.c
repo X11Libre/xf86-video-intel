@@ -22,7 +22,7 @@ static const XRenderColor colors[] = {
 
 static struct clip {
 	void *func;
-} clips[] = {
+} clips[] __attribute__((unused)) = {
 	{ NULL },
 };
 
@@ -319,9 +319,8 @@ static const char *stdformat_to_str(int id)
 	}
 }
 
-static char *glyph_iter_to_string(struct glyph_iter *gi,
-				  const char *format,
-				  ...)
+static _X_ATTRIBUTE_PRINTF(2, 3) char *
+glyph_iter_to_string(struct glyph_iter *gi, const char *format, ...)
 {
 	static char buf[100];
 	va_list ap;

@@ -2536,14 +2536,6 @@ static void chain_swap(struct sna_dri2_event *chain)
 	}
 }
 
-static inline bool rq_is_busy(struct kgem *kgem, struct kgem_bo *bo)
-{
-	if (bo == NULL)
-		return false;
-
-	return __kgem_bo_is_busy(kgem, bo);
-}
-
 static bool sna_dri2_blit_complete(struct sna_dri2_event *info)
 {
 	if (!info->bo)

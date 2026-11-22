@@ -79,7 +79,8 @@ static void pixel_tests(struct test *t, int reps, int sets, enum target target)
 				    x, y,
 				    cells[y*tt.width+x] & mask,
 				    cells[y*tt.width+x],
-				    result & mask);
+				    result & mask,
+				    result);
 			}
 		}
 	}

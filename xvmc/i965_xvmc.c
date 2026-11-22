@@ -732,7 +732,7 @@ static Status render_surface(Display * display,
 
 	block_ptr = media_state.indirect_data.bo->virtual;
 	for (i = first_macroblock; i < num_macroblocks + first_macroblock; i++) {
-		unsigned short *mb_block_ptr;
+		short *mb_block_ptr;
 		mb = &macroblock_array->macro_blocks[i];
 		mb_block_ptr = &blocks->blocks[(mb->index << 6)];
 		if (mb->coded_block_pattern & 0x20) {

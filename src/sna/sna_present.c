@@ -101,7 +101,8 @@ static inline bool has_vblank(xf86CrtcPtr crtc)
 	return (uintptr_t)crtc & 1;
 }
 
-static inline int crtc_index_from_crtc(RRCrtcPtr crtc)
+static inline __attribute__((unused)) int
+crtc_index_from_crtc(RRCrtcPtr crtc)
 {
 	return crtc ? sna_crtc_index(crtc->devPrivate) : -1;
 }
