@@ -38,7 +38,7 @@ struct test {
 	} out, ref;
 };
 
-void die(const char *fmt, ...);
+void die(const char *fmt, ...) _X_NORETURN _X_ATTRIBUTE_PRINTF(1, 2);
 
 #define die_unless(expr) do{ if (!(expr)) die("verification failed: %s\n", #expr); } while(0)
 
