@@ -128,7 +128,7 @@ static int intel_dri3_fd_from_pixmap(ScreenPtr screen,
 }
 
 static dri3_screen_info_rec intel_dri3_screen_info = {
-        .version = DRI3_SCREEN_INFO_VERSION,
+        .version = 0, /* the newest set of hooks filled in below */
 
         .open = intel_dri3_open,
         .pixmap_from_fd = intel_dri3_pixmap_from_fd,

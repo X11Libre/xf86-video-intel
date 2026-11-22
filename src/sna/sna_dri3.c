@@ -359,7 +359,7 @@ static int sna_dri3_fd_from_pixmap(ScreenPtr screen,
 }
 
 static dri3_screen_info_rec sna_dri3_info = {
-	.version = DRI3_SCREEN_INFO_VERSION,
+	.version = 0, /* the newest set of hooks filled in below */
 
 	.open = sna_dri3_open_device,
 	.pixmap_from_fd = sna_dri3_pixmap_from_fd,
