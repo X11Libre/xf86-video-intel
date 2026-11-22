@@ -650,7 +650,7 @@ static unsigned get_fb(struct sna *sna, struct kgem_bo *bo,
 			f.modifiers[0] = (uint64_t)1 << 56 | 1;
 			break;
 		case I915_TILING_Y:
-			/* I915_FORMAT_MOD_X_TILED */
+			/* I915_FORMAT_MOD_Y_TILED */
 			f.modifiers[0] = (uint64_t)1 << 56 | 2;
 			break;
 		}
