@@ -270,6 +270,7 @@ typedef struct intel_screen_private {
 
 	/* DRI enabled this generation. */
 	enum dri_type dri2, dri3;
+	Bool dri3_syncobj; /* DRI3 sync objects (1.4) work */
 	int drmSubFD;
 	char *deviceName;
 

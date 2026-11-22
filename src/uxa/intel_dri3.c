@@ -33,6 +33,7 @@
 #include "intel_uxa.h"
 #endif
 #include "dri3.h"
+#include "intel_dri3_syncobj.h"
 
 static int
 intel_dri3_open(ScreenPtr screen,
@@ -338,8 +339,34 @@ static dri3_screen_info_rec intel_dri3_screen_info = {
         .get_drawable_modifiers = intel_dri3_get_drawable_modifiers,
 };
 
+#if HAVE_DRI3_SYNCOBJ
+static struct dri3_syncobj *
+intel_dri3_import_syncobj_hook(ClientPtr client, ScreenPtr screen,
+                               XID id, int fd)
+{
+        ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
+
+        return intel_dri3_import_syncobj(screen,
+                                         intel_get_screen_private(scrn)->drmSubFD,
+                                         id, fd);
+}
+#endif
+
 Bool
 intel_dri3_screen_init(ScreenPtr screen)
 {
+#if HAVE_DRI3_SYNCOBJ
+        ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
+        intel_screen_private *intel = intel_get_screen_private(scrn);
+
+        /* the server keeps a pointer to the info, so complete it first */
+        if (intel_dri3_syncobj_supported(scrn, intel->drmSubFD)) {
+                intel_dri3_screen_info.version = 4;
+                intel_dri3_screen_info.import_syncobj =
+                        intel_dri3_import_syncobj_hook;
+                intel->dri3_syncobj = TRUE;
+        }
+#endif
+
         return dri3_screen_init(screen, &intel_dri3_screen_info);
 }
