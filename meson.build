@@ -168,7 +168,7 @@ if with_xvmc
   dependency('x11-xcb', required : true)
   dependency('xcb-dri2', required : true)
   dependency('xcb-aux', required : true)
-  dependency('libdrm_intel', required : true)
+  dependency('libdrm_intel', version : '>= 2.4.104', required : true)
 
   config.set('ENABLE_XVMC', 1)
 endif

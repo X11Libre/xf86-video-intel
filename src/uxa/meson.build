@@ -27,8 +27,8 @@ uxa_sources = [
 uxa_deps = [
   dependency('xorg-server', version : '>= 1.6', required : true),
   dependency('pixman-1', version : '>= 0.24.0', required : true),
-  dependency('libdrm', required : true),
-  dependency('libdrm_intel', version : '>= 2.4.52', required : true),
+  dependency('libdrm', version : '>= 2.4.104', required : true),
+  dependency('libdrm_intel', version : '>= 2.4.104', required : true),
   dependency('libudev', required : false),
 ]
 

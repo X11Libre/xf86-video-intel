@@ -10,7 +10,7 @@ i810_sources = [
 xorg = dependency('xorg-server', required : true)
 
 i810_deps = [
-  dependency('libdrm', required : true),
+  dependency('libdrm', version : '>= 2.4.104', required : true),
   dependency('pciaccess', required : true),
   xorg,
 ]

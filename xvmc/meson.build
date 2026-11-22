@@ -20,7 +20,7 @@ shared_library('IntelXvMC',
 		 dependency('x11-xcb', required : true),
 		 dependency('xcb-aux', required : true),
 		 dependency('xcb-dri2', required : true),
-		 dependency('libdrm_intel', required : true),
+		 dependency('libdrm_intel', version : '>= 2.4.104', required : true),
 	       ],
 	       c_args : [
 		 '-DFALSE=0', '-DTRUE=1',

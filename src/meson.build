@@ -1,5 +1,5 @@
 xorg = dependency('xorg-server', required : true)
-libdrm = dependency('libdrm', required : true)
+libdrm = dependency('libdrm', version : '>= 2.4.104', required : true)
 pixman = dependency('pixman-1', required : true)
 
 with_dri1 = get_option('dri1')

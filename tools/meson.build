@@ -70,7 +70,7 @@ if with_tools and with_dri3
 	       dependency('xxf86vm', required : true),
 	       dependency('dri3proto', required : true),
 	       dependency('dri', required : true),
-	       dependency('libdrm', required : true),
+	       dependency('libdrm', version : '>= 2.4.104', required : true),
 	     ],
 	     install : false)
 endif
