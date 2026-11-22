@@ -27,7 +27,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
+#include <string.h>
 #include <xf86drm.h>
+#include <drm_fourcc.h>
 
 #include "sna.h"
 
@@ -358,12 +360,113 @@ static int sna_dri3_fd_from_pixmap(ScreenPtr screen,
 	return fd;
 }
 
+/* the formats the server derives from a client's bpp (drm_format_for_depth) */
+static const uint32_t sna_dri3_formats[] = {
+	DRM_FORMAT_RGB565,
+	DRM_FORMAT_XRGB8888,
+	DRM_FORMAT_XRGB2101010,
+	DRM_FORMAT_ARGB8888,
+};
+
+static bool sna_dri3_has_format(uint32_t format)
+{
+	unsigned i;
+
+	for (i = 0; i < ARRAY_SIZE(sna_dri3_formats); i++)
+		if (sna_dri3_formats[i] == format)
+			return true;
+
+	return false;
+}
+
+static int sna_dri3_get_formats(ScreenPtr screen,
+				CARD32 *num_formats,
+				CARD32 **formats)
+{
+	DBG(("%s()\n", __FUNCTION__));
+
+	*formats = malloc(sizeof(sna_dri3_formats));
+	if (*formats == NULL)
+		return FALSE;
+
+	memcpy(*formats, sna_dri3_formats, sizeof(sna_dri3_formats));
+	*num_formats = ARRAY_SIZE(sna_dri3_formats);
+	return TRUE;
+}
+
+static int sna_dri3_get_modifiers(ScreenPtr screen,
+				  uint32_t format,
+				  uint32_t *num_modifiers,
+				  uint64_t **modifiers)
+{
+	struct sna *sna = to_sna_from_screen(screen);
+	uint64_t *mods;
+	uint32_t n = 0;
+
+	*num_modifiers = 0;
+	*modifiers = NULL;
+	if (!sna_dri3_has_format(format))
+		return TRUE;
+
+	mods = malloc(3 * sizeof(*mods));
+	if (mods == NULL)
+		return FALSE;
+
+	mods[n++] = DRM_FORMAT_MOD_LINEAR;
+	mods[n++] = I915_FORMAT_MOD_X_TILED;
+	if (sna->kgem.can_blt_y && sna->kgem.can_render_y)
+		mods[n++] = I915_FORMAT_MOD_Y_TILED;
+
+	DBG(("%s(format=%08x): %d modifiers\n", __FUNCTION__, format, n));
+	*num_modifiers = n;
+	*modifiers = mods;
+	return TRUE;
+}
+
+/* what a client buffer may use and still be flipped (see sna_present.c) */
+static int sna_dri3_get_drawable_modifiers(DrawablePtr draw,
+					   uint32_t format,
+					   uint32_t *num_modifiers,
+					   uint64_t **modifiers)
+{
+	struct sna *sna = to_sna_from_screen(draw->pScreen);
+	uint64_t *mods;
+	uint32_t n = 0;
+
+	*num_modifiers = 0;
+	*modifiers = NULL;
+	if (draw->type != DRAWABLE_WINDOW || !sna_dri3_has_format(format))
+		return TRUE;
+
+	mods = malloc(3 * sizeof(*mods));
+	if (mods == NULL)
+		return FALSE;
+
+	mods[n++] = DRM_FORMAT_MOD_LINEAR;
+	if ((sna->flags & SNA_LINEAR_FB) == 0) {
+		mods[n++] = I915_FORMAT_MOD_X_TILED;
+		if (sna->kgem.can_scanout_y &&
+		    sna->kgem.can_blt_y && sna->kgem.can_render_y)
+			mods[n++] = I915_FORMAT_MOD_Y_TILED;
+	}
+
+	DBG(("%s(format=%08x): %d modifiers\n", __FUNCTION__, format, n));
+	*num_modifiers = n;
+	*modifiers = mods;
+	return TRUE;
+}
+
 static dri3_screen_info_rec sna_dri3_info = {
 	.version = 0, /* the newest set of hooks filled in below */
 
 	.open = sna_dri3_open_device,
 	.pixmap_from_fd = sna_dri3_pixmap_from_fd,
 	.fd_from_pixmap = sna_dri3_fd_from_pixmap,
+
+	/* version 2 hooks, used once .version is 2 */
+	.get_formats = sna_dri3_get_formats,
+	.get_modifiers = sna_dri3_get_modifiers,
+	.get_drawable_modifiers = sna_dri3_get_drawable_modifiers,
 };
 
 bool sna_dri3_open(struct sna *sna, ScreenPtr screen)
