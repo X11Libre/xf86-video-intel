@@ -27,9 +27,12 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
+#include <string.h>
 #include <xf86drm.h>
+#include <drm_fourcc.h>
 
 #include "sna.h"
+#include "intel_dri3_syncobj.h"
 
 #include <xf86.h>
 #include <dri3.h>
@@ -162,21 +165,23 @@ static int sna_dri3_open_device(ScreenPtr screen,
 	return Success;
 }
 
-static PixmapPtr sna_dri3_pixmap_from_fd(ScreenPtr screen,
-					 int fd,
-					 CARD16 width,
-					 CARD16 height,
-					 CARD16 stride,
-					 CARD8 depth,
-					 CARD8 bpp)
+/* tiling < 0: implicit, as the kernel reports it; else from a modifier */
+static PixmapPtr __sna_dri3_pixmap_from_fd(ScreenPtr screen,
+					   int fd,
+					   CARD16 width,
+					   CARD16 height,
+					   CARD16 stride,
+					   CARD8 depth,
+					   CARD8 bpp,
+					   int tiling)
 {
 	struct sna *sna = to_sna_from_screen(screen);
 	PixmapPtr pixmap;
 	struct sna_pixmap *priv;
 	struct kgem_bo *bo;
 
-	DBG(("%s(fd=%d, width=%d, height=%d, stride=%d, depth=%d, bpp=%d)\n",
-	     __FUNCTION__, fd, width, height, stride, depth, bpp));
+	DBG(("%s(fd=%d, width=%d, height=%d, stride=%d, depth=%d, bpp=%d, tiling=%d)\n",
+	     __FUNCTION__, fd, width, height, stride, depth, bpp, tiling));
 	if (width > INT16_MAX || height > INT16_MAX)
 		return NULL;
 
@@ -195,23 +200,28 @@ static PixmapPtr sna_dri3_pixmap_from_fd(ScreenPtr screen,
 		return NULL;
 	}
 
-	bo = kgem_create_for_prime(&sna->kgem, fd, (uint32_t)stride * height);
+	bo = kgem_create_for_prime(&sna->kgem, fd, (uint32_t)stride * height,
+				   tiling);
 	if (bo == NULL)
 		return NULL;
 
 	/* Check for a duplicate */
 	list_for_each_entry(priv, &sna->dri3.pixmaps, cow_list) {
-		int other_stride = 0;
+		int other_stride = 0, other_tiling = 0;
 		if (bo->snoop) {
 			assert(priv->cpu_bo);
 			assert(IS_STATIC_PTR(priv->ptr));
-			if (bo->handle == priv->cpu_bo->handle)
+			if (bo->handle == priv->cpu_bo->handle) {
 				other_stride = priv->cpu_bo->pitch;
+				other_tiling = priv->cpu_bo->tiling;
+			}
 		} else  {
 			assert(priv->gpu_bo);
 			assert(priv->pinned & PIN_DRI3);
-			if (bo->handle == priv->gpu_bo->handle)
+			if (bo->handle == priv->gpu_bo->handle) {
 				other_stride = priv->gpu_bo->pitch;
+				other_tiling = priv->gpu_bo->tiling;
+			}
 		}
 		if (other_stride) {
 			pixmap = priv->pixmap;
@@ -222,18 +232,30 @@ static PixmapPtr sna_dri3_pixmap_from_fd(ScreenPtr screen,
 			    height != pixmap->drawable.height ||
 			    depth != pixmap->drawable.depth ||
 			    bpp != pixmap->drawable.bitsPerPixel ||
-			    stride != other_stride) {
-				DBG(("%s: imported fd mismatches existing DRI3 pixmap (width=%d, height=%d, depth=%d, bpp=%d, stride=%d)\n", __FUNCTION__,
+			    stride != other_stride ||
+			    (tiling >= 0 && tiling != other_tiling)) {
+				DBG(("%s: imported fd mismatches existing DRI3 pixmap (width=%d, height=%d, depth=%d, bpp=%d, stride=%d, tiling=%d)\n", __FUNCTION__,
 				     pixmap->drawable.width,
 				     pixmap->drawable.height,
 				     pixmap->drawable.depth,
 				     pixmap->drawable.bitsPerPixel,
-				     other_stride));
+				     other_stride, other_tiling));
 				return NULL;
 			}
 			sna_sync_flush(sna, priv);
 			pixmap->refcnt++;
 			return pixmap;
+		}
+	}
+
+	if (tiling >= 0) {
+		/* snooped (CPU) buffers can't be tiled */
+		if (bo->snoop && tiling != I915_TILING_NONE)
+			goto free_bo;
+		if (!kgem_bo_import_tiling(&sna->kgem, bo, tiling, stride)) {
+			DBG(("%s: unable to apply tiling=%d to handle=%d\n",
+			     __FUNCTION__, tiling, bo->handle));
+			goto free_bo;
 		}
 	}
 
@@ -287,10 +309,86 @@ free_bo:
 	return NULL;
 }
 
-static int sna_dri3_fd_from_pixmap(ScreenPtr screen,
-				   PixmapPtr pixmap,
-				   CARD16 *stride,
-				   CARD32 *size)
+static PixmapPtr sna_dri3_pixmap_from_fd(ScreenPtr screen,
+					 int fd,
+					 CARD16 width,
+					 CARD16 height,
+					 CARD16 stride,
+					 CARD8 depth,
+					 CARD8 bpp)
+{
+	return __sna_dri3_pixmap_from_fd(screen, fd, width, height, stride,
+					 depth, bpp, -1);
+}
+
+static int sna_dri3_modifier_to_tiling(struct sna *sna, uint64_t modifier)
+{
+	switch (modifier) {
+	case DRM_FORMAT_MOD_LINEAR:
+		return I915_TILING_NONE;
+	case I915_FORMAT_MOD_X_TILED:
+		return I915_TILING_X;
+	case I915_FORMAT_MOD_Y_TILED:
+		if (sna->kgem.can_blt_y && sna->kgem.can_render_y)
+			return I915_TILING_Y;
+		return -1;
+	default:
+		return -1;
+	}
+}
+
+static uint64_t sna_dri3_tiling_to_modifier(int tiling)
+{
+	switch (tiling) {
+	case I915_TILING_NONE:
+		return DRM_FORMAT_MOD_LINEAR;
+	case I915_TILING_X:
+		return I915_FORMAT_MOD_X_TILED;
+	case I915_TILING_Y:
+		return I915_FORMAT_MOD_Y_TILED;
+	default:
+		return DRM_FORMAT_MOD_INVALID;
+	}
+}
+
+static PixmapPtr sna_dri3_pixmap_from_fds(ScreenPtr screen,
+					  CARD8 num_fds,
+					  const int *fds,
+					  CARD16 width,
+					  CARD16 height,
+					  const CARD32 *strides,
+					  const CARD32 *offsets,
+					  CARD8 depth,
+					  CARD8 bpp,
+					  CARD64 modifier)
+{
+	struct sna *sna = to_sna_from_screen(screen);
+	int tiling = -1;
+
+	DBG(("%s(num_fds=%d, modifier=%llx)\n",
+	     __FUNCTION__, num_fds, (long long)modifier));
+	/* single plane RGB only; the old protocol's 16-bit stride limit stays */
+	if (num_fds != 1 || offsets[0] != 0 || strides[0] > UINT16_MAX)
+		return NULL;
+
+	if (modifier != DRM_FORMAT_MOD_INVALID) {
+		tiling = sna_dri3_modifier_to_tiling(sna, modifier);
+		if (tiling < 0)
+			return NULL;
+	}
+
+	return __sna_dri3_pixmap_from_fd(screen, fds[0], width, height,
+					 strides[0], depth, bpp, tiling);
+}
+
+/* explicit: the client learns the tiling from a modifier, so tiled
+ * buffers need no detiling for GPUs without fences */
+static int __sna_dri3_fd_from_pixmap(ScreenPtr screen,
+				     PixmapPtr pixmap,
+				     uint32_t *stride,
+				     uint32_t *size,
+				     int *tiling,
+				     bool explicit)
 {
 	struct sna *sna = to_sna_from_screen(screen);
 	struct sna_pixmap *priv;
@@ -327,7 +425,7 @@ static int sna_dri3_fd_from_pixmap(ScreenPtr screen,
 		return -1;
 	}
 
-	if (bo->tiling && !sna->kgem.can_fence) {
+	if (!explicit && bo->tiling && !sna->kgem.can_fence) {
 		if (!sna_pixmap_change_tiling(pixmap, I915_TILING_NONE)) {
 			DBG(("%s: unable to discard GPU tiling (%d) for DRI3 protocol\n",
 			     __FUNCTION__, bo->tiling));
@@ -348,22 +446,173 @@ static int sna_dri3_fd_from_pixmap(ScreenPtr screen,
 
 	mark_dri3_pixmap(sna, priv, bo);
 
-	*stride = (priv->pinned & PIN_DRI3) ? priv->gpu_bo->pitch : priv->cpu_bo->pitch;
-	*size = kgem_bo_size((priv->pinned & PIN_DRI3) ? priv->gpu_bo : priv->cpu_bo);
-	DBG(("%s: exporting %s pixmap=%ld, handle=%d, stride=%d, size=%d\n",
+	bo = (priv->pinned & PIN_DRI3) ? priv->gpu_bo : priv->cpu_bo;
+	*stride = bo->pitch;
+	*size = kgem_bo_size(bo);
+	*tiling = bo->tiling;
+	DBG(("%s: exporting %s pixmap=%ld, handle=%d, stride=%d, size=%d, tiling=%d\n",
 	     __FUNCTION__,
 	     (priv->pinned & PIN_DRI3) ? "GPU" : "CPU", pixmap->drawable.serialNumber,
-	     (priv->pinned & PIN_DRI3) ? priv->gpu_bo->handle : priv->cpu_bo->handle,
-	     *stride, *size));
+	     bo->handle, *stride, *size, *tiling));
 	return fd;
 }
 
+static int sna_dri3_fd_from_pixmap(ScreenPtr screen,
+				   PixmapPtr pixmap,
+				   CARD16 *stride,
+				   CARD32 *size)
+{
+	uint32_t pitch;
+	int tiling, fd;
+
+	fd = __sna_dri3_fd_from_pixmap(screen, pixmap, &pitch, size,
+				       &tiling, false);
+	if (fd >= 0)
+		*stride = pitch;
+	return fd;
+}
+
+static int sna_dri3_fds_from_pixmap(ScreenPtr screen,
+				    PixmapPtr pixmap,
+				    int *fds,
+				    uint32_t *strides,
+				    uint32_t *offsets,
+				    uint64_t *modifier)
+{
+	uint32_t size;
+	int tiling;
+
+	fds[0] = __sna_dri3_fd_from_pixmap(screen, pixmap, &strides[0], &size,
+					   &tiling, true);
+	if (fds[0] < 0)
+		return 0;
+
+	offsets[0] = 0;
+	*modifier = sna_dri3_tiling_to_modifier(tiling);
+	return 1;
+}
+
+/* the formats the server derives from a client's bpp (drm_format_for_depth) */
+static const uint32_t sna_dri3_formats[] = {
+	DRM_FORMAT_RGB565,
+	DRM_FORMAT_XRGB8888,
+	DRM_FORMAT_XRGB2101010,
+	DRM_FORMAT_ARGB8888,
+};
+
+static bool sna_dri3_has_format(uint32_t format)
+{
+	unsigned i;
+
+	for (i = 0; i < ARRAY_SIZE(sna_dri3_formats); i++)
+		if (sna_dri3_formats[i] == format)
+			return true;
+
+	return false;
+}
+
+static int sna_dri3_get_formats(ScreenPtr screen,
+				CARD32 *num_formats,
+				CARD32 **formats)
+{
+	DBG(("%s()\n", __FUNCTION__));
+
+	*formats = malloc(sizeof(sna_dri3_formats));
+	if (*formats == NULL)
+		return FALSE;
+
+	memcpy(*formats, sna_dri3_formats, sizeof(sna_dri3_formats));
+	*num_formats = ARRAY_SIZE(sna_dri3_formats);
+	return TRUE;
+}
+
+static int sna_dri3_get_modifiers(ScreenPtr screen,
+				  uint32_t format,
+				  uint32_t *num_modifiers,
+				  uint64_t **modifiers)
+{
+	struct sna *sna = to_sna_from_screen(screen);
+	uint64_t *mods;
+	uint32_t n = 0;
+
+	*num_modifiers = 0;
+	*modifiers = NULL;
+	if (!sna_dri3_has_format(format))
+		return TRUE;
+
+	mods = malloc(3 * sizeof(*mods));
+	if (mods == NULL)
+		return FALSE;
+
+	mods[n++] = DRM_FORMAT_MOD_LINEAR;
+	mods[n++] = I915_FORMAT_MOD_X_TILED;
+	if (sna->kgem.can_blt_y && sna->kgem.can_render_y)
+		mods[n++] = I915_FORMAT_MOD_Y_TILED;
+
+	DBG(("%s(format=%08x): %d modifiers\n", __FUNCTION__, format, n));
+	*num_modifiers = n;
+	*modifiers = mods;
+	return TRUE;
+}
+
+/* what a client buffer may use and still be flipped (see sna_present.c) */
+static int sna_dri3_get_drawable_modifiers(DrawablePtr draw,
+					   uint32_t format,
+					   uint32_t *num_modifiers,
+					   uint64_t **modifiers)
+{
+	struct sna *sna = to_sna_from_screen(draw->pScreen);
+	uint64_t *mods;
+	uint32_t n = 0;
+
+	*num_modifiers = 0;
+	*modifiers = NULL;
+	if (draw->type != DRAWABLE_WINDOW || !sna_dri3_has_format(format))
+		return TRUE;
+
+	mods = malloc(3 * sizeof(*mods));
+	if (mods == NULL)
+		return FALSE;
+
+	mods[n++] = DRM_FORMAT_MOD_LINEAR;
+	if ((sna->flags & SNA_LINEAR_FB) == 0) {
+		mods[n++] = I915_FORMAT_MOD_X_TILED;
+		if (sna->kgem.can_scanout_y &&
+		    sna->kgem.can_blt_y && sna->kgem.can_render_y)
+			mods[n++] = I915_FORMAT_MOD_Y_TILED;
+	}
+
+	DBG(("%s(format=%08x): %d modifiers\n", __FUNCTION__, format, n));
+	*num_modifiers = n;
+	*modifiers = mods;
+	return TRUE;
+}
+
+#if HAVE_DRI3_SYNCOBJ
+static struct dri3_syncobj *sna_dri3_import_syncobj(ClientPtr client,
+						    ScreenPtr screen,
+						    XID id, int fd)
+{
+	return intel_dri3_import_syncobj(screen,
+					 to_sna_from_screen(screen)->kgem.fd,
+					 id, fd);
+}
+#endif
+
+/* version 4 and import_syncobj are added in sna_dri3_open() when the
+ * kernel supports timeline sync objects */
 static dri3_screen_info_rec sna_dri3_info = {
-	.version = DRI3_SCREEN_INFO_VERSION,
+	.version = 2, /* the newest set of hooks filled in below */
 
 	.open = sna_dri3_open_device,
 	.pixmap_from_fd = sna_dri3_pixmap_from_fd,
 	.fd_from_pixmap = sna_dri3_fd_from_pixmap,
+
+	.pixmap_from_fds = sna_dri3_pixmap_from_fds,
+	.fds_from_pixmap = sna_dri3_fds_from_pixmap,
+	.get_formats = sna_dri3_get_formats,
+	.get_modifiers = sna_dri3_get_modifiers,
+	.get_drawable_modifiers = sna_dri3_get_drawable_modifiers,
 };
 
 bool sna_dri3_open(struct sna *sna, ScreenPtr screen)
@@ -374,6 +623,15 @@ bool sna_dri3_open(struct sna *sna, ScreenPtr screen)
 		return false;
 
 	list_init(&sna->dri3.pixmaps);
+
+#if HAVE_DRI3_SYNCOBJ
+	if (intel_dri3_syncobj_supported(sna->scrn, sna->kgem.fd)) {
+		sna_dri3_info.version = 4;
+		sna_dri3_info.import_syncobj = sna_dri3_import_syncobj;
+		sna->dri3.syncobj = true;
+	}
+#endif
+
 	return dri3_screen_init(screen, &sna_dri3_info);
 }
 

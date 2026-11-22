@@ -429,8 +429,7 @@ static void setup_dri(struct sna *sna)
 	sna->dri3.override =
 		!sna->dri3.available ||
 		xf86IsOptionSet(sna->Options, OPTION_DRI);
-	if (level >= 3 && (sna->kgem.gen >= 040 ||
-			   xf86IsOptionSet(sna->Options, OPTION_DRI)))
+	if (level >= 3)
 		sna->dri3.enable = sna->dri3.available;
 #endif
 #if HAVE_DRI2

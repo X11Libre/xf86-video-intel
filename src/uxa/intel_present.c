@@ -228,6 +228,33 @@ intel_present_flush(WindowPtr window)
 		intel->flush_rendering(intel);
 }
 
+/* Local types, so the driver still builds against servers without
+ * present_screen_set_flush_fenced; both functions are looked up at run time.
+ */
+typedef int (*intel_flush_fenced_proc)(WindowPtr window);
+typedef void (*intel_set_flush_fenced_proc)(ScreenPtr screen,
+					    intel_flush_fenced_proc func);
+typedef Bool (*intel_supports_syncobj_proc)(void);
+
+/*
+ * Flush rendering for an explicitly synchronized copy and wait for it.
+ * The copy reads the client's buffer in the batch that writes the window's
+ * pixmap, so once that is idle the buffer is free; -1 means "complete".
+ */
+static int
+intel_present_flush_fenced(WindowPtr window)
+{
+	ScreenPtr screen = window->drawable.pScreen;
+	dri_bo *bo;
+
+	intel_present_flush(window);
+	bo = intel_get_pixmap_bo(screen->GetWindowPixmap(window));
+	if (bo)
+		drm_intel_bo_wait_rendering(bo);
+
+	return -1;
+}
+
 /*
  * Test to see if page flipping is possible on the target crtc
  */
@@ -410,8 +437,50 @@ intel_present_has_async_flip(ScreenPtr screen)
 Bool
 intel_present_screen_init(ScreenPtr screen)
 {
+	ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
+	intel_screen_private *intel = intel_get_screen_private(scrn);
+	intel_set_flush_fenced_proc set_flush_fenced;
+
 	if (intel_present_has_async_flip(screen))
 		intel_present_screen_info.capabilities |= PresentCapabilityAsync;
 
-	return present_screen_init(screen, &intel_present_screen_info);
+	set_flush_fenced = LoaderSymbol("present_screen_set_flush_fenced");
+
+	/* Every condition below is the same for all screens */
+#ifdef PresentCapabilitySyncobj
+	{
+		intel_supports_syncobj_proc server_supports_syncobj =
+			LoaderSymbol("present_scmd_supports_syncobj");
+		const char *reason = NULL;
+
+		if (!set_flush_fenced || !server_supports_syncobj)
+			reason = "server too old";
+		else if (!server_supports_syncobj())
+			reason = "server built without DRI3";
+		else if (!intel->dri3_syncobj)
+			reason = "no DRI3 sync objects";
+
+		if (reason) {
+			xf86DrvMsg(scrn->scrnIndex, X_INFO,
+				   "Present explicit sync: disabled (%s)\n", reason);
+		} else {
+			intel_present_screen_info.capabilities |=
+				PresentCapabilitySyncobj;
+			xf86DrvMsg(scrn->scrnIndex, X_INFO,
+				   "Present explicit sync: enabled\n");
+		}
+	}
+#else
+	(void)intel;
+	xf86DrvMsg(scrn->scrnIndex, X_INFO,
+		   "Present explicit sync: disabled (protocol headers too old)\n");
+#endif
+
+	if (!present_screen_init(screen, &intel_present_screen_info))
+		return FALSE;
+
+	if (set_flush_fenced)
+		set_flush_fenced(screen, intel_present_flush_fenced);
+
+	return TRUE;
 }

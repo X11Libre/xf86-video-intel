@@ -35,6 +35,38 @@
 
 static present_screen_info_rec present_info;
 
+/* Local types, so the driver still builds against servers without
+ * present_screen_set_flush_fenced; both functions are looked up at run time.
+ */
+typedef int (*sna_flush_fenced_proc)(WindowPtr window);
+typedef void (*sna_set_flush_fenced_proc)(ScreenPtr screen,
+					  sna_flush_fenced_proc func);
+typedef Bool (*sna_supports_syncobj_proc)(void);
+
+/*
+ * Flush rendering for an explicitly synchronized copy and wait for it.
+ * The copy reads the client's buffer in the batch that writes the window's
+ * pixmap, so once that is idle the buffer is free; -1 means "complete".
+ */
+static int
+sna_present_flush_fenced(WindowPtr window)
+{
+	struct sna *sna = to_sna_from_screen(window->drawable.pScreen);
+	struct sna_pixmap *priv = sna_pixmap(get_window_pixmap(window));
+
+	DBG(("%s(window=%ld)\n", __FUNCTION__, (long)window->drawable.id));
+	if (priv && priv->gpu_bo) {
+		kgem_bo_submit(&sna->kgem, priv->gpu_bo);
+		kgem_bo_wait(&sna->kgem, priv->gpu_bo);
+	}
+	if (priv && priv->cpu_bo) {
+		kgem_bo_submit(&sna->kgem, priv->cpu_bo);
+		kgem_bo_wait(&sna->kgem, priv->cpu_bo);
+	}
+
+	return -1;
+}
+
 struct sna_present_event {
 	xf86CrtcPtr crtc;
 	struct sna *sna;
@@ -992,6 +1024,8 @@ static present_screen_info_rec present_info = {
 
 bool sna_present_open(struct sna *sna, ScreenPtr screen)
 {
+	sna_set_flush_fenced_proc set_flush_fenced;
+
 	DBG(("%s(num_crtc=%d)\n", __FUNCTION__, sna->mode.num_real_crtc));
 
 	if (sna->mode.num_real_crtc == 0)
@@ -1000,7 +1034,43 @@ bool sna_present_open(struct sna *sna, ScreenPtr screen)
 	sna_present_update(sna);
 	list_init(&sna->present.vblank_queue);
 
-	return present_screen_init(screen, &present_info);
+	set_flush_fenced = LoaderSymbol("present_screen_set_flush_fenced");
+
+	/* Every condition below is the same for all screens */
+#ifdef PresentCapabilitySyncobj
+	{
+		sna_supports_syncobj_proc server_supports_syncobj =
+			LoaderSymbol("present_scmd_supports_syncobj");
+		const char *reason = NULL;
+
+		if (!set_flush_fenced || !server_supports_syncobj)
+			reason = "server too old";
+		else if (!server_supports_syncobj())
+			reason = "server built without DRI3";
+		else if (!sna->dri3.syncobj)
+			reason = "no DRI3 sync objects";
+
+		if (reason) {
+			xf86DrvMsg(sna->scrn->scrnIndex, X_INFO,
+				   "Present explicit sync: disabled (%s)\n", reason);
+		} else {
+			present_info.capabilities |= PresentCapabilitySyncobj;
+			xf86DrvMsg(sna->scrn->scrnIndex, X_INFO,
+				   "Present explicit sync: enabled\n");
+		}
+	}
+#else
+	xf86DrvMsg(sna->scrn->scrnIndex, X_INFO,
+		   "Present explicit sync: disabled (protocol headers too old)\n");
+#endif
+
+	if (!present_screen_init(screen, &present_info))
+		return false;
+
+	if (set_flush_fenced)
+		set_flush_fenced(screen, sna_present_flush_fenced);
+
+	return true;
 }
 
 void sna_present_update(struct sna *sna)

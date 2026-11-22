@@ -286,9 +286,9 @@ AC_ARG_ENABLE(dri3,
               [DRI3=yes])
 AC_ARG_WITH(default-dri,
             AS_HELP_STRING([--with-default-dri],
-                           [Select the default maximum DRI level [default 2]]),
+                           [Select the default maximum DRI level [default 3]]),
               [DRI_DEFAULT=$withval],
-              [DRI_DEFAULT=2])
+              [DRI_DEFAULT=3])
 if test "x$DRI_DEFAULT" = "x0"; then
         AC_DEFINE(DEFAULT_DRI_LEVEL, 0,[Default DRI level])
 else
@@ -539,6 +539,13 @@ AM_CONDITIONAL(DRI3, test "x$have_dri3" != "xno")
 AC_MSG_RESULT([$have_dri3])
 if test "x$have_dri3" != "xno"; then
         AC_DEFINE(HAVE_DRI3,1,[Enable DRI3 driver support])
+        # DRI3 1.4 sync objects need a newer libdrm than the driver requires
+        save_LIBS=$LIBS
+        LIBS="$DRM_LIBS $LIBS"
+        AC_CHECK_FUNC([drmSyncobjEventfd],
+                      [AC_CHECK_HEADER([sys/eventfd.h],
+                                       [AC_DEFINE(HAVE_DRI3_SYNCOBJ,1,[Enable DRI3 sync objects])])])
+        LIBS=$save_LIBS
         str="DRI3"
         if test "x$DRI_DEFAULT" = "x3"; then
                 AC_DEFINE(DEFAULT_DRI_LEVEL,3,[Default DRI level])
@@ -552,7 +559,7 @@ else
 fi
 
 AC_MSG_CHECKING([default DRI support])
-AC_MSG_RESULT([$DEFAULT_DRI_DEFAULT])
+AC_MSG_RESULT([$DRI_DEFAULT])
 
 AC_CHECK_HEADERS([X11/extensions/dpmsconst.h])
 PKG_CHECK_MODULES(PRESENT, [presentproto])

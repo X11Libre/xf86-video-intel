@@ -260,8 +260,13 @@ struct kgem_bo *kgem_create_map(struct kgem *kgem,
 				bool read_only);
 
 struct kgem_bo *kgem_create_for_name(struct kgem *kgem, uint32_t name);
-struct kgem_bo *kgem_create_for_prime(struct kgem *kgem, int name, uint32_t size);
+struct kgem_bo *kgem_create_for_prime(struct kgem *kgem, int name, uint32_t size,
+				      int tiling);
+bool kgem_bo_import_tiling(struct kgem *kgem, struct kgem_bo *bo,
+			   int tiling, uint32_t pitch);
 int kgem_bo_export_to_prime(struct kgem *kgem, struct kgem_bo *bo);
+/* blocks until the GPU work on bo has completed */
+int kgem_bo_wait(struct kgem *kgem, struct kgem_bo *bo);
 
 struct kgem_bo *kgem_create_linear(struct kgem *kgem, int size, unsigned flags);
 struct kgem_bo *kgem_create_proxy(struct kgem *kgem,

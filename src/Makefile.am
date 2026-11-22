@@ -64,6 +64,8 @@ intel_drv_la_SOURCES = \
 	intel_list.h \
 	intel_options.h \
 	intel_device.c \
+	intel_dri3_syncobj.c \
+	intel_dri3_syncobj.h \
 	intel_driver.h \
 	intel_options.c \
 	intel_module.c \
