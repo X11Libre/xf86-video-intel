@@ -559,7 +559,7 @@ else
 fi
 
 AC_MSG_CHECKING([default DRI support])
-AC_MSG_RESULT([$DEFAULT_DRI_DEFAULT])
+AC_MSG_RESULT([$DRI_DEFAULT])
 
 AC_CHECK_HEADERS([X11/extensions/dpmsconst.h])
 PKG_CHECK_MODULES(PRESENT, [presentproto])
