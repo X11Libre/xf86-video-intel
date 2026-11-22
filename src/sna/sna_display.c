@@ -2213,7 +2213,7 @@ static void update_flush_interval(struct sna *sna)
 		DBG(("%s: CRTC:%d (crt %d) vrefresh=%f\n",
 		     __FUNCTION__, i, sna_crtc_index(crtc),
 		     xf86ModeVRefresh(&crtc->mode)));
-		max_vrefresh = max(max_vrefresh, xf86ModeVRefresh(&crtc->mode));
+		max_vrefresh = MAX(max_vrefresh, xf86ModeVRefresh(&crtc->mode));
 	}
 
 	if (max_vrefresh == 0) {
@@ -2326,8 +2326,8 @@ void sna_copy_fbcon(struct sna *sna)
 	scratch.devPrivate.ptr = NULL;
 
 	box.x1 = box.y1 = 0;
-	box.x2 = min(fbcon.width, sna->front->drawable.width);
-	box.y2 = min(fbcon.height, sna->front->drawable.height);
+	box.x2 = MIN(fbcon.width, sna->front->drawable.width);
+	box.y2 = MIN(fbcon.height, sna->front->drawable.height);
 
 	sx = dx = 0;
 	if (box.x2 < (uint16_t)fbcon.width)
@@ -3722,7 +3722,7 @@ sna_crtc_init__props(struct sna *sna, struct sna_crtc *crtc)
 		crtc->gamma_lut_size = 0;
 
 	if (crtc->gamma_lut_size) {
-		crtc->gamma_lut = calloc(max(crtc->gamma_lut_size, 256),
+		crtc->gamma_lut = calloc(MAX(crtc->gamma_lut_size, 256),
 					 sizeof(crtc->gamma_lut[0]));
 		if (!crtc->gamma_lut)
 			crtc->gamma_lut_size = 0;
@@ -3935,7 +3935,7 @@ sna_output_detect(xf86OutputPtr output)
 		compat_conn.conn.count_encoders = 0;
 		compat_conn.conn.count_props = 0;
 		if (drmIoctl(sna->kgem.fd, DRM_IOCTL_MODE_GETCONNECTOR, &compat_conn.conn)) {
-			sna_output->num_modes = min(old_count, sna_output->num_modes);
+			sna_output->num_modes = MIN(old_count, sna_output->num_modes);
 			break;
 		}
 		VG(VALGRIND_MAKE_MEM_DEFINED(sna_output->modes, sizeof(*sna_output->modes)*sna_output->num_modes));
@@ -4305,10 +4305,10 @@ sna_output_add_default_modes(xf86OutputPtr output, DisplayModePtr modes)
 	for (m = modes; m; m = m->next) {
 		if (m->type & M_T_PREFERRED)
 			preferred = m;
-		max_x = max(max_x, m->HDisplay);
-		max_y = max(max_y, m->VDisplay);
-		max_clock = max(max_clock, m->Clock);
-		max_vrefresh = max(max_vrefresh, xf86ModeVRefresh(m));
+		max_x = MAX(max_x, m->HDisplay);
+		max_y = MAX(max_y, m->VDisplay);
+		max_clock = MAX(max_clock, m->Clock);
+		max_vrefresh = MAX(max_vrefresh, xf86ModeVRefresh(m));
 	}
 	max_vrefresh *= (1 + SYNC_TOLERANCE);
 
@@ -5904,8 +5904,8 @@ static void copy_front(struct sna *sna, PixmapPtr old, PixmapPtr new)
 			}
 		} else {
 			box.x1 = box.y1 = 0;
-			box.x2 = min(old->drawable.width, new->drawable.width);
-			box.y2 = min(old->drawable.height, new->drawable.height);
+			box.x2 = MIN(old->drawable.width, new->drawable.width);
+			box.y2 = MIN(old->drawable.height, new->drawable.height);
 
 			sx = dx = 0;
 			if (box.x2 < old->drawable.width)
@@ -7353,7 +7353,7 @@ crtc_get_gamma_lut(xf86CrtcPtr crtc,
 	lut_size = blob.length / sizeof(lut[0]);
 
 	if (lut_size == 0 ||
-	    lut_size > max(sna_crtc->gamma_lut_size, 256))
+	    lut_size > MAX(sna_crtc->gamma_lut_size, 256))
 		return false;
 
 	blob.data = (uintptr_t)lut;

@@ -899,12 +899,12 @@ intel_output_panel_edid(xf86OutputPtr output, DisplayModePtr modes)
 		for (m = modes; m; m = m->next) {
 			if (m->type & M_T_PREFERRED)
 				p = m;
-			max_x = max(max_x, m->HDisplay);
-			max_y = max(max_y, m->VDisplay);
-			max_vrefresh = max(max_vrefresh, xf86ModeVRefresh(m));
+			max_x = MAX(max_x, m->HDisplay);
+			max_y = MAX(max_y, m->VDisplay);
+			max_vrefresh = MAX(max_vrefresh, xf86ModeVRefresh(m));
 		}
 
-		max_vrefresh = max(max_vrefresh, 60.0);
+		max_vrefresh = MAX(max_vrefresh, 60.0);
 		max_vrefresh *= (1 + SYNC_TOLERANCE);
 
 		m = xf86GetDefaultModes();

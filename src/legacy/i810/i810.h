@@ -62,6 +62,14 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "i810_common.h"
 #include "i810_ring.h"
 
+#ifndef MIN
+#define MIN(a,b)	((a) < (b) ? (a) : (b))
+#endif
+
+#ifndef MAX
+#define MAX(a,b)	((a) > (b) ? (a) : (b))
+#endif
+
 #include "intel_driver.h"
 
 /* HWMC Surfaces */
