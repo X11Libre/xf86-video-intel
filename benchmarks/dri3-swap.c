@@ -22,6 +22,7 @@
  *
  */
 #include "config.h"
+#undef NDEBUG /* the asserts are the benchmark's checks */
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>

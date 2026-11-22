@@ -22,6 +22,7 @@
  *
  */
 #include "config.h"
+#undef NDEBUG /* the asserts are the test's checks */
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
