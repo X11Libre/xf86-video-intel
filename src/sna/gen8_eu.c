@@ -94,11 +94,13 @@ __gen8_set_bits(struct gen8_instruction *insn,
 }
 
 #define F(name, high, low) \
-static inline void __gen8_set_##name(struct gen8_instruction *insn, unsigned v) \
+static inline __attribute__((unused)) void \
+__gen8_set_##name(struct gen8_instruction *insn, unsigned v) \
 { \
 	__gen8_set_bits(insn, high, low, v); \
 } \
-static inline unsigned __gen8_##name(struct gen8_instruction *insn) \
+static inline __attribute__((unused)) unsigned \
+__gen8_##name(struct gen8_instruction *insn) \
 { \
 	return __gen8_bits(insn, high, low); \
 }
@@ -275,38 +277,45 @@ F(cre_binding_table_index, 103,  96)
 * Flow control instruction bits:
 *  @{
 */
-static inline unsigned __gen8_uip(struct gen8_instruction *insn)
+static inline __attribute__((unused)) unsigned
+__gen8_uip(struct gen8_instruction *insn)
 {
 	return insn->data[2];
 }
 
-static inline void __gen8_set_uip(struct gen8_instruction *insn, unsigned uip)
+static inline __attribute__((unused)) void
+__gen8_set_uip(struct gen8_instruction *insn, unsigned uip)
 {
 	insn->data[2] = uip;
 }
 
-static inline unsigned __gen8_jip(struct gen8_instruction *insn)
+static inline __attribute__((unused)) unsigned
+__gen8_jip(struct gen8_instruction *insn)
 {
 	return insn->data[3];
 }
 
-static inline void __gen8_set_jip(struct gen8_instruction *insn, unsigned jip)
+static inline __attribute__((unused)) void
+__gen8_set_jip(struct gen8_instruction *insn, unsigned jip)
 {
 	insn->data[3] = jip;
 }
 /** @} */
 
-static inline int __gen8_src1_imm_d(struct gen8_instruction *insn)
+static inline __attribute__((unused)) int
+__gen8_src1_imm_d(struct gen8_instruction *insn)
 {
 	return insn->data[3];
 }
 
-static inline unsigned __gen8_src1_imm_ud(struct gen8_instruction *insn)
+static inline __attribute__((unused)) unsigned
+__gen8_src1_imm_ud(struct gen8_instruction *insn)
 {
 	return insn->data[3];
 }
 
-static inline float __gen8_src1_imm_f(struct gen8_instruction *insn)
+static inline __attribute__((unused)) float
+__gen8_src1_imm_f(struct gen8_instruction *insn)
 {
 	union {
 		uint32_t u;
@@ -735,7 +744,8 @@ static inline struct gen8_instruction *gen8_alu2(struct brw_compile *p,
 }
 
 #define ALU1(OP)							\
-static inline struct gen8_instruction *gen8_##OP(struct brw_compile *p,	\
+static inline __attribute__((unused))					\
+struct gen8_instruction *gen8_##OP(struct brw_compile *p,		\
 						 struct brw_reg dst,	\
 						 struct brw_reg src0)	\
 {									\
@@ -743,7 +753,8 @@ static inline struct gen8_instruction *gen8_##OP(struct brw_compile *p,	\
 }
 
 #define ALU2(OP)							\
-static inline struct gen8_instruction *gen8_##OP(struct brw_compile *p,	\
+static inline __attribute__((unused))					\
+struct gen8_instruction *gen8_##OP(struct brw_compile *p,		\
 						 struct brw_reg dst,	\
 						 struct brw_reg src0,	\
 						 struct brw_reg src1)	\
@@ -751,7 +762,8 @@ static inline struct gen8_instruction *gen8_##OP(struct brw_compile *p,	\
    return gen8_alu2(p, BRW_OPCODE_##OP, dst, src0, src1);		\
 }
 
-static inline struct gen8_instruction *gen8_ADD(struct brw_compile *p,
+static inline __attribute__((unused))
+struct gen8_instruction *gen8_ADD(struct brw_compile *p,
 						struct brw_reg dst,
 						struct brw_reg src0,
 						struct brw_reg src1)
@@ -859,12 +871,14 @@ static inline void gen8_set_mask_control(struct brw_compile *p, unsigned value)
 	__gen8_set_mask_control((struct gen8_instruction *)p->current, value);
 }
 
-static inline void gen8_set_saturate(struct brw_compile *p, unsigned value)
+static inline __attribute__((unused)) void
+gen8_set_saturate(struct brw_compile *p, unsigned value)
 {
 	__gen8_set_saturate((struct gen8_instruction *)p->current, value);
 }
 
-static inline void gen8_set_acc_write_control(struct brw_compile *p, unsigned value)
+static inline __attribute__((unused)) void
+gen8_set_acc_write_control(struct brw_compile *p, unsigned value)
 {
 	__gen8_set_acc_wr_control((struct gen8_instruction *)p->current, value);
 }
