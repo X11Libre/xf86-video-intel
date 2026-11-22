@@ -120,7 +120,7 @@ sna = static_library('sna',
 		     dependencies : sna_deps,
 		     link_with : [ brw, fb, ],
 		     include_directories : inc,
-		     c_args : [
+		     c_args : cc.get_supported_arguments([
 		       '-Wno-unused-but-set-variable',
 		       '-Wno-expansion-to-defined',
 		       '-Wno-maybe-uninitialized',
@@ -130,5 +130,5 @@ sna = static_library('sna',
 		       '-Wno-sign-compare',
 		       '-Wno-type-limits',
 		       '-Wno-clobbered',
-		     ],
+		     ]),
 		     install : false)
