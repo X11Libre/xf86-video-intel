@@ -145,7 +145,7 @@ brw_set_dest(struct brw_compile *p, struct brw_instruction *insn,
 	guess_execution_size(p, insn, dest);
 }
 
-static const int reg_type_size[8] = {
+static const int __attribute__((unused)) reg_type_size[8] = {
 	[0] = 4,
 	[1] = 4,
 	[2] = 2,

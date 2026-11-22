@@ -64,6 +64,9 @@ if with_backlight_helper
 endif
 
 debug = get_option('internal-debug')
+if debug == 'no'
+  config.set('NDEBUG', 1)
+endif
 if debug == 'sync'
   config.set('DEBUG_SYNC', 1)
 endif
