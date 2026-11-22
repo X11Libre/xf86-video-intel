@@ -9,10 +9,21 @@ project('xf86-video-intel', 'c',
 
 config = configuration_data()
 
-version = meson.project_version().split('.')
+# Keep a pre-release suffix such as "-rc1" out of the version numbers.
+version_parts = meson.project_version().split('-')
+version = version_parts[0].split('.')
+version_suffix = ''
+i = 0
+foreach part : version_parts
+	if i > 0
+		version_suffix += '-' + part
+	endif
+	i += 1
+endforeach
 config.set('PACKAGE_VERSION_MAJOR', version[0])
 config.set('PACKAGE_VERSION_MINOR', version[1])
 config.set('PACKAGE_VERSION_PATCHLEVEL', version[2])
+config.set_quoted('PACKAGE_VERSION_SUFFIX', version_suffix)
 
 config.set_quoted('LIBEXEC_PATH', join_paths(get_option('prefix'),
 					     get_option('libexecdir')))

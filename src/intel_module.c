@@ -902,3 +902,7 @@ static void *intel_setup(void *module,
 }
 
 _X_EXPORT XF86ModuleData intelModuleData = { &intel_version, intel_setup, NULL };
+
+#ifdef XF86_MODULE_VERSION_SUFFIX
+XF86_MODULE_VERSION_SUFFIX(intel, INTEL_VERSION_SUFFIX);
+#endif
