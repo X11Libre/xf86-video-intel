@@ -1428,9 +1428,12 @@ out_complete:
 static int dri2_server_generation;
 #endif
 
-static int has_i830_dri(void)
+static int has_dri_driver(const char *name)
 {
-	return access(DRI_DRIVER_PATH "/i830_dri.so", R_OK) == 0;
+	char path[sizeof(DRI_DRIVER_PATH) + 32];
+
+	snprintf(path, sizeof(path), "%s/%s_dri.so", DRI_DRIVER_PATH, name);
+	return access(path, R_OK) == 0;
 }
 
 static int
@@ -1516,11 +1519,14 @@ static const char *dri_driver_name(intel_screen_private *intel)
 
 	if (is_level(&s)) {
 		if (INTEL_INFO(intel)->gen < 030)
-			return has_i830_dri() ? "i830" : "i915";
+			return has_dri_driver("i830") ? "i830" : "i915";
 		else if (INTEL_INFO(intel)->gen < 040)
 			return "i915";
+		/* Mesa 22 dropped i965 (Amber keeps it) for crocus and iris */
+		else if (INTEL_INFO(intel)->gen < 0100)
+			return has_dri_driver("crocus") ? "crocus" : "i965";
 		else
-			return "i965";
+			return has_dri_driver("iris") ? "iris" : "i965";
 	}
 
 	return s;
