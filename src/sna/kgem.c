@@ -4849,7 +4849,10 @@ struct kgem_bo *kgem_create_for_name(struct kgem *kgem, uint32_t name)
 	return bo;
 }
 
-struct kgem_bo *kgem_create_for_prime(struct kgem *kgem, int name, uint32_t size)
+/* tiling_wanted < 0: the kernel must report the tiling; otherwise it is
+ * the tiling the client stated, used where the kernel can't report one */
+struct kgem_bo *kgem_create_for_prime(struct kgem *kgem, int name, uint32_t size,
+				      int tiling_wanted)
 {
 #ifdef DRM_IOCTL_PRIME_FD_TO_HANDLE
 	struct drm_prime_handle args;
@@ -4872,8 +4875,11 @@ struct kgem_bo *kgem_create_for_prime(struct kgem *kgem, int name, uint32_t size
 	tiling.handle = args.handle;
 	if (do_ioctl(kgem->fd, DRM_IOCTL_I915_GEM_GET_TILING, &tiling)) {
 		DBG(("%s(name=%d) get-tiling failed, ret=%d\n", __FUNCTION__, name, errno));
-		gem_close(kgem->fd, args.handle);
-		return NULL;
+		if (tiling_wanted < 0) {
+			gem_close(kgem->fd, args.handle);
+			return NULL;
+		}
+		tiling.tiling_mode = tiling_wanted;
 	}
 
 	/* Query actual size, overriding specified if available */
@@ -4942,6 +4948,23 @@ struct kgem_bo *kgem_create_for_prime(struct kgem *kgem, int name, uint32_t size
 #else
 	return NULL;
 #endif
+}
+
+/* make an imported bo use the tiling its DRI3 modifier states */
+bool kgem_bo_import_tiling(struct kgem *kgem, struct kgem_bo *bo,
+			   int tiling, uint32_t pitch)
+{
+	assert(bo->prime);
+	if (bo->tiling == tiling)
+		return true;
+
+	DBG(("%s: handle=%d, tiling %d -> %d, pitch=%d\n",
+	     __FUNCTION__, bo->handle, bo->tiling, tiling, pitch));
+	if (!gem_set_tiling(kgem->fd, bo->handle, tiling, tiling ? pitch : 0))
+		return false;
+
+	bo->tiling = tiling;
+	return true;
 }
 
 int kgem_bo_export_to_prime(struct kgem *kgem, struct kgem_bo *bo)

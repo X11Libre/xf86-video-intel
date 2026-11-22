@@ -1184,7 +1184,8 @@ sna_set_shared_pixmap_backing(PixmapPtr pixmap, void *fd_handle)
 
 	bo = kgem_create_for_prime(&sna->kgem,
 				   (intptr_t)fd_handle,
-				   pixmap->devKind * pixmap->drawable.height);
+				   pixmap->devKind * pixmap->drawable.height,
+				   -1);
 	if (bo == NULL)
 		return FALSE;
 
