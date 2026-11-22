@@ -1502,7 +1502,8 @@ static inline bool has_coherent_map(struct sna *sna,
 	return kgem_bo_can_map__cpu(&sna->kgem, bo, flags & MOVE_WRITE);
 }
 
-static inline bool has_coherent_ptr(struct sna *sna, struct sna_pixmap *priv, unsigned flags)
+static inline __attribute__((unused)) bool
+has_coherent_ptr(struct sna *sna, struct sna_pixmap *priv, unsigned flags)
 {
 	if (priv == NULL)
 		return true;
