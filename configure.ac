@@ -539,6 +539,13 @@ AM_CONDITIONAL(DRI3, test "x$have_dri3" != "xno")
 AC_MSG_RESULT([$have_dri3])
 if test "x$have_dri3" != "xno"; then
         AC_DEFINE(HAVE_DRI3,1,[Enable DRI3 driver support])
+        # DRI3 1.4 sync objects need a newer libdrm than the driver requires
+        save_LIBS=$LIBS
+        LIBS="$DRM_LIBS $LIBS"
+        AC_CHECK_FUNC([drmSyncobjEventfd],
+                      [AC_CHECK_HEADER([sys/eventfd.h],
+                                       [AC_DEFINE(HAVE_DRI3_SYNCOBJ,1,[Enable DRI3 sync objects])])])
+        LIBS=$save_LIBS
         str="DRI3"
         if test "x$DRI_DEFAULT" = "x3"; then
                 AC_DEFINE(DEFAULT_DRI_LEVEL,3,[Default DRI level])

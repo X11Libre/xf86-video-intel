@@ -48,6 +48,12 @@ if with_dri3
   endif
 
   config.set('HAVE_DRI3', 1)
+
+  # DRI3 1.4 sync objects need a newer libdrm than the driver requires
+  if (cc.has_function('drmSyncobjEventfd', dependencies : libdrm) and
+      cc.has_header('sys/eventfd.h'))
+    config.set('HAVE_DRI3_SYNCOBJ', 1)
+  endif
 endif
 
 default_dri = get_option('default-dri')
@@ -81,6 +87,7 @@ intel_drv_sources = [
   'backlight.c',
   'fd.c',
   'intel_device.c',
+  'intel_dri3_syncobj.c',
   'intel_options.c',
   'intel_module.c',
 ]
