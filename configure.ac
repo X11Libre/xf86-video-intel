@@ -194,16 +194,16 @@ AM_CONDITIONAL(HAVE_X11, test "x$x11" = "xyes")
 echo X11_CLFAGS="$X11_CLFAGS" X11_LIBS="$X11_LIBS"
 
 cpuid="yes"
-AC_TRY_LINK([
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[
         #include <cpuid.h>
         #include <stddef.h>
-        ],
-        [
+        ]],
+        [[
         int eax, ebx, ecx, edx;
         if (__get_cpuid_max(0, NULL) < 4)
                 return 0;
         __cpuid_count(4, 0, eax, ebx, ecx, edx);
-        ],
+        ]])],
         [cpuid="yes"],
         [cpuid="no"]
 )
