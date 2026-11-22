@@ -56,29 +56,29 @@ static void clear(struct test_display *dpy, struct test_target *tt)
 static void step_to_point(int step, int width, int height, XPointFixed *p)
 {
 	do {
-		p->x = (step - 64) << 16;
-		p->y = -64 << 16;
+		p->x = (step - 64) * 65536;
+		p->y = -64 * 65536;
 
 		step -= width - 128;
 		if (step <= 0)
 			return;
 
-		p->x = (width + 64) << 16;
-		p->y = (step - 64) << 16;
+		p->x = (width + 64) * 65536;
+		p->y = (step - 64) * 65536;
 		step -= height - 128;
 
 		if (step <= 0)
 			return;
 
-		p->x = (width + 64 - step) << 16;
-		p->y = (height + 64) << 16;
+		p->x = (width + 64 - step) * 65536;
+		p->y = (height + 64) * 65536;
 		step -= width - 128;
 
 		if (step <= 0)
 			return;
 
-		p->x = -64 << 16;
-		p->y = (height + 64 - step) << 16;
+		p->x = -64 * 65536;
+		p->y = (height + 64 - step) * 65536;
 		step -= height - 128;
 	} while (step > 0);
 }
