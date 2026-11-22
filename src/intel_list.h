@@ -28,6 +28,7 @@
 
 #include <xorgVersion.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 /**
  * @file Classic doubly-link circular list implementation.
@@ -304,7 +305,7 @@ list_is_empty(const struct list *head)
 
 #ifndef __container_of
 #define __container_of(ptr, sample, member)				\
-    (void *)((char *)(ptr) - ((char *)&(sample)->member - (char *)(sample)))
+    (void *)((char *)(ptr) - offsetof(__typeof__(*(sample)), member))
 #endif
 
 /**
