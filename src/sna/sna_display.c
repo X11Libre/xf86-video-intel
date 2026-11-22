@@ -417,11 +417,6 @@ static inline struct sna_crtc *to_sna_crtc(xf86CrtcPtr crtc)
 	return crtc->driver_private;
 }
 
-static inline unsigned __sna_crtc_pipe(struct sna_crtc *crtc)
-{
-	return crtc->public.flags >> 8 & 0xff;
-}
-
 static inline unsigned __sna_crtc_index(struct sna_crtc *crtc)
 {
 	return crtc->public.flags >> 16 & 0xff;
