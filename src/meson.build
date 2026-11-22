@@ -139,7 +139,6 @@ shared_module('intel_drv',
 	      include_directories: inc,
 	      link_with : intel_drv_libs,
 	      c_args : [
-		'-DMAJOR_IN_SYSMACROS',
 		'-Wno-unused-parameter',
 		'-Wno-sign-compare',
 	      ],

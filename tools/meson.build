@@ -80,9 +80,6 @@ if with_backlight_helper
 	     sources : 'backlight_helper.c',
 	     install_dir : get_option('libexecdir'),
 	     install_mode : [ 'rws--x--x', 'root', 'root' ],
-	     c_args : [
-	       '-DMAJOR_IN_SYSMACROS',
-	     ],
 	     include_directories: inc,
 	     install : true)
 

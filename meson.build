@@ -126,6 +126,13 @@ if cc.has_header('X11/extensions/dpmsconst.h')
   config.set('HAVE_X11_EXTENSIONS_DPMSCONST_H', 1)
 endif
 
+# where major()/minor() live, like autoconf's AC_HEADER_MAJOR
+if cc.has_header_symbol('sys/mkdev.h', 'major')
+  config.set('MAJOR_IN_MKDEV', 1)
+elif cc.has_header_symbol('sys/sysmacros.h', 'major')
+  config.set('MAJOR_IN_SYSMACROS', 1)
+endif
+
 pixman = dependency('pixman-1', version : '>= 0.16.0', required : true)
 
 if pixman.version().version_compare('>=0.24.0')
