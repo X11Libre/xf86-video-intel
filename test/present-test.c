@@ -1148,7 +1148,7 @@ static int test_wrap_msc(Display *dpy)
 		} else {
 			fprintf(stderr,
 				"\tnotify %d recieved at +%llu\n",
-				ce->serial, ce->msc - msc);
+				ce->serial, (unsigned long long)(ce->msc - msc));
 			ret++;
 		}
 		free(ev);
