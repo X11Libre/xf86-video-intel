@@ -63,10 +63,10 @@ static void fill_rect(struct test_display *dpy, Picture p, uint8_t op,
 	render_color.blue  = blue * alpha;
 	render_color.alpha = alpha << 8;
 
-	trap.left.p1.x = trap.left.p2.x = (x << 16) + dx;
-	trap.top = trap.left.p1.y = trap.right.p1.y = (y << 16) + dy;
-	trap.right.p1.x = trap.right.p2.x = ((x + w) << 16) + dx;
-	trap.bottom = trap.left.p2.y = trap.right.p2.y = ((y + h) << 16) + dy;
+	trap.left.p1.x = trap.left.p2.x = x * 65536 + dx;
+	trap.top = trap.left.p1.y = trap.right.p1.y = y * 65536 + dy;
+	trap.right.p1.x = trap.right.p2.x = (x + w) * 65536 + dx;
+	trap.bottom = trap.left.p2.y = trap.right.p2.y = (y + h) * 65536 + dy;
 
 	src = XRenderCreateSolidFill(dpy->dpy, &render_color);
 	XRenderCompositeTrapezoids(dpy->dpy,
@@ -461,7 +461,7 @@ static void edge_test(struct test *t,
 				trap.left.p2.x = 0;
 				trap.left.p2.y = out.height << 16;
 
-				trap.right.p1.x = p << 16;
+				trap.right.p1.x = p * 65536;
 				trap.right.p1.y = 0;
 				trap.right.p2.x = out.width << 16;
 				trap.right.p2.y = out.height << 16;
@@ -473,7 +473,7 @@ static void edge_test(struct test *t,
 
 				trap.left.p1.x = 0;
 				trap.left.p1.y = 0;
-				trap.left.p2.x = p << 16;
+				trap.left.p2.x = p * 65536;
 				trap.left.p2.y = out.height << 16;
 			}
 
