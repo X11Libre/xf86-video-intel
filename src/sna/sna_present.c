@@ -846,6 +846,17 @@ get_flip_bo(PixmapPtr pixmap)
 	return priv->gpu_bo;
 }
 
+static void
+present_restore_tear_free(struct sna *sna)
+{
+	sna->present.flipped = false;
+	if (sna->flags & SNA_TEAR_FREE) {
+		DBG(("%s: %s TearFree after Present flips\n",
+		     __FUNCTION__, sna->mode.shadow_damage != NULL ? "enabling" : "disabling"));
+		sna->mode.shadow_enabled = sna->mode.shadow_damage != NULL;
+	}
+}
+
 static Bool
 sna_present_flip(RRCrtcPtr crtc,
 		 uint64_t event_id,
@@ -886,19 +897,26 @@ sna_present_flip(RRCrtcPtr crtc,
 		while (poll(&pfd, 1, 0) == 1)
 			sna_mode_wakeup(sna);
 		if (sna->mode.flip_active)
-			return FALSE;
+			goto fail;
 	}
 
 	bo = get_flip_bo(pixmap);
 	if (bo == NULL) {
 		DBG(("%s: flip invalid bo\n", __FUNCTION__));
-		return FALSE;
+		goto fail;
 	}
 
-	if (sync_flip)
-		return flip(sna, crtc, event_id, target_msc, bo);
-	else
-		return flip__async(sna, crtc, event_id, target_msc, bo);
+	if (sync_flip ? flip(sna, crtc, event_id, target_msc, bo) :
+	    flip__async(sna, crtc, event_id, target_msc, bo)) {
+		sna->present.flipped = true;
+		return TRUE;
+	}
+
+fail:
+	/* the server only unflips a window it flipped, so restore TearFree here */
+	if (!sna->present.flipped)
+		present_restore_tear_free(sna);
+	return FALSE;
 }
 
 static void
@@ -919,6 +937,7 @@ notify:
 		     -1,
 		     swap->tv_sec, swap->tv_usec, (long long)swap->msc,
 		     (long long)event_id));
+		present_restore_tear_free(sna);
 		present_event_notify(event_id, swap_ust(swap), swap->msc);
 		return;
 	}
@@ -937,11 +956,7 @@ notify:
 		goto notify;
 
 	assert(!sna->mode.shadow_enabled);
-	if (sna->flags & SNA_TEAR_FREE) {
-		DBG(("%s: %s TearFree after Present flips\n",
-		     __FUNCTION__, sna->mode.shadow_damage != NULL ? "enabling" : "disabling"));
-		sna->mode.shadow_enabled = sna->mode.shadow_damage != NULL;
-	}
+	present_restore_tear_free(sna);
 
 	if (bo == NULL) {
 reset_mode:
