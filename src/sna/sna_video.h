@@ -36,7 +36,7 @@ THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
 
 #define FOURCC_XVMC (('C' << 24) + ('M' << 16) + ('V' << 8) + 'X')
-#define FOURCC_RGB565 ((16 << 24) + ('B' << 16) + ('G' << 8) + 'R')
+#define FOURCC_RGB565_SNA ((16 << 24) + ('B' << 16) + ('G' << 8) + 'R')
 #define FOURCC_RGB888 ((24 << 24) + ('B' << 16) + ('G' << 8) + 'R')
 #ifndef FOURCC_NV12
 #define FOURCC_NV12 (('2' << 24) + ('1' << 16) + ('V' << 8) + 'N')
@@ -58,7 +58,7 @@ THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 }
 
 #define XVMC_RGB565 { \
-	FOURCC_RGB565, XvRGB, LSBFirst, \
+	FOURCC_RGB565_SNA, XvRGB, LSBFirst, \
 	{'P', 'A', 'S', 'S', 'T', 'H', 'R', 'O', 'U', 'G', 'H', 'R', 'G', 'B', '1', '6'}, \
 	16, XvPacked, 1, 16, 0x1f<<11, 0x3f<<5, 0x1f<<0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
 	{'B', 'G', 'R', 'X', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, \
@@ -170,7 +170,7 @@ static inline int xvmc_passthrough(int id)
 {
 	switch (id) {
 	case FOURCC_XVMC:
-	case FOURCC_RGB565:
+	case FOURCC_RGB565_SNA:
 	case FOURCC_RGB888:
 		return true;
 	default:

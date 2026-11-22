@@ -408,7 +408,7 @@ sna_video_sprite_show(struct sna *sna,
 		}
 
 		switch (frame->id) {
-		case FOURCC_RGB565:
+		case FOURCC_RGB565_SNA:
 			f.pixel_format = DRM_FORMAT_RGB565;
 			purged = sna->scrn->depth != 16;
 			break;
@@ -730,7 +730,7 @@ static int sna_video_sprite_query(ddQueryImageAttributes_ARGS)
 
 	switch (format->id) {
 	case FOURCC_RGB888:
-	case FOURCC_RGB565:
+	case FOURCC_RGB565_SNA:
 		if (pitches) {
 			sna_video_frame_init(video, format->id, *w, *h, &frame);
 			sna_video_frame_set_rotation(video, &frame, RR_Rotate_0);

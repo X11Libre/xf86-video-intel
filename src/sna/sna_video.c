@@ -303,7 +303,7 @@ sna_video_frame_set_rotation(struct sna_video *video,
 			}
 			frame->UBufOffset = frame->VBufOffset = 0;
 			break;
-		case FOURCC_RGB565:
+		case FOURCC_RGB565_SNA:
 			if (rotation & (RR_Rotate_90 | RR_Rotate_270)) {
 				frame->pitch[0] = ALIGN((height << 1), align);
 				frame->size = (int)frame->pitch[0] * width;
