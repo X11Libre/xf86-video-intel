@@ -439,6 +439,10 @@ intel_get_screen_private(ScrnInfoPtr scrn)
 #define MIN(a,b)	((a) < (b) ? (a) : (b))
 #endif
 
+#ifndef MAX
+#define MAX(a,b)	((a) > (b) ? (a) : (b))
+#endif
+
 extern void intel_video_init(ScreenPtr pScreen);
 extern void intel_box_intersect(BoxPtr dest, BoxPtr a, BoxPtr b);
 extern void intel_crtc_box(xf86CrtcPtr crtc, BoxPtr crtc_box);

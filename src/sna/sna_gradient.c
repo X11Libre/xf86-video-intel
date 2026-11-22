@@ -92,7 +92,7 @@ sna_gradient_sample_width(PictGradient *gradient)
 		return 1;
 
 	width = (width + 7) & -8;
-	return min(width, 1024);
+	return MIN(width, 1024);
 }
 
 static bool

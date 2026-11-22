@@ -102,7 +102,7 @@ bool trapezoids_bounds(int n, const xTrapezoid *t, BoxPtr box)
 				else
 					fx2 = line_x_for_y(&t->left, t->bottom, false);
 
-				v = min(fx1, fx2);
+				v = MIN(fx1, fx2);
 				if (v < x1)
 					x1 = pixman_fixed_floor(v);
 			}
@@ -122,7 +122,7 @@ bool trapezoids_bounds(int n, const xTrapezoid *t, BoxPtr box)
 				else
 					fx2 = line_x_for_y(&t->right, t->bottom, true);
 
-				v = max(fx1, fx2);
+				v = MAX(fx1, fx2);
 				if (v > x2)
 					x2 = pixman_fixed_ceil(v);
 			}

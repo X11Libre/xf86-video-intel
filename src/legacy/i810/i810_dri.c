@@ -1239,9 +1239,9 @@ static void I810DRIRefreshArea(ScrnInfoPtr pScrn, int num, BoxPtr pbox)
     br13 = (pI810->auxPitch) | (0xcc << 16);
     
     for (i = 0 ; i < num ; i++, pbox++) {
-      unsigned int w = min(pbox->y2, pScrn->virtualY-1) - max(pbox->y1, 0) + 1;
-      unsigned int h = min(pbox->x2, pScrn->virtualX-1) - max(pbox->x1, 0) + 1;
-      unsigned int dst = max(pbox->x1, 0)*cpp + (max(pbox->y1, 0)*pI810->auxPitch);
+      unsigned int w = MIN(pbox->y2, pScrn->virtualY-1) - MAX(pbox->y1, 0) + 1;
+      unsigned int h = MIN(pbox->x2, pScrn->virtualX-1) - MAX(pbox->x1, 0) + 1;
+      unsigned int dst = MAX(pbox->x1, 0)*cpp + (MAX(pbox->y1, 0)*pI810->auxPitch);
       
       BEGIN_LP_RING(6);
 
