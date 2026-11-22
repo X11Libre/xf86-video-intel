@@ -24,7 +24,7 @@
 AC_PREREQ([2.60])
 AC_INIT([xlibre-xf86-video-intel],
         [25.0.3],
-        [https://github.com/X11Libre/xf86-video-sis/issues],
+        [https://github.com/X11Libre/xf86-video-intel/issues],
         [xlibre-xf86-video-intel])
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS([config.h])
