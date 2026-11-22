@@ -22,7 +22,7 @@ static const XRenderColor colors[] = {
 
 static struct clip {
 	void *func;
-} clips[] = {
+} clips[] __attribute__((unused)) = {
 	{ NULL },
 };
 
