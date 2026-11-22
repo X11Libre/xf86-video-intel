@@ -13,7 +13,7 @@ sna_deps = [
   cc.find_library('m', required : true),
   dependency('threads', required : true),
   dependency('xorg-server', required : true),
-  dependency('libdrm', required : true),
+  dependency('libdrm', version : '>= 2.4.104', required : true),
 ]
 
 sna_sources = [

@@ -211,7 +211,7 @@ if test "x$cpuid" = "xyes"; then
         AC_DEFINE(HAVE_CPUID_H,1,[Found a useable cpuid.h])
 fi
 
-PKG_CHECK_MODULES(X11_DRI3, [xcb-dri3 xcb-sync xcb-xfixes xcb-present x11-xcb xshmfence x11 xcomposite xdamage xrender xrandr xxf86vm xext libdrm], [x11_dri3="yes"], [x11_dri3="no"])
+PKG_CHECK_MODULES(X11_DRI3, [xcb-dri3 xcb-sync xcb-xfixes xcb-present x11-xcb xshmfence x11 xcomposite xdamage xrender xrandr xxf86vm xext libdrm >= 2.4.104], [x11_dri3="yes"], [x11_dri3="no"])
 AM_CONDITIONAL(X11_DRI3, test "x$x11_dri3" = "xyes")
 
 PKG_CHECK_MODULES(X11_VM, [xxf86vm], [x11_vm="yes"], [x11_vm="no"])
@@ -338,7 +338,7 @@ XORG_DRIVER_CHECK_EXT(RENDER, renderproto)
 XORG_DRIVER_CHECK_EXT(DPMSExtension, xextproto)
 
 # Obtain compiler/linker options for the driver dependencies
-PKG_CHECK_MODULES(DRM, [libdrm >= 2.4.20]) # libdrm_intel is checked separately
+PKG_CHECK_MODULES(DRM, [libdrm >= 2.4.104]) # libdrm_intel is checked separately
 PKG_CHECK_MODULES(PCIACCESS, [pciaccess >= 0.10])
 
 AC_ARG_ENABLE(sna,
@@ -356,7 +356,7 @@ if test "x$SNA" != "xno"; then
         AC_CHECK_HEADERS([sys/sysinfo.h], AC_CHECK_MEMBERS([struct sysinfo.totalram], [], [], [[#include <sys/sysinfo.h>]]))
 fi
 
-uxa_requires_libdrm=2.4.52
+uxa_requires_libdrm=2.4.104
 uxa_requires_pixman=0.24.0
 
 AC_ARG_ENABLE(uxa,
@@ -567,7 +567,7 @@ AM_CONDITIONAL(SNA, test "x$SNA" != "xno")
 AC_MSG_RESULT([$SNA])
 
 if test "$XVMC" = "yes"; then
-        PKG_CHECK_MODULES(XVMCLIB, [xvmc dri2proto x11 x11-xcb xcb-dri2 xcb-aux libdrm_intel], [], [XVMC="no"])
+        PKG_CHECK_MODULES(XVMCLIB, [xvmc dri2proto x11 x11-xcb xcb-dri2 xcb-aux libdrm_intel >= 2.4.104], [], [XVMC="no"])
 fi
 # The server can be built without XvMC; the driver code then can't build or load.
 if test "$XVMC" = "yes"; then
