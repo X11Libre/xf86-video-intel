@@ -265,6 +265,8 @@ struct kgem_bo *kgem_create_for_prime(struct kgem *kgem, int name, uint32_t size
 bool kgem_bo_import_tiling(struct kgem *kgem, struct kgem_bo *bo,
 			   int tiling, uint32_t pitch);
 int kgem_bo_export_to_prime(struct kgem *kgem, struct kgem_bo *bo);
+/* blocks until the GPU work on bo has completed */
+int kgem_bo_wait(struct kgem *kgem, struct kgem_bo *bo);
 
 struct kgem_bo *kgem_create_linear(struct kgem *kgem, int size, unsigned flags);
 struct kgem_bo *kgem_create_proxy(struct kgem *kgem,

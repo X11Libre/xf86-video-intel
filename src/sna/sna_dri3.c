@@ -628,6 +628,7 @@ bool sna_dri3_open(struct sna *sna, ScreenPtr screen)
 	if (intel_dri3_syncobj_supported(sna->scrn, sna->kgem.fd)) {
 		sna_dri3_info.version = 4;
 		sna_dri3_info.import_syncobj = sna_dri3_import_syncobj;
+		sna->dri3.syncobj = true;
 	}
 #endif
 

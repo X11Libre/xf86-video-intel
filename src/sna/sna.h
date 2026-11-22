@@ -366,6 +366,7 @@ struct sna {
 		bool override : 1;
 		bool enable : 1;
 		bool open :1;
+		bool syncobj :1; /* DRI3 sync objects (1.4) work */
 
 #if HAVE_DRI3
 		SyncScreenCreateFenceFunc create_fence;

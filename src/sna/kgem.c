@@ -1769,7 +1769,7 @@ static void kgem_fixup_relocs(struct kgem *kgem, struct kgem_bo *bo, int shrink)
 	}
 }
 
-static int kgem_bo_wait(struct kgem *kgem, struct kgem_bo *bo)
+int kgem_bo_wait(struct kgem *kgem, struct kgem_bo *bo)
 {
 	struct local_i915_gem_wait {
 		uint32_t handle;
