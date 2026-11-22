@@ -1791,7 +1791,7 @@ static unsigned select_video_kernel(const struct sna_video *video,
 			GEN7_WM_KERNEL_VIDEO_NV12_BT601;
 
 	case FOURCC_RGB888:
-	case FOURCC_RGB565:
+	case FOURCC_RGB565_SNA:
 		return GEN7_WM_KERNEL_VIDEO_RGB;
 
 	default:
