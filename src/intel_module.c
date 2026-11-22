@@ -316,6 +316,10 @@ static const SymTabRec intel_chipsets[] = {
 	{0x5916, "HD Graphics 620"},
 	{0x591E, "HD Graphics 615"},
 
+	/* Geminilake */
+	{0x3184, "UHD Graphics 605"},
+	{0x3185, "UHD Graphics 600"},
+
 	/* Coffeelake */
 	{0x3E90, "HD Graphics"},
 	{0x3E93, "HD Graphics"},
