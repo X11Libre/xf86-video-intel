@@ -378,6 +378,7 @@ struct sna {
 		bool open;
 		struct list vblank_queue;
 		uint64_t unflip;
+		bool flipped; /* a Present flip is on screen */
 		void *freed_info;
 	} present;
 
