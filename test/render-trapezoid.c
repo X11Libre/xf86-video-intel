@@ -453,7 +453,7 @@ static void edge_test(struct test *t,
 
 	for (left_or_right = 0; left_or_right <= 1; left_or_right++) {
 		for (p = -64; p <= out.width + 64; p++) {
-			char buf[80];
+			char buf[128];
 
 			if (left_or_right) {
 				trap.left.p1.x = 0;
@@ -480,8 +480,8 @@ static void edge_test(struct test *t,
 			trap.top = 0;
 			trap.bottom = out.height << 16;
 
-			sprintf(buf,
-				"trap=((%d, %d), (%d, %d)), ((%d, %d), (%d, %d))\n",
+			snprintf(buf, sizeof(buf),
+				 "trap=((%d, %d), (%d, %d)), ((%d, %d), (%d, %d))\n",
 				trap.left.p1.x >> 16, trap.left.p1.y >> 16,
 				trap.left.p2.x >> 16, trap.left.p2.y >> 16,
 				trap.right.p1.x >> 16, trap.right.p1.y >> 16,
