@@ -51,7 +51,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 struct sna_damage_box {
 	struct list list;
 	int size;
-} __attribute__((packed));
+	BoxRec box[];
+};
 
 static struct sna_damage *__freed_damage;
 
@@ -155,6 +156,10 @@ static const char *_debug_describe_damage(char *buf, int max,
 static struct sna_damage_box *
 last_box(struct sna_damage *damage)
 {
+	/* the empty list yields embedded_box itself, so box[] must line up */
+	COMPILE_TIME_ASSERT(offsetof(struct sna_damage_box, box) ==
+			    offsetof(struct sna_damage, embedded_box.box) -
+			    offsetof(struct sna_damage, embedded_box));
 	return list_entry(damage->embedded_box.list.prev,
 			  struct sna_damage_box,
 			  list);
@@ -249,7 +254,7 @@ static void __sna_damage_reduce(struct sna_damage *damage)
 
 	iter = last_box(damage);
 	n = iter->size - damage->remain;
-	boxes = (BoxRec *)(iter+1);
+	boxes = iter->box;
 	DBG(("   last box count=%d/%d, need=%d\n", n, iter->size, nboxes));
 	if (nboxes > iter->size) {
 		boxes = malloc(sizeof(BoxRec)*nboxes);
@@ -266,9 +271,9 @@ static void __sna_damage_reduce(struct sna_damage *damage)
 			       damage->embedded_box.box,
 			       n*sizeof(BoxRec));
 		} else {
-			if (boxes != (BoxPtr)(iter+1)) {
+			if (boxes != iter->box) {
 				DBG(("   copying %d boxes from last\n", n));
-				memcpy(boxes, iter+1, n*sizeof(BoxRec));
+				memcpy(boxes, iter->box, n*sizeof(BoxRec));
 			}
 
 			iter = list_entry(iter->list.prev,
@@ -277,7 +282,7 @@ static void __sna_damage_reduce(struct sna_damage *damage)
 			while (&iter->list != &damage->embedded_box.list) {
 				DBG(("   copy %d boxes from %d\n",
 				     iter->size, n));
-				memcpy(boxes + n, iter+1,
+				memcpy(boxes + n, iter->box,
 				       iter->size * sizeof(BoxRec));
 				n += iter->size;
 
@@ -358,7 +363,7 @@ static bool _sna_damage_create_boxes(struct sna_damage *damage,
 	list_add_tail(&box->list, &damage->embedded_box.list);
 
 	box->size = damage->remain = n;
-	damage->box = (BoxRec *)(box + 1);
+	damage->box = box->box;
 	return true;
 }
 
@@ -1849,14 +1854,14 @@ void _sna_damage_debug_get_region(struct sna_damage *damage, RegionRec *r)
 		       damage->embedded_box.box,
 		       n*sizeof(BoxRec));
 	} else {
-		if (boxes != (BoxPtr)(iter+1))
-			memcpy(boxes, iter+1, n*sizeof(BoxRec));
+		if (boxes != iter->box)
+			memcpy(boxes, iter->box, n*sizeof(BoxRec));
 
 		iter = list_entry(iter->list.prev,
 				  struct sna_damage_box,
 				  list);
 		while (&iter->list != &damage->embedded_box.list) {
-			memcpy(boxes + n, iter+1,
+			memcpy(boxes + n, iter->box,
 			       iter->size * sizeof(BoxRec));
 			n += iter->size;
 
