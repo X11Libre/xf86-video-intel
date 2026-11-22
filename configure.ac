@@ -286,9 +286,9 @@ AC_ARG_ENABLE(dri3,
               [DRI3=yes])
 AC_ARG_WITH(default-dri,
             AS_HELP_STRING([--with-default-dri],
-                           [Select the default maximum DRI level [default 2]]),
+                           [Select the default maximum DRI level [default 3]]),
               [DRI_DEFAULT=$withval],
-              [DRI_DEFAULT=2])
+              [DRI_DEFAULT=3])
 if test "x$DRI_DEFAULT" = "x0"; then
         AC_DEFINE(DEFAULT_DRI_LEVEL, 0,[Default DRI level])
 else

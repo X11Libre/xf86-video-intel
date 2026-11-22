@@ -18,7 +18,7 @@ option('xvmc', type : 'boolean', value : true,
        description : 'Enable XvMC support')
 option('valgrind', type : 'boolean', value : true,
        description : 'Enable valgrindified ioctls for debugging')
-option('default-dri', type : 'combo', value : '2', choices : [ '1', '2', '3' ],
+option('default-dri', type : 'combo', value : '3', choices : [ '1', '2', '3' ],
        description : 'Select the default maximum DRI level')
 option('default-accel', type : 'combo', value : 'sna', choices : [ 'sna', 'uxa', 'none' ],
        description : 'Select the default acceleration method')
