@@ -32,6 +32,7 @@
 #include <drm_fourcc.h>
 
 #include "sna.h"
+#include "intel_dri3_syncobj.h"
 
 #include <xf86.h>
 #include <dri3.h>
@@ -587,6 +588,19 @@ static int sna_dri3_get_drawable_modifiers(DrawablePtr draw,
 	return TRUE;
 }
 
+#if HAVE_DRI3_SYNCOBJ
+static struct dri3_syncobj *sna_dri3_import_syncobj(ClientPtr client,
+						    ScreenPtr screen,
+						    XID id, int fd)
+{
+	return intel_dri3_import_syncobj(screen,
+					 to_sna_from_screen(screen)->kgem.fd,
+					 id, fd);
+}
+#endif
+
+/* version 4 and import_syncobj are added in sna_dri3_open() when the
+ * kernel supports timeline sync objects */
 static dri3_screen_info_rec sna_dri3_info = {
 	.version = 2, /* the newest set of hooks filled in below */
 
@@ -609,6 +623,14 @@ bool sna_dri3_open(struct sna *sna, ScreenPtr screen)
 		return false;
 
 	list_init(&sna->dri3.pixmaps);
+
+#if HAVE_DRI3_SYNCOBJ
+	if (intel_dri3_syncobj_supported(sna->scrn, sna->kgem.fd)) {
+		sna_dri3_info.version = 4;
+		sna_dri3_info.import_syncobj = sna_dri3_import_syncobj;
+	}
+#endif
+
 	return dri3_screen_init(screen, &sna_dri3_info);
 }
 
